@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>실험실 계산기 | mi._.mic</title>
 <meta name="description" content="몰농도, 희석, CFU, rpm과 ×g, A260, 프라이머, 라이게이션까지. 숫자만 넣으면 바로 계산되는 실험실 계산 공식 10개.">
-<meta name="theme-color" content="#192646">
+<meta name="theme-color" content="#F6F7F9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1117" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:title" content="실험실 계산 공식 10개, 숫자만 넣으면 바로 계산">
 <meta property="og:description" content="몰농도, 희석, CFU, rpm과 ×g, A260, 프라이머, 라이게이션까지. 경북대학교 분자미생물학 연구실 @mi._.mic">
@@ -14,459 +15,622 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23192646'/%3E%3Ctext x='32' y='43' font-family='Arial' font-weight='700' font-size='30' fill='%23F5F6F9' text-anchor='middle'%3E%3D%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2323376B'/%3E%3Cpath d='M32 14v34M22 50h20M14 22h36M14 22l-6 14h12zM50 22l-6 14h12z' stroke='%23fff' stroke-width='4' fill='none' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquare.css">
 <style>
 :root{
-  --navy:#192646; --navy-2:#24345C; --paper:#F5F6F9; --card:#FFFFFF;
-  --ink:#161F36; --ink-2:#56627E; --ink-3:#ACB6CA; --rule:#D6DBE6;
-  --on-navy:#F5F6F9; --on-navy-2:#AEB8D0; --warn:#B23A2E;
+  --bg:#F6F7F9; --dot:rgba(35,55,107,.10); --card:#FFFFFF; --card-2:#FAFBFC;
+  --fg:#141A28; --muted:#646D80; --faint:#A3AABA; --line:#E3E6EC; --line-2:#CDD3DE;
+  --accent:#23376B; --accent-hi:#3B57A6; --accent-soft:#EDF1F9; --accent-ink:#1B2B55;
+  --ok:#2F7D5B; --ok-soft:#E6F3EC; --warn:#B63B2E; --warn-soft:#FBEDEB;
+  --shadow:0 1px 2px rgba(20,26,40,.05),0 14px 34px -18px rgba(20,26,40,.28);
+  --shadow-lg:0 2px 4px rgba(20,26,40,.06),0 24px 48px -20px rgba(20,26,40,.32);
   --head:'NanumSquare','Noto Sans KR',sans-serif;
-  --body:'Noto Sans KR',system-ui,sans-serif;
+  --body:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
   --num:'IBM Plex Mono',ui-monospace,monospace;
+  --ease:cubic-bezier(.22,1,.36,1); --r:18px;
 }
 @media (prefers-color-scheme: dark){
-  :root{ --paper:#0F1730; --card:#16203D; --ink:#E9ECF3; --ink-2:#AEB8D0; --ink-3:#5C6A8C; --rule:#2A375C; --warn:#F08A7E; }
+  :root{ --bg:#0E1117; --dot:rgba(143,168,232,.10); --card:#151A24; --card-2:#121721;
+    --fg:#EEF1F6; --muted:#9AA3B5; --faint:#5D6679; --line:#232A38; --line-2:#323B4D;
+    --accent:#8FA8E8; --accent-hi:#AFC2F2; --accent-soft:#1A2338; --accent-ink:#DCE5FB;
+    --ok:#6CC59A; --ok-soft:#14261E; --warn:#F08A7E; --warn-soft:#2A1715;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -18px rgba(0,0,0,.8); --shadow-lg:0 2px 4px rgba(0,0,0,.4),0 24px 48px -20px rgba(0,0,0,.85); }
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-.pick,.group{scroll-margin-top:56px}
-html{scroll-behavior:smooth; -webkit-text-size-adjust:100%}
-@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important; animation:none!important} }
-body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.6; word-break:keep-all; overflow-wrap:anywhere}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--fg); font-family:var(--body); font-size:16px; line-height:1.6; word-break:keep-all; overflow-wrap:anywhere}
 a{color:inherit}
-:focus-visible{outline:3px solid #6F8BD8; outline-offset:2px}
-.wrap{max-width:760px; margin:0 auto; padding:0 20px}
+button{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--accent-hi); outline-offset:2px; border-radius:6px}
+.wrap{max-width:1180px; margin:0 auto; padding:0 20px}
+svg.i{width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex:none}
 
-/* hero: same structure as the carousel cover */
-.hero{background:var(--navy); color:var(--on-navy); padding:56px 0 40px}
-.hero .rule{height:1px; background:rgba(245,246,249,.18); margin-bottom:28px}
-.hero .pre{font-family:var(--head); font-weight:300; font-size:clamp(20px,4.6vw,30px); color:var(--on-navy-2); margin:0}
-.hero h1{font-family:var(--head); font-weight:800; font-size:clamp(40px,10.5vw,76px); line-height:1.08; letter-spacing:-.02em; margin:6px 0 18px}
-.hero .lead{font-size:clamp(16px,3.6vw,19px); color:var(--on-navy-2); margin:0 0 28px; max-width:34em}
-.hero .who{display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline; border-top:1px solid rgba(245,246,249,.18); padding-top:18px; font-size:15px}
-.hero .who b{font-family:var(--head); font-weight:700; font-size:18px}
-.hero .who span{color:var(--on-navy-2)}
+/* top bar */
+.top{position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--bg) 82%,transparent); backdrop-filter:saturate(1.4) blur(12px); -webkit-backdrop-filter:saturate(1.4) blur(12px); border-bottom:1px solid transparent; transition:border-color .3s}
+.top.scrolled{border-bottom-color:var(--line)}
+.top .wrap{display:flex; align-items:center; gap:12px; height:60px}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; font-family:var(--head); font-weight:800; font-size:17px}
+.brand .mk{display:grid; place-items:center; width:30px; height:30px; border-radius:9px; background:var(--accent); color:#fff}
+.brand .mk svg{width:18px; height:18px; stroke-width:2}
+@media (prefers-color-scheme: dark){ .brand .mk{color:#0E1117} }
+.top nav{margin-left:auto; display:flex; gap:6px}
+.top nav a{text-decoration:none; font-size:14px; font-weight:500; color:var(--muted); padding:7px 12px; border-radius:999px; transition:color .2s,background .2s}
+.top nav a:hover{color:var(--fg); background:var(--card)}
+.top nav a.cta{background:var(--fg); color:var(--bg)}
+.top nav a.cta:hover{background:var(--accent)}
+@media (max-width:560px){ .top nav a.hide-s{display:none} }
 
-/* section jump bar */
-.jump{position:sticky; top:0; z-index:5; background:var(--paper); border-bottom:1px solid var(--rule)}
-.jump .wrap{display:flex; gap:6px; overflow-x:auto; padding-top:10px; padding-bottom:10px; scrollbar-width:none}
-.jump .wrap::-webkit-scrollbar{display:none}
-.jump a{flex:none; text-decoration:none; font-size:14px; font-weight:500; color:var(--ink-2); padding:6px 12px; border:1px solid var(--rule); border-radius:999px; background:var(--card)}
-.jump a:hover{color:var(--ink); border-color:var(--ink-3)}
+/* hero */
+.hero{position:relative; padding:44px 0 34px; overflow:hidden}
+.hero::before{content:""; position:absolute; inset:0; background-image:radial-gradient(var(--dot) 1.2px,transparent 1.3px); background-size:22px 22px; -webkit-mask-image:radial-gradient(ellipse 70% 90% at 20% 30%,#000 30%,transparent 75%); mask-image:radial-gradient(ellipse 70% 90% at 20% 30%,#000 30%,transparent 75%); pointer-events:none}
+.hero .wrap{position:relative}
+.pill{display:inline-flex; align-items:center; gap:8px; font-size:13.5px; color:var(--muted); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:5px 12px 5px 8px; box-shadow:var(--shadow)}
+.pill i{width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 4px var(--ok-soft)}
+.hero h1{font-family:var(--head); font-weight:800; font-size:clamp(38px,7.6vw,68px); line-height:1.1; letter-spacing:-.025em; margin:18px 0 14px}
+.hero h1 .w{display:inline-block}
+.hero p.lead{font-size:clamp(16px,2.6vw,19px); color:var(--muted); margin:0; max-width:34em}
+.hero .lab{margin-top:18px; font-size:14px; color:var(--faint)}
 
-/* situation table (slide 7) */
-.pick{padding:44px 0 8px}
-.pick h2,.group h2{font-family:var(--head); font-weight:800; font-size:clamp(28px,6vw,38px); line-height:1.2; margin:0}
-.pick h2::after,.group h2::after{content:""; display:block; width:44px; height:5px; background:var(--navy); margin-top:14px}
-@media (prefers-color-scheme: dark){ .pick h2::after,.group h2::after{background:var(--on-navy-2)} }
-.pick p.sub{color:var(--ink-2); margin:14px 0 18px}
-.pick ol{list-style:none; margin:0; padding:0; border-top:2px solid var(--ink)}
-.pick li a{display:grid; grid-template-columns:1fr auto; gap:12px; align-items:baseline; text-decoration:none; padding:13px 2px; border-bottom:1px solid var(--rule)}
-.pick li a:hover .f{text-decoration:underline; text-underline-offset:3px}
-.pick .s{color:var(--ink)}
-.pick .f{font-weight:500; color:var(--navy); text-align:right; white-space:nowrap}
-@media (prefers-color-scheme: dark){ .pick .f{color:#C9D3EE} }
+/* mobile tiles */
+.tiles-sec{padding:6px 0 10px}
+.tiles-sec h2,.side h2{font-family:var(--head); font-weight:800; font-size:20px; margin:0 0 12px}
+.tiles{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+@media (min-width:640px){ .tiles{grid-template-columns:repeat(3,1fr)} }
+.tile{position:relative; display:flex; flex-direction:column; gap:6px; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px 14px 13px; cursor:pointer; box-shadow:var(--shadow); transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .25s}
+.tile:hover{transform:translateY(-3px); box-shadow:var(--shadow-lg)}
+.tile:active{transform:translateY(0) scale(.98)}
+.tile .ic{display:grid; place-items:center; width:40px; height:40px; border-radius:12px; background:var(--accent-soft); color:var(--accent); transition:transform .4s var(--ease)}
+.tile:hover .ic{transform:rotate(-8deg) scale(1.06)}
+.tile .no{position:absolute; top:12px; right:14px; font-family:var(--num); font-size:12px; color:var(--faint)}
+.tile b{font-family:var(--head); font-weight:800; font-size:15.5px; line-height:1.3}
+.tile small{font-size:12.5px; color:var(--muted); line-height:1.4}
+.tile[aria-current="true"]{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent),var(--shadow)}
+.tile[aria-current="true"] .ic{background:var(--accent); color:#fff}
+@media (prefers-color-scheme: dark){ .tile[aria-current="true"] .ic{color:#0E1117} }
 
-/* calculators */
-.group{padding:56px 0 0}
-.calc{padding:34px 0 36px; border-bottom:1px solid var(--rule); scroll-margin-top:64px}
-.calc:last-child{border-bottom:0}
-.calc header{display:grid; grid-template-columns:auto 1fr; gap:0 18px; align-items:start}
-.calc .no{font-family:var(--head); font-weight:300; font-size:54px; line-height:.95; color:var(--ink-3)}
-.calc h3{font-family:var(--head); font-weight:800; font-size:clamp(23px,5.2vw,30px); line-height:1.25; margin:2px 0 4px}
-.calc .formula{font-weight:500; color:var(--navy); margin:0}
-@media (prefers-color-scheme: dark){ .calc .formula{color:#C9D3EE} }
-.body{margin-left:0}
-@media (min-width:600px){ .body{margin-left:82px} }
+/* app layout */
+.app{display:block; padding:18px 0 10px}
+.side{display:none}
+@media (min-width:1000px){
+  .tiles-sec{display:none}
+  .app{display:grid; grid-template-columns:272px 1fr; gap:28px; align-items:start; padding-top:8px}
+  .side{display:block; position:sticky; top:76px; max-height:calc(100vh - 92px); overflow:auto; padding:18px 12px 14px; background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
+  .side h2{padding:0 8px; font-size:16px}
+}
+.grp{font-size:12.5px; font-weight:700; color:var(--faint); margin:14px 10px 4px}
+.grp:first-of-type{margin-top:0}
+.mi{position:relative; display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:0; background:transparent; padding:8px 10px; border-radius:11px; cursor:pointer; color:var(--muted); font-size:14.5px; transition:background .2s,color .2s}
+.mi svg.i{width:20px; height:20px; transition:transform .35s var(--ease)}
+.mi .n{font-family:var(--num); font-size:12px; color:var(--faint); width:18px}
+.mi:hover{background:var(--card-2); color:var(--fg)}
+.mi:hover svg.i{transform:translateX(2px)}
+.mi[aria-current="true"]{background:var(--accent-soft); color:var(--accent-ink); font-weight:700}
+.mi[aria-current="true"] .n{color:var(--accent)}
+.mi[aria-current="true"]::before{content:""; position:absolute; left:-12px; top:8px; bottom:8px; width:3px; border-radius:3px; background:var(--accent)}
 
-.seg{display:inline-flex; margin:20px 0 4px; border:1px solid var(--ink-3); border-radius:10px; overflow:hidden}
-.seg button{font:inherit; font-size:15px; font-weight:500; padding:8px 14px; border:0; background:var(--card); color:var(--ink-2); cursor:pointer}
-.seg button+button{border-left:1px solid var(--ink-3)}
-.seg button[aria-pressed="true"]{background:var(--navy); color:var(--on-navy)}
+/* panel */
+.stage{min-width:0}
+.panel{background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); padding:24px 20px 20px; scroll-margin-top:72px}
+@media (min-width:700px){ .panel{padding:32px 32px 26px} }
+.p-head{display:grid; grid-template-columns:auto 1fr; gap:4px 16px; align-items:center}
+.p-head .ic{grid-row:span 2; display:grid; place-items:center; width:56px; height:56px; border-radius:16px; background:var(--accent-soft); color:var(--accent)}
+.p-head .ic svg.i{width:30px; height:30px}
+.p-head .meta{font-size:13.5px; color:var(--muted)}
+.p-head .meta span{font-family:var(--num); color:var(--accent); margin-right:6px}
+.p-head h2{font-family:var(--head); font-weight:800; font-size:clamp(24px,4.4vw,32px); line-height:1.2; margin:0; letter-spacing:-.01em}
+.formula{display:inline-block; margin:18px 0 0; font-family:var(--body); font-weight:500; font-size:15px; color:var(--accent-ink); background:var(--accent-soft); border-radius:10px; padding:8px 12px; line-height:1.5}
+.p-body{display:grid; gap:22px; margin-top:20px}
+@media (min-width:1100px){ .p-body{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); align-items:start} .result{position:sticky; top:80px} }
 
-.fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px 16px; margin-top:20px}
-.field label{display:block; font-size:14px; font-weight:500; color:var(--ink-2); margin-bottom:6px}
-.field label small{font-weight:400; color:var(--ink-3)}
-.box{display:flex; align-items:stretch; background:var(--card); border:1px solid var(--ink-3); border-radius:10px; overflow:hidden}
-.box:focus-within{border-color:var(--navy); box-shadow:0 0 0 3px rgba(25,38,70,.14)}
-.box .pre{display:flex; align-items:center; padding:0 0 0 12px; color:var(--ink-2); font-family:var(--num); font-size:16px}
-.box input{flex:1; min-width:0; font-family:var(--num); font-size:19px; font-weight:500; color:var(--ink); background:transparent; border:0; padding:11px 12px; outline:none}
-.box input::placeholder{font-family:var(--body); font-size:14px; font-weight:400; color:var(--ink-3)}
-.box select,.box .u{flex:none; font:inherit; font-size:15px; color:var(--ink-2); background:transparent; border:0; border-left:1px solid var(--rule); padding:0 12px; display:flex; align-items:center}
-.box select{cursor:pointer; padding-right:8px}
-.box select:focus-visible{outline:2px solid #6F8BD8; outline-offset:-2px}
+.seg{display:inline-flex; padding:4px; gap:4px; background:var(--card-2); border:1px solid var(--line); border-radius:12px; margin-bottom:16px}
+.seg button{border:0; background:transparent; font-size:14.5px; font-weight:500; color:var(--muted); padding:7px 14px; border-radius:9px; cursor:pointer; transition:background .25s,color .25s,box-shadow .25s}
+.seg button[aria-pressed="true"]{background:var(--card); color:var(--fg); box-shadow:0 1px 3px rgba(20,26,40,.12)}
+.fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px}
+.field label{display:block; font-size:13.5px; font-weight:500; color:var(--muted); margin-bottom:6px}
+.field label small{font-weight:400; color:var(--faint)}
+.box{display:flex; align-items:stretch; background:var(--card); border:1px solid var(--line-2); border-radius:12px; overflow:hidden; transition:border-color .2s,box-shadow .2s}
+.box:hover{border-color:var(--faint)}
+.box:focus-within{border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft)}
+.box .pre{display:flex; align-items:center; padding-left:12px; color:var(--muted); font-family:var(--num)}
+.box input{flex:1; min-width:0; font-family:var(--num); font-size:18px; font-weight:500; color:var(--fg); background:transparent; border:0; padding:11px 12px; outline:none}
+.box input::placeholder{font-family:var(--body); font-size:14px; font-weight:400; color:var(--faint)}
+.box select,.box .u{flex:none; font-size:14.5px; color:var(--muted); background:var(--card-2); border:0; border-left:1px solid var(--line); padding:0 12px; display:flex; align-items:center}
+.box select{cursor:pointer; padding-right:6px}
+.box select.full{flex:1; border-left:0; background:var(--card); color:var(--fg); font-size:15px}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:14px}
+.chips span{font-size:12.5px; color:var(--faint); align-self:center; margin-right:2px}
+.chips button{font-size:13px; padding:5px 11px; border-radius:999px; border:1px solid var(--line); background:var(--card); cursor:pointer; transition:transform .25s var(--ease),border-color .2s,background .2s,color .2s}
+.chips button:hover{border-color:var(--line-2); transform:translateY(-1px)}
+.chips button[aria-pressed="true"]{background:var(--fg); border-color:var(--fg); color:var(--bg)}
+.subhead{font-family:var(--head); font-weight:800; font-size:16px; margin:22px 0 10px}
 
-.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px}
-.chips span{font-size:13px; color:var(--ink-2); align-self:center; margin-right:2px}
-.chips button{font:inherit; font-size:13px; padding:5px 10px; border-radius:999px; border:1px solid var(--rule); background:var(--card); color:var(--ink); cursor:pointer}
-.chips button:hover{border-color:var(--ink-3)}
-.chips button[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:var(--on-navy)}
+/* result */
+.result{border-radius:16px; background:linear-gradient(180deg,var(--accent-soft),color-mix(in srgb,var(--accent-soft) 40%,var(--card))); border:1px solid color-mix(in srgb,var(--accent) 16%,var(--line)); padding:18px 18px 16px}
+.r-lbl{font-size:13.5px; font-weight:500; color:var(--muted)}
+.r-val{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 10px; margin-top:2px}
+.r-n{font-family:var(--num); font-weight:600; font-size:clamp(34px,6.4vw,46px); line-height:1.15; letter-spacing:-.02em; color:var(--accent); font-variant-numeric:tabular-nums}
+.r-n.wait{color:var(--faint)}
+.r-u{font-family:var(--head); font-weight:800; font-size:20px; color:var(--accent-ink)}
+.r-also{margin-top:4px; font-size:14.5px; color:var(--muted)}
+.r-also:empty{display:none}
+.r-also b{color:var(--fg); font-weight:700}
+.r-work{margin:12px 0 0; padding-top:12px; border-top:1px dashed color-mix(in srgb,var(--accent) 25%,var(--line)); font-family:var(--num); font-size:13.5px; color:var(--muted); overflow-x:auto; white-space:nowrap}
+.r-work:empty{display:none}
+.r-msg{display:flex; gap:8px; margin:12px 0 0; font-size:14px; color:var(--warn); background:var(--warn-soft); border-radius:10px; padding:8px 11px}
+.r-msg:empty{display:none}
+.pair{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.badge{display:inline-block; margin-top:4px; font-size:12.5px; font-weight:700; padding:3px 9px; border-radius:999px; background:var(--card); color:var(--muted)}
+.badge.ok{background:var(--ok-soft); color:var(--ok)}
+.badge.bad{background:var(--warn-soft); color:var(--warn)}
+.badge:empty{display:none}
 
-/* the readout: the one bold thing on the page */
-.readout{margin-top:22px; background:var(--navy); color:var(--on-navy); border-radius:14px; padding:18px 20px 16px}
-@media (prefers-color-scheme: dark){ .readout{background:#22305A} }
-.readout .lbl{font-size:14px; color:var(--on-navy-2)}
-.readout .val{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; margin-top:2px}
-.readout .n{font-family:var(--num); font-weight:600; font-size:clamp(36px,9vw,52px); line-height:1.15; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
-.readout .n.wait{color:var(--on-navy-2)}
-.readout .unit{font-family:var(--head); font-weight:700; font-size:clamp(20px,4.6vw,26px)}
-.readout .also{margin-top:6px; font-size:15px; color:var(--on-navy-2)}
-.readout .also b{color:var(--on-navy); font-weight:500}
-.readout .n.tick{animation:tick .28s ease-out}
-@keyframes tick{from{opacity:.35; transform:translateY(3px)} to{opacity:1; transform:none}}
-.pair{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-.pair .verdict{font-size:14px; color:var(--on-navy); margin-top:4px}
+.notes{list-style:none; margin:22px 0 0; padding:16px 0 0; border-top:1px solid var(--line); display:grid; gap:8px}
+.notes li{display:flex; gap:10px; font-size:14px; color:var(--muted)}
+.notes li::before{content:""; flex:none; width:6px; height:6px; border-radius:50%; background:var(--line-2); margin-top:.62em}
 
-.work{margin:12px 0 0; font-family:var(--num); font-size:14.5px; color:var(--ink-2); overflow-x:auto; white-space:nowrap}
-.msg{margin:10px 0 0; font-size:14.5px; color:var(--warn)}
-.msg:empty{display:none}
-.note{display:flex; gap:12px; margin:14px 0 0; font-size:14.5px; color:var(--ink-2)}
-.note::before{content:""; flex:none; width:22px; height:1px; background:var(--ink-3); margin-top:.8em}
-.sep{height:1px; background:var(--rule); margin:26px 0 0}
-.subhead{font-weight:700; margin:22px 0 0; font-size:16px}
+.pn{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px}
+.pn button{display:flex; flex-direction:column; gap:2px; text-align:left; background:var(--card-2); border:1px solid var(--line); border-radius:14px; padding:11px 14px; cursor:pointer; transition:border-color .2s,transform .3s var(--ease),background .2s}
+.pn button:hover{border-color:var(--line-2); transform:translateY(-2px); background:var(--card)}
+.pn button.next{text-align:right; align-items:flex-end}
+.pn small{font-size:12px; color:var(--faint)}
+.pn b{font-size:14.5px; font-weight:700}
+.pn button:disabled{visibility:hidden}
+
+/* entrance + switch animation */
+@keyframes rise{from{opacity:0; transform:translateY(12px); filter:blur(4px)} to{opacity:1; transform:none; filter:none}}
+@keyframes pop{from{opacity:0; transform:translateY(14px) scale(.97)} to{opacity:1; transform:none}}
+.hero .w,.hero .pill,.hero .lead,.hero .lab{animation:rise .8s var(--ease) both; animation-delay:calc(var(--i,0)*90ms)}
+.tile{animation:pop .6s var(--ease) both; animation-delay:calc(300ms + var(--i,0)*45ms)}
+.panel.enter .an{animation:rise .55s var(--ease) both; animation-delay:calc(var(--i,0)*45ms)}
+
+/* floating switcher (mobile) */
+.fab{position:fixed; left:50%; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:30; transform:translate(-50%,140%); display:flex; align-items:center; gap:10px; max-width:calc(100vw - 32px); background:var(--fg); color:var(--bg); border:0; border-radius:999px; padding:11px 18px 11px 14px; box-shadow:var(--shadow-lg); cursor:pointer; transition:transform .45s var(--ease)}
+.fab.show{transform:translate(-50%,0)}
+.fab span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:14.5px; font-weight:500}
+.fab svg.i{width:20px; height:20px}
+@media (min-width:1000px){ .fab{display:none} }
+dialog.sheet{margin:auto auto 0; width:100%; max-width:560px; max-height:82vh; border:0; padding:0; border-radius:22px 22px 0 0; background:var(--card); color:var(--fg); box-shadow:var(--shadow-lg)}
+dialog.sheet::backdrop{background:rgba(14,17,23,.45); backdrop-filter:blur(2px)}
+dialog.sheet[open]{animation:sheet .4s var(--ease)}
+@keyframes sheet{from{transform:translateY(100%)} to{transform:none}}
+.sheet .grab{width:42px; height:5px; border-radius:5px; background:var(--line-2); margin:10px auto 4px}
+.sheet .sh{display:flex; align-items:center; justify-content:space-between; padding:6px 18px 4px}
+.sheet .sh b{font-family:var(--head); font-weight:800; font-size:18px}
+.sheet .sh button{border:0; background:var(--card-2); border-radius:999px; padding:6px 12px; font-size:14px; cursor:pointer}
+.sheet .list{overflow:auto; max-height:calc(82vh - 70px); padding:6px 12px calc(18px + env(safe-area-inset-bottom))}
+.sheet .mi{padding:11px 12px; font-size:15.5px}
+.sheet .mi[aria-current="true"]::before{left:0}
 
 /* footer */
-.dm{background:var(--navy); color:var(--on-navy); margin-top:56px; padding:48px 0 40px}
-.dm h2{font-family:var(--head); font-weight:800; font-size:clamp(26px,6vw,36px); line-height:1.25; margin:0 0 14px}
-.dm p{color:var(--on-navy-2); margin:0 0 10px; max-width:36em}
-.dm .btns{display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 30px}
-.dm .btns a{text-decoration:none; font-weight:500; padding:11px 18px; border-radius:999px; border:1.5px solid var(--on-navy)}
-.dm .btns a.solid{background:var(--on-navy); color:var(--navy)}
-.dm .fine{border-top:1px solid rgba(245,246,249,.18); padding-top:18px; font-size:13.5px}
-.dm .fine p{margin:0 0 6px}
-.dm .fine a{color:var(--on-navy)}
+.dm{padding:40px 0 48px}
+.dm .card{position:relative; overflow:hidden; isolation:isolate; background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); padding:28px 22px}
+@media (min-width:700px){ .dm .card{padding:36px 40px} }
+.dm .card::after{content:""; position:absolute; right:-60px; top:-60px; width:220px; height:220px; border-radius:50%; background:radial-gradient(circle,var(--accent-soft),transparent 70%); z-index:-1}
+.dm h2{position:relative; font-family:var(--head); font-weight:800; font-size:clamp(24px,4.6vw,32px); line-height:1.25; margin:0 0 10px}
+.dm p{position:relative; color:var(--muted); margin:0 0 8px; max-width:38em}
+.dm .btns{position:relative; display:flex; flex-wrap:wrap; gap:10px; margin-top:20px}
+.btn{display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:700; font-size:15px; padding:11px 18px; border-radius:999px; border:1px solid var(--line-2); background:var(--card); transition:transform .3s var(--ease),background .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px); border-color:var(--faint)}
+.btn.solid{background:var(--accent); border-color:var(--accent); color:#fff}
+@media (prefers-color-scheme: dark){ .btn.solid{color:#0E1117} }
+.btn.solid:hover{background:var(--accent-hi)}
+.fine{margin-top:22px; font-size:13px; color:var(--faint); display:grid; gap:4px}
+.fine a{color:var(--muted)}
+
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important; transition:none!important} }
 </style>
 </head>
 <body>
 
-<header class="hero">
+<header class="top" id="top">
   <div class="wrap">
-    <div class="rule"></div>
-    <p class="pre">계산기 앞에서 멈칫하는 순간들</p>
-    <h1>실험실 계산<br>공식 10개</h1>
-    <p class="lead">숫자만 바꾸면 바로 계산돼요. 칸마다 예시 숫자가 들어 있고, 계산 과정도 한 줄로 같이 보여 드려요.</p>
-    <div class="who"><b>mi._.mic</b><span>경북대학교 분자미생물학 연구실</span></div>
+    <a class="brand" href="./" aria-label="실험실 계산기 처음으로"><span class="mk"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v15M8 20h8M5 7h14M5 7l-2.5 6h5zM19 7l-2.5 6h5z"/></svg></span>실험실 계산기</a>
+    <nav aria-label="바깥 링크">
+      <a class="hide-s" href="https://www.instagram.com/mi._.mic/" target="_blank" rel="noopener">@mi._.mic</a>
+      <a class="cta" href="https://www.instagram.com/p/Df6IpWooCru/" target="_blank" rel="noopener">풀이 받기</a>
+    </nav>
   </div>
 </header>
 
-<nav class="jump" aria-label="계산기 묶음 바로가기">
+<section class="hero">
   <div class="wrap">
-    <a href="#pick">상황별로 고르기</a>
-    <a href="#g-sol">용액 만들 때</a>
-    <a href="#g-dil">희석할 때</a>
-    <a href="#g-cfu">균 세고 원심분리할 때</a>
-    <a href="#g-dna">DNA 농도 잴 때</a>
-    <a href="#g-clone">클로닝 준비할 때</a>
+    <span class="pill" style="--i:0"><i></i>용액 만들기부터 클로닝까지 매주 쓰는 계산</span>
+    <h1><span class="w" style="--i:1">실험실</span> <span class="w" style="--i:2">계산</span> <span class="w" style="--i:3">공식</span> <span class="w" style="--i:4">10개</span></h1>
+    <p class="lead" style="--i:5">필요한 계산기를 고르고 숫자만 바꾸면 바로 계산돼요. 예시 숫자가 들어 있고, 계산 과정도 한 줄로 같이 보여 드려요.</p>
+    <p class="lab" style="--i:6">mi._.mic, 경북대학교 분자미생물학 연구실</p>
   </div>
-</nav>
+</section>
 
 <main class="wrap">
+  <section class="tiles-sec" id="menu" aria-labelledby="tiles-h">
+    <h2 id="tiles-h">어떤 계산이 필요해요?</h2>
+    <div class="tiles" id="tiles"></div>
+  </section>
 
-<section class="pick" id="pick" aria-labelledby="pick-h">
-  <h2 id="pick-h">상황별로 고르면 끝</h2>
-  <p class="sub">지금 하려는 일을 누르면 그 계산기로 내려가요.</p>
-  <ol>
-    <li><a href="#c1"><span class="s">시약 가루로 몰농도 용액 만들 때</span><span class="f">g = M × L × MW</span></a></li>
-    <li><a href="#c2"><span class="s">아가로스, 에탄올 % 만들 때</span><span class="f">w/v, v/v</span></a></li>
-    <li><a href="#c3"><span class="s">진한 용액을 원하는 농도로</span><span class="f">C1V1 = C2V2</span></a></li>
-    <li><a href="#c4"><span class="s">10X, 5X 버퍼 쓸 때</span><span class="f">총량 ÷ 배수</span></a></li>
-    <li><a href="#c5"><span class="s">플레이트 콜로니 셀 때</span><span class="f">CFU/mL</span></a></li>
-    <li><a href="#c6"><span class="s">프로토콜이 ×g로 적혀 있을 때</span><span class="f">rpm 환산</span></a></li>
-    <li><a href="#c7"><span class="s">DNA, RNA 농도 볼 때</span><span class="f">A260</span></a></li>
-    <li><a href="#c8"><span class="s">순도 괜찮은지 볼 때</span><span class="f">260/280, 260/230</span></a></li>
-    <li><a href="#c9"><span class="s">프라이머 처음 받았을 때</span><span class="f">nmol × 10 μL</span></a></li>
-    <li><a href="#c10"><span class="s">라이게이션 세팅할 때</span><span class="f">insert 3 : 1</span></a></li>
-  </ol>
+  <div class="app">
+    <aside class="side" aria-labelledby="side-h">
+      <h2 id="side-h">계산기 고르기</h2>
+      <div id="side"></div>
+    </aside>
+
+    <div class="stage" id="stage">
+
+<!-- 01 -->
+<section class="panel" id="c1" aria-labelledby="c1-h">
+  <div class="p-head an"><div class="ic" data-icon="scale"></div><div class="meta"><span>01</span>용액 만들 때</div><h2 id="c1-h">몰농도로 무게 재기</h2></div>
+  <div class="formula an">무게(g) = 몰농도(M) × 부피(L) × 분자량(g/mol)</div>
+  <div class="p-body">
+    <div class="inputs">
+      <div class="fields">
+        <div class="field an"><label for="c1-m">만들 몰농도</label>
+          <div class="box"><input id="c1-m" inputmode="decimal" value="0.5"><select id="c1-mu" aria-label="몰농도 단위"><option value="1">M</option><option value="1e-3">mM</option><option value="1e-6">μM</option></select></div></div>
+        <div class="field an"><label for="c1-v">만들 부피</label>
+          <div class="box"><input id="c1-v" inputmode="decimal" value="200"><select id="c1-vu" aria-label="부피 단위"><option value="1">L</option><option value="1e-3" selected>mL</option><option value="1e-6">μL</option></select></div></div>
+        <div class="field an"><label for="c1-mw">분자량 <small>MW(Molecular Weight)</small></label>
+          <div class="box"><input id="c1-mw" inputmode="decimal" value="58.44"><span class="u">g/mol</span></div></div>
+      </div>
+      <div class="chips an" id="c1-chips"><span>분자량 넣기</span>
+        <button type="button" data-mw="58.44">NaCl</button>
+        <button type="button" data-mw="74.55">KCl</button>
+        <button type="button" data-mw="121.14">Tris base</button>
+        <button type="button" data-mw="372.24">Na₂EDTA·2H₂O</button>
+        <button type="button" data-mw="203.30">MgCl₂·6H₂O</button>
+        <button type="button" data-mw="147.01">CaCl₂·2H₂O</button>
+        <button type="button" data-mw="40.00">NaOH</button>
+        <button type="button" data-mw="180.16">포도당</button>
+        <button type="button" data-mw="288.38">SDS</button>
+      </div>
+    </div>
+    <div class="result an" aria-live="polite"><div class="r-lbl">저울에 올릴 양</div><div class="r-val"><span class="r-n" id="c1-out">–</span><span class="r-u" id="c1-unit">g</span></div><div class="r-also" id="c1-also"></div><p class="r-work" id="c1-work"></p><p class="r-msg" id="c1-msg"></p></div>
+  </div>
+  <ul class="notes an">
+    <li>물을 다 넣지 말고 녹인 다음, 마지막에 눈금까지 채우세요.</li>
+    <li>수화물은 물까지 포함한 분자량이라 시약병 라벨의 FW(Formula Weight)가 우선이에요.</li>
+    <li>EDTA는 Ethylenediaminetetraacetic acid, SDS는 Sodium Dodecyl Sulfate.</li>
+  </ul>
 </section>
 
-<!-- ============ 용액 만들 때 ============ -->
-<section class="group" id="g-sol" aria-labelledby="g-sol-h">
-<h2 id="g-sol-h">용액 만들 때</h2>
-
-<article class="calc" id="c1">
-  <header><div class="no">01</div><div>
-    <h3>몰농도로 무게 재기</h3>
-    <p class="formula">무게(g) = 몰농도(M) × 부피(L) × 분자량(g/mol)</p>
-  </div></header>
-  <div class="body">
-    <div class="fields">
-      <div class="field"><label for="c1-m">만들 몰농도</label>
-        <div class="box"><input id="c1-m" inputmode="decimal" value="0.5"><select id="c1-mu" aria-label="몰농도 단위"><option value="1">M</option><option value="1e-3">mM</option><option value="1e-6">μM</option></select></div></div>
-      <div class="field"><label for="c1-v">만들 부피</label>
-        <div class="box"><input id="c1-v" inputmode="decimal" value="200"><select id="c1-vu" aria-label="부피 단위"><option value="1">L</option><option value="1e-3" selected>mL</option><option value="1e-6">μL</option></select></div></div>
-      <div class="field"><label for="c1-mw">분자량 <small>MW(Molecular Weight), 라벨의 FW</small></label>
-        <div class="box"><input id="c1-mw" inputmode="decimal" value="58.44"><span class="u">g/mol</span></div></div>
+<!-- 02 -->
+<section class="panel" id="c2" aria-labelledby="c2-h">
+  <div class="p-head an"><div class="ic" data-icon="flask"></div><div class="meta"><span>02</span>용액 만들 때</div><h2 id="c2-h">% 농도 w/v, v/v</h2></div>
+  <div class="formula an" id="c2-formula">w/v(weight/volume)는 100 mL에 몇 g</div>
+  <div class="p-body">
+    <div class="inputs">
+      <div class="seg an" role="group" aria-label="농도 종류"><button type="button" id="c2-wv" aria-pressed="true">w/v 가루</button><button type="button" id="c2-vv" aria-pressed="false">v/v 액체</button></div>
+      <div class="fields" id="c2-f-wv">
+        <div class="field an"><label for="c2-p">만들 농도</label><div class="box"><input id="c2-p" inputmode="decimal" value="1"><span class="u">%</span></div></div>
+        <div class="field an"><label for="c2-v">최종 부피</label><div class="box"><input id="c2-v" inputmode="decimal" value="50"><span class="u">mL</span></div></div>
+      </div>
+      <div class="fields" id="c2-f-vv" hidden>
+        <div class="field an"><label for="c2-pt">만들 농도</label><div class="box"><input id="c2-pt" inputmode="decimal" value="70"><span class="u">%</span></div></div>
+        <div class="field an"><label for="c2-vt">최종 부피</label><div class="box"><input id="c2-vt" inputmode="decimal" value="100"><span class="u">mL</span></div></div>
+        <div class="field an"><label for="c2-ps">갖고 있는 원액 <small>순수하면 100</small></label><div class="box"><input id="c2-ps" inputmode="decimal" value="95"><span class="u">%</span></div></div>
+      </div>
     </div>
-    <div class="chips" id="c1-chips"><span>분자량 넣기</span>
-      <button type="button" data-mw="58.44">NaCl</button>
-      <button type="button" data-mw="74.55">KCl</button>
-      <button type="button" data-mw="121.14">Tris base</button>
-      <button type="button" data-mw="372.24">Na₂EDTA·2H₂O</button>
-      <button type="button" data-mw="203.30">MgCl₂·6H₂O</button>
-      <button type="button" data-mw="147.01">CaCl₂·2H₂O</button>
-      <button type="button" data-mw="40.00">NaOH</button>
-      <button type="button" data-mw="180.16">포도당</button>
-      <button type="button" data-mw="288.38">SDS</button>
-    </div>
-    <div class="readout" aria-live="polite"><div class="lbl">저울에 올릴 양</div><div class="val"><span class="n" id="c1-out">–</span><span class="unit" id="c1-unit">g</span></div><div class="also" id="c1-also"></div></div>
-    <p class="work" id="c1-work"></p>
-    <p class="msg" id="c1-msg"></p>
-    <p class="note">물을 다 넣지 말고 녹인 다음, 마지막에 눈금까지 채우세요. 수화물은 물까지 포함한 분자량이라 라벨의 FW(Formula Weight)가 우선이에요. EDTA는 Ethylenediaminetetraacetic acid, SDS는 Sodium Dodecyl Sulfate.</p>
+    <div class="result an" aria-live="polite"><div class="r-lbl" id="c2-lbl">넣을 가루</div><div class="r-val"><span class="r-n" id="c2-out">–</span><span class="r-u" id="c2-unit">g</span></div><div class="r-also" id="c2-also"></div><p class="r-work" id="c2-work"></p><p class="r-msg" id="c2-msg"></p></div>
   </div>
-</article>
-
-<article class="calc" id="c2">
-  <header><div class="no">02</div><div>
-    <h3>% 농도 w/v, v/v</h3>
-    <p class="formula" id="c2-formula">w/v(weight/volume)는 100 mL에 몇 g</p>
-  </div></header>
-  <div class="body">
-    <div class="seg" role="group" aria-label="농도 종류"><button type="button" id="c2-wv" aria-pressed="true">w/v 가루</button><button type="button" id="c2-vv" aria-pressed="false">v/v 액체</button></div>
-    <div class="fields" id="c2-f-wv">
-      <div class="field"><label for="c2-p">만들 농도</label><div class="box"><input id="c2-p" inputmode="decimal" value="1"><span class="u">%</span></div></div>
-      <div class="field"><label for="c2-v">최종 부피</label><div class="box"><input id="c2-v" inputmode="decimal" value="50"><span class="u">mL</span></div></div>
-    </div>
-    <div class="fields" id="c2-f-vv" hidden>
-      <div class="field"><label for="c2-pt">만들 농도</label><div class="box"><input id="c2-pt" inputmode="decimal" value="70"><span class="u">%</span></div></div>
-      <div class="field"><label for="c2-vt">최종 부피</label><div class="box"><input id="c2-vt" inputmode="decimal" value="100"><span class="u">mL</span></div></div>
-      <div class="field"><label for="c2-ps">갖고 있는 원액 <small>순수하면 100</small></label><div class="box"><input id="c2-ps" inputmode="decimal" value="95"><span class="u">%</span></div></div>
-    </div>
-    <div class="readout" aria-live="polite"><div class="lbl" id="c2-lbl">넣을 가루</div><div class="val"><span class="n" id="c2-out">–</span><span class="unit" id="c2-unit">g</span></div><div class="also" id="c2-also"></div></div>
-    <p class="work" id="c2-work"></p>
-    <p class="msg" id="c2-msg"></p>
-    <p class="note" id="c2-note">아가로스는 끓이면서 증발한 만큼 물로 다시 채우세요.</p>
-  </div>
-</article>
+  <ul class="notes an"><li id="c2-note">아가로스는 끓이면서 증발한 만큼 물로 다시 채우세요.</li></ul>
 </section>
 
-<!-- ============ 희석할 때 ============ -->
-<section class="group" id="g-dil" aria-labelledby="g-dil-h">
-<h2 id="g-dil-h">희석할 때</h2>
-
-<article class="calc" id="c3">
-  <header><div class="no">03</div><div>
-    <h3>C1V1 = C2V2</h3>
-    <p class="formula">원액 농도 × 넣을 양 = 원하는 농도 × 총량</p>
-  </div></header>
-  <div class="body">
-    <div class="fields">
-      <div class="field"><label for="c3-c1">원액 농도 C1</label><div class="box"><input id="c3-c1" inputmode="decimal" value="1"><select id="c3-c1u" aria-label="원액 농도 단위"></select></div></div>
-      <div class="field"><label for="c3-c2">원하는 농도 C2</label><div class="box"><input id="c3-c2" inputmode="decimal" value="50"><select id="c3-c2u" aria-label="원하는 농도 단위"></select></div></div>
-      <div class="field"><label for="c3-v2">만들 총량 V2</label><div class="box"><input id="c3-v2" inputmode="decimal" value="500"><select id="c3-v2u" aria-label="총량 단위"><option value="1">L</option><option value="1e-3" selected>mL</option><option value="1e-6">μL</option></select></div></div>
-    </div>
-    <div class="readout" aria-live="polite"><div class="lbl">넣을 원액 V1</div><div class="val"><span class="n" id="c3-out">–</span><span class="unit" id="c3-unit">mL</span></div><div class="also" id="c3-also"></div></div>
-    <p class="work" id="c3-work"></p>
-    <p class="msg" id="c3-msg"></p>
-    <p class="note">C1과 C2는 같은 종류의 단위끼리만 계산돼요(몰농도끼리, 질량농도끼리).</p>
-  </div>
-</article>
-
-<article class="calc" id="c4">
-  <header><div class="no">04</div><div>
-    <h3>10X 스톡을 1X로</h3>
-    <p class="formula">넣을 스톡 = 총량 × 원하는 배수 ÷ 스톡 배수</p>
-  </div></header>
-  <div class="body">
-    <div class="fields">
-      <div class="field"><label for="c4-s">스톡 배수</label><div class="box"><input id="c4-s" inputmode="decimal" value="10"><span class="u">X</span></div></div>
-      <div class="field"><label for="c4-t">원하는 배수</label><div class="box"><input id="c4-t" inputmode="decimal" value="1"><span class="u">X</span></div></div>
-      <div class="field"><label for="c4-v">만들 총량</label><div class="box"><input id="c4-v" inputmode="decimal" value="1"><select id="c4-vu" aria-label="총량 단위"><option value="1" selected>L</option><option value="1e-3">mL</option><option value="1e-6">μL</option></select></div></div>
-    </div>
-    <div class="chips" id="c4-chips"><span>예시</span>
-      <button type="button" data-s="10" data-t="1" data-v="1" data-vu="1">10X TAE로 1X 1 L</button>
-      <button type="button" data-s="5" data-t="1" data-v="20" data-vu="1e-6">5X 버퍼로 PCR 20 μL</button>
-      <button type="button" data-s="10" data-t="1" data-v="50" data-vu="1e-6">10X 버퍼로 50 μL 반응</button>
-    </div>
-    <div class="readout" aria-live="polite"><div class="lbl">넣을 스톡</div><div class="val"><span class="n" id="c4-out">–</span><span class="unit" id="c4-unit">mL</span></div><div class="also" id="c4-also"></div></div>
-    <p class="work" id="c4-work"></p>
-    <p class="msg" id="c4-msg"></p>
-    <p class="note">TAE는 Tris-Acetate-EDTA, PCR은 Polymerase Chain Reaction. 효소 반응은 버퍼와 물을 먼저 넣고 효소는 마지막에 넣으세요.</p>
-  </div>
-</article>
-</section>
-
-<!-- ============ 균 세고 원심분리할 때 ============ -->
-<section class="group" id="g-cfu" aria-labelledby="g-cfu-h">
-<h2 id="g-cfu-h">균 세고 원심분리할 때</h2>
-
-<article class="calc" id="c5">
-  <header><div class="no">05</div><div>
-    <h3>CFU 계산</h3>
-    <p class="formula">CFU/mL = 콜로니 수 × 희석배수 ÷ 도말량(mL)</p>
-  </div></header>
-  <div class="body">
-    <div class="fields">
-      <div class="field"><label for="c5-n1">센 콜로니 수</label><div class="box"><input id="c5-n1" inputmode="decimal" value="152"><span class="u">개</span></div></div>
-      <div class="field"><label for="c5-n2">같은 희석 판 하나 더 <small>있으면</small></label><div class="box"><input id="c5-n2" inputmode="decimal" value="" placeholder="비워 둬도 돼요"><span class="u">개</span></div></div>
-      <div class="field"><label for="c5-d">몇 번째 희석 판인지</label><div class="box"><span class="pre">10⁻</span><input id="c5-d" inputmode="numeric" value="6" aria-describedby="c5-d-h"></div></div>
-      <div class="field"><label for="c5-p">도말량</label><div class="box"><input id="c5-p" inputmode="decimal" value="100"><select id="c5-pu" aria-label="도말량 단위"><option value="1e-3" selected>μL</option><option value="1">mL</option></select></div></div>
-    </div>
-    <p class="note" id="c5-d-h" style="margin-top:10px">10⁻⁶ 희석액이면 6을 넣으세요.</p>
-    <div class="readout" aria-live="polite"><div class="lbl">원래 배양액의 균 수</div><div class="val"><span class="n" id="c5-out">–</span><span class="unit">CFU/mL</span></div><div class="also" id="c5-also"></div></div>
-    <p class="work" id="c5-work"></p>
-    <p class="msg" id="c5-msg"></p>
-    <p class="note">CFU(Colony Forming Unit)는 콜로니를 만든 균의 수. 콜로니 30~300개가 나온 판을 세는 게 흔한 기준이에요(기준에 따라 25~250).</p>
-  </div>
-</article>
-
-<article class="calc" id="c6">
-  <header><div class="no">06</div><div>
-    <h3>rpm과 ×g 바꾸기</h3>
-    <p class="formula">×g = 0.00001118 × r(cm) × rpm²</p>
-  </div></header>
-  <div class="body">
-    <div class="seg" role="group" aria-label="바꿀 방향"><button type="button" id="c6-tog" aria-pressed="true">×g 구하기</button><button type="button" id="c6-tor" aria-pressed="false">rpm 구하기</button></div>
-    <div class="fields">
-      <div class="field"><label for="c6-r">로터 반지름 r</label><div class="box"><input id="c6-r" inputmode="decimal" value="8"><span class="u">cm</span></div></div>
-      <div class="field" id="c6-f-rpm"><label for="c6-rpm">돌릴 rpm</label><div class="box"><input id="c6-rpm" inputmode="decimal" value="13000"><span class="u">rpm</span></div></div>
-      <div class="field" id="c6-f-g" hidden><label for="c6-g">프로토콜의 ×g</label><div class="box"><input id="c6-g" inputmode="decimal" value="5000"><span class="u">×g</span></div></div>
-    </div>
-    <div class="readout" aria-live="polite"><div class="lbl" id="c6-lbl">걸리는 힘</div><div class="val"><span class="n" id="c6-out">–</span><span class="unit" id="c6-unit">×g</span></div></div>
-    <p class="work" id="c6-work"></p>
-    <p class="msg" id="c6-msg"></p>
-    <p class="note">×g는 RCF(Relative Centrifugal Force). 반지름은 로터 매뉴얼이나 뚜껑에 적힌 최대 반지름(rmax)을 넣으세요. 같은 rpm도 로터가 크면 힘이 세요.</p>
-  </div>
-</article>
-</section>
-
-<!-- ============ DNA 농도 잴 때 ============ -->
-<section class="group" id="g-dna" aria-labelledby="g-dna-h">
-<h2 id="g-dna-h">DNA 농도 잴 때</h2>
-
-<article class="calc" id="c7">
-  <header><div class="no">07</div><div>
-    <h3>A260으로 DNA 농도</h3>
-    <p class="formula">농도(μg/mL) = A260 × 계수 × 희석배수</p>
-  </div></header>
-  <div class="body">
-    <div class="fields">
-      <div class="field"><label for="c7-a">A260 <small>260 nm 흡광도</small></label><div class="box"><input id="c7-a" inputmode="decimal" value="0.25"></div></div>
-      <div class="field"><label for="c7-k">시료 종류</label><div class="box"><select id="c7-k" style="flex:1;border-left:0;padding-left:12px"><option value="50">dsDNA, 계수 50</option><option value="40">RNA, 계수 40</option><option value="33">ssDNA, 계수 33</option></select></div></div>
-      <div class="field"><label for="c7-d">희석 배수 <small>안 했으면 1</small></label><div class="box"><input id="c7-d" inputmode="decimal" value="10"><span class="u">배</span></div></div>
-    </div>
-    <div class="readout" aria-live="polite"><div class="lbl">원래 시료 농도</div><div class="val"><span class="n" id="c7-out">–</span><span class="unit">ng/μL</span></div><div class="also" id="c7-also"></div></div>
-    <p class="work" id="c7-work"></p>
-    <p class="msg" id="c7-msg"></p>
-    <p class="note">dsDNA는 double-stranded DNA(Deoxyribonucleic Acid), ssDNA는 single-stranded DNA, RNA는 Ribonucleic Acid. 나노드롭은 이 계산을 자동으로 해 줘요.</p>
-  </div>
-</article>
-
-<article class="calc" id="c8">
-  <header><div class="no">08</div><div>
-    <h3>260/280 순도</h3>
-    <p class="formula">DNA 1.8, RNA 2.0 근처면 양호</p>
-  </div></header>
-  <div class="body">
-    <div class="seg" role="group" aria-label="시료 종류"><button type="button" id="c8-dna" aria-pressed="true">DNA</button><button type="button" id="c8-rna" aria-pressed="false">RNA</button></div>
-    <div class="fields">
-      <div class="field"><label for="c8-260">A260</label><div class="box"><input id="c8-260" inputmode="decimal" value="1.25"></div></div>
-      <div class="field"><label for="c8-280">A280</label><div class="box"><input id="c8-280" inputmode="decimal" value="0.68"></div></div>
-      <div class="field"><label for="c8-230">A230 <small>있으면</small></label><div class="box"><input id="c8-230" inputmode="decimal" value="0.60"></div></div>
-    </div>
-    <div class="readout" aria-live="polite"><div class="pair">
-      <div><div class="lbl">260/280</div><div class="val"><span class="n" id="c8-r1">–</span></div><div class="verdict" id="c8-v1"></div></div>
-      <div><div class="lbl">260/230</div><div class="val"><span class="n" id="c8-r2">–</span></div><div class="verdict" id="c8-v2"></div></div>
+<!-- 03 -->
+<section class="panel" id="c3" aria-labelledby="c3-h">
+  <div class="p-head an"><div class="ic" data-icon="dilute"></div><div class="meta"><span>03</span>희석할 때</div><h2 id="c3-h">C1V1 = C2V2</h2></div>
+  <div class="formula an">원액 농도 × 넣을 양 = 원하는 농도 × 총량</div>
+  <div class="p-body">
+    <div class="inputs"><div class="fields">
+      <div class="field an"><label for="c3-c1">원액 농도 C1</label><div class="box"><input id="c3-c1" inputmode="decimal" value="1"><select id="c3-c1u" aria-label="원액 농도 단위"></select></div></div>
+      <div class="field an"><label for="c3-c2">원하는 농도 C2</label><div class="box"><input id="c3-c2" inputmode="decimal" value="50"><select id="c3-c2u" aria-label="원하는 농도 단위"></select></div></div>
+      <div class="field an"><label for="c3-v2">만들 총량 V2</label><div class="box"><input id="c3-v2" inputmode="decimal" value="500"><select id="c3-v2u" aria-label="총량 단위"><option value="1">L</option><option value="1e-3" selected>mL</option><option value="1e-6">μL</option></select></div></div>
     </div></div>
-    <p class="work" id="c8-work"></p>
-    <p class="msg" id="c8-msg"></p>
-    <p class="note">260/280이 낮으면 단백질, 페놀 잔여를 의심해요. 260/230은 보통 2.0~2.2를 기대하고, 낮으면 염이나 구아니딘이 남았을 수 있어요.</p>
+    <div class="result an" aria-live="polite"><div class="r-lbl">넣을 원액 V1</div><div class="r-val"><span class="r-n" id="c3-out">–</span><span class="r-u" id="c3-unit">mL</span></div><div class="r-also" id="c3-also"></div><p class="r-work" id="c3-work"></p><p class="r-msg" id="c3-msg"></p></div>
   </div>
-</article>
+  <ul class="notes an"><li>C1과 C2는 같은 종류의 단위끼리만 계산돼요(몰농도끼리, 질량농도끼리).</li></ul>
 </section>
 
-<!-- ============ 클로닝 준비할 때 ============ -->
-<section class="group" id="g-clone" aria-labelledby="g-clone-h">
-<h2 id="g-clone-h">클로닝 준비할 때</h2>
-
-<article class="calc" id="c9">
-  <header><div class="no">09</div><div>
-    <h3>프라이머 100 μM 만들기</h3>
-    <p class="formula">튜브에 적힌 nmol × 10 = 넣을 물 μL</p>
-  </div></header>
-  <div class="body">
-    <div class="fields">
-      <div class="field"><label for="c9-n">튜브에 적힌 양</label><div class="box"><input id="c9-n" inputmode="decimal" value="31.2"><span class="u">nmol</span></div></div>
-      <div class="field"><label for="c9-c">만들 스톡 농도</label><div class="box"><input id="c9-c" inputmode="decimal" value="100"><span class="u">μM</span></div></div>
+<!-- 04 -->
+<section class="panel" id="c4" aria-labelledby="c4-h">
+  <div class="p-head an"><div class="ic" data-icon="bottle"></div><div class="meta"><span>04</span>희석할 때</div><h2 id="c4-h">10X 스톡을 1X로</h2></div>
+  <div class="formula an">넣을 스톡 = 총량 × 원하는 배수 ÷ 스톡 배수</div>
+  <div class="p-body">
+    <div class="inputs">
+      <div class="fields">
+        <div class="field an"><label for="c4-s">스톡 배수</label><div class="box"><input id="c4-s" inputmode="decimal" value="10"><span class="u">X</span></div></div>
+        <div class="field an"><label for="c4-t">원하는 배수</label><div class="box"><input id="c4-t" inputmode="decimal" value="1"><span class="u">X</span></div></div>
+        <div class="field an"><label for="c4-v">만들 총량</label><div class="box"><input id="c4-v" inputmode="decimal" value="1"><select id="c4-vu" aria-label="총량 단위"><option value="1" selected>L</option><option value="1e-3">mL</option><option value="1e-6">μL</option></select></div></div>
+      </div>
+      <div class="chips an" id="c4-chips"><span>예시</span>
+        <button type="button" data-s="10" data-t="1" data-v="1" data-vu="1">10X TAE로 1X 1 L</button>
+        <button type="button" data-s="5" data-t="1" data-v="20" data-vu="1e-6">5X 버퍼로 PCR 20 μL</button>
+        <button type="button" data-s="10" data-t="1" data-v="50" data-vu="1e-6">10X 버퍼로 50 μL 반응</button>
+      </div>
     </div>
-    <div class="readout" aria-live="polite"><div class="lbl">튜브에 넣을 물(또는 TE)</div><div class="val"><span class="n" id="c9-out">–</span><span class="unit">μL</span></div></div>
-    <p class="work" id="c9-work"></p>
-    <p class="msg" id="c9-msg"></p>
-
-    <p class="subhead">쓸 때는 작업액으로 한 번 더</p>
-    <div class="fields">
-      <div class="field"><label for="c9-wc">작업액 농도</label><div class="box"><input id="c9-wc" inputmode="decimal" value="10"><span class="u">μM</span></div></div>
-      <div class="field"><label for="c9-wv">작업액 부피</label><div class="box"><input id="c9-wv" inputmode="decimal" value="100"><span class="u">μL</span></div></div>
-    </div>
-    <div class="readout" aria-live="polite"><div class="lbl">스톡</div><div class="val"><span class="n" id="c9-wout">–</span><span class="unit">μL</span></div><div class="also" id="c9-walso"></div></div>
-    <p class="work" id="c9-wwork"></p>
-    <p class="note">녹이기 전에 튜브를 스핀다운하세요. 가루가 뚜껑에 붙어 있어요. TE는 Tris-EDTA 버퍼.</p>
+    <div class="result an" aria-live="polite"><div class="r-lbl">넣을 스톡</div><div class="r-val"><span class="r-n" id="c4-out">–</span><span class="r-u" id="c4-unit">mL</span></div><div class="r-also" id="c4-also"></div><p class="r-work" id="c4-work"></p><p class="r-msg" id="c4-msg"></p></div>
   </div>
-</article>
-
-<article class="calc" id="c10">
-  <header><div class="no">10</div><div>
-    <h3>라이게이션 insert 양</h3>
-    <p class="formula">insert ng = 몰비 × vector ng × (insert bp ÷ vector bp)</p>
-  </div></header>
-  <div class="body">
-    <div class="fields">
-      <div class="field"><label for="c10-vb">vector 길이</label><div class="box"><input id="c10-vb" inputmode="decimal" value="3000"><span class="u">bp</span></div></div>
-      <div class="field"><label for="c10-vn">vector 양</label><div class="box"><input id="c10-vn" inputmode="decimal" value="50"><span class="u">ng</span></div></div>
-      <div class="field"><label for="c10-ib">insert 길이</label><div class="box"><input id="c10-ib" inputmode="decimal" value="1000"><span class="u">bp</span></div></div>
-      <div class="field"><label for="c10-r">몰비 insert : vector</label><div class="box"><input id="c10-r" inputmode="decimal" value="3"><span class="u">: 1</span></div></div>
-      <div class="field"><label for="c10-ic">insert 농도 <small>있으면 부피도 계산</small></label><div class="box"><input id="c10-ic" inputmode="decimal" value="25"><span class="u">ng/μL</span></div></div>
-    </div>
-    <div class="chips" id="c10-chips"><span>몰비</span>
-      <button type="button" data-r="1">1 : 1</button>
-      <button type="button" data-r="3">3 : 1</button>
-      <button type="button" data-r="5">5 : 1</button>
-      <button type="button" data-r="7">7 : 1</button>
-    </div>
-    <div class="readout" aria-live="polite"><div class="lbl">넣을 insert</div><div class="val"><span class="n" id="c10-out">–</span><span class="unit">ng</span></div><div class="also" id="c10-also"></div></div>
-    <p class="work" id="c10-work"></p>
-    <p class="msg" id="c10-msg"></p>
-    <p class="note">3 : 1이 흔한 시작점이에요. 잘 안 붙으면 비율을 바꿔 가며 테스트하세요. NEB(New England Biolabs) 계산기와 같은 식이에요.</p>
-  </div>
-</article>
+  <ul class="notes an">
+    <li>효소 반응은 버퍼와 물을 먼저 넣고 효소는 마지막에 넣으세요.</li>
+    <li>TAE는 Tris-Acetate-EDTA, PCR은 Polymerase Chain Reaction.</li>
+  </ul>
 </section>
+
+<!-- 05 -->
+<section class="panel" id="c5" aria-labelledby="c5-h">
+  <div class="p-head an"><div class="ic" data-icon="dish"></div><div class="meta"><span>05</span>균 셀 때</div><h2 id="c5-h">CFU 계산</h2></div>
+  <div class="formula an">CFU/mL = 콜로니 수 × 희석배수 ÷ 도말량(mL)</div>
+  <div class="p-body">
+    <div class="inputs"><div class="fields">
+      <div class="field an"><label for="c5-n1">센 콜로니 수</label><div class="box"><input id="c5-n1" inputmode="decimal" value="152"><span class="u">개</span></div></div>
+      <div class="field an"><label for="c5-n2">같은 희석 판 하나 더 <small>있으면</small></label><div class="box"><input id="c5-n2" inputmode="decimal" value="" placeholder="비워 둬도 돼요"><span class="u">개</span></div></div>
+      <div class="field an"><label for="c5-d">몇 번째 희석 판인지 <small>10⁻⁶이면 6</small></label><div class="box"><span class="pre">10⁻</span><input id="c5-d" inputmode="numeric" value="6"></div></div>
+      <div class="field an"><label for="c5-p">도말량</label><div class="box"><input id="c5-p" inputmode="decimal" value="100"><select id="c5-pu" aria-label="도말량 단위"><option value="1e-3" selected>μL</option><option value="1">mL</option></select></div></div>
+    </div></div>
+    <div class="result an" aria-live="polite"><div class="r-lbl">원래 배양액의 균 수</div><div class="r-val"><span class="r-n" id="c5-out">–</span><span class="r-u">CFU/mL</span></div><div class="r-also" id="c5-also"></div><p class="r-work" id="c5-work"></p><p class="r-msg" id="c5-msg"></p></div>
+  </div>
+  <ul class="notes an">
+    <li>CFU(Colony Forming Unit)는 콜로니를 만든 균의 수예요.</li>
+    <li>콜로니 30~300개가 나온 판을 세는 게 흔한 기준이에요(기준에 따라 25~250).</li>
+  </ul>
+</section>
+
+<!-- 06 -->
+<section class="panel" id="c6" aria-labelledby="c6-h">
+  <div class="p-head an"><div class="ic" data-icon="rotor"></div><div class="meta"><span>06</span>원심분리할 때</div><h2 id="c6-h">rpm과 ×g 바꾸기</h2></div>
+  <div class="formula an">×g = 0.00001118 × r(cm) × rpm²</div>
+  <div class="p-body">
+    <div class="inputs">
+      <div class="seg an" role="group" aria-label="바꿀 방향"><button type="button" id="c6-tog" aria-pressed="true">×g 구하기</button><button type="button" id="c6-tor" aria-pressed="false">rpm 구하기</button></div>
+      <div class="fields">
+        <div class="field an"><label for="c6-r">로터 반지름 r</label><div class="box"><input id="c6-r" inputmode="decimal" value="8"><span class="u">cm</span></div></div>
+        <div class="field an" id="c6-f-rpm"><label for="c6-rpm">돌릴 rpm</label><div class="box"><input id="c6-rpm" inputmode="decimal" value="13000"><span class="u">rpm</span></div></div>
+        <div class="field an" id="c6-f-g" hidden><label for="c6-g">프로토콜의 ×g</label><div class="box"><input id="c6-g" inputmode="decimal" value="5000"><span class="u">×g</span></div></div>
+      </div>
+    </div>
+    <div class="result an" aria-live="polite"><div class="r-lbl" id="c6-lbl">걸리는 힘</div><div class="r-val"><span class="r-n" id="c6-out">–</span><span class="r-u" id="c6-unit">×g</span></div><p class="r-work" id="c6-work"></p><p class="r-msg" id="c6-msg"></p></div>
+  </div>
+  <ul class="notes an">
+    <li>×g는 RCF(Relative Centrifugal Force)예요. 논문과 프로토콜은 ×g로 적는 게 원칙이에요.</li>
+    <li>반지름은 로터 매뉴얼이나 뚜껑에 적힌 최대 반지름(rmax)을 넣으세요. 같은 rpm도 로터가 크면 힘이 세요.</li>
+  </ul>
+</section>
+
+<!-- 07 -->
+<section class="panel" id="c7" aria-labelledby="c7-h">
+  <div class="p-head an"><div class="ic" data-icon="cuvette"></div><div class="meta"><span>07</span>DNA 농도 잴 때</div><h2 id="c7-h">A260으로 DNA 농도</h2></div>
+  <div class="formula an">농도(μg/mL) = A260 × 계수 × 희석배수</div>
+  <div class="p-body">
+    <div class="inputs"><div class="fields">
+      <div class="field an"><label for="c7-a">A260 <small>260 nm 흡광도</small></label><div class="box"><input id="c7-a" inputmode="decimal" value="0.25"></div></div>
+      <div class="field an"><label for="c7-k">시료 종류</label><div class="box"><select id="c7-k" class="full"><option value="50">dsDNA, 계수 50</option><option value="40">RNA, 계수 40</option><option value="33">ssDNA, 계수 33</option></select></div></div>
+      <div class="field an"><label for="c7-d">희석 배수 <small>안 했으면 1</small></label><div class="box"><input id="c7-d" inputmode="decimal" value="10"><span class="u">배</span></div></div>
+    </div></div>
+    <div class="result an" aria-live="polite"><div class="r-lbl">원래 시료 농도</div><div class="r-val"><span class="r-n" id="c7-out">–</span><span class="r-u">ng/μL</span></div><div class="r-also" id="c7-also"></div><p class="r-work" id="c7-work"></p><p class="r-msg" id="c7-msg"></p></div>
+  </div>
+  <ul class="notes an">
+    <li>dsDNA는 double-stranded DNA(Deoxyribonucleic Acid), ssDNA는 single-stranded DNA, RNA는 Ribonucleic Acid.</li>
+    <li>나노드롭은 이 계산을 자동으로 해 줘요. 큐벳으로 직접 잰 값이면 여기서 계산하세요.</li>
+  </ul>
+</section>
+
+<!-- 08 -->
+<section class="panel" id="c8" aria-labelledby="c8-h">
+  <div class="p-head an"><div class="ic" data-icon="gauge"></div><div class="meta"><span>08</span>DNA 농도 잴 때</div><h2 id="c8-h">260/280 순도</h2></div>
+  <div class="formula an">DNA 1.8, RNA 2.0 근처면 양호</div>
+  <div class="p-body">
+    <div class="inputs">
+      <div class="seg an" role="group" aria-label="시료 종류"><button type="button" id="c8-dna" aria-pressed="true">DNA</button><button type="button" id="c8-rna" aria-pressed="false">RNA</button></div>
+      <div class="fields">
+        <div class="field an"><label for="c8-260">A260</label><div class="box"><input id="c8-260" inputmode="decimal" value="1.25"></div></div>
+        <div class="field an"><label for="c8-280">A280</label><div class="box"><input id="c8-280" inputmode="decimal" value="0.68"></div></div>
+        <div class="field an"><label for="c8-230">A230 <small>있으면</small></label><div class="box"><input id="c8-230" inputmode="decimal" value="0.60"></div></div>
+      </div>
+    </div>
+    <div class="result an" aria-live="polite">
+      <div class="pair">
+        <div><div class="r-lbl">260/280</div><div class="r-val"><span class="r-n" id="c8-r1">–</span></div><span class="badge" id="c8-v1"></span></div>
+        <div><div class="r-lbl">260/230</div><div class="r-val"><span class="r-n" id="c8-r2">–</span></div><span class="badge" id="c8-v2"></span></div>
+      </div>
+      <p class="r-work" id="c8-work"></p><p class="r-msg" id="c8-msg"></p>
+    </div>
+  </div>
+  <ul class="notes an">
+    <li>260/280이 낮으면 단백질이나 페놀이 남았을 수 있어요.</li>
+    <li>260/230은 보통 2.0~2.2를 기대하고, 낮으면 염이나 구아니딘이 남았을 수 있어요.</li>
+  </ul>
+</section>
+
+<!-- 09 -->
+<section class="panel" id="c9" aria-labelledby="c9-h">
+  <div class="p-head an"><div class="ic" data-icon="tube"></div><div class="meta"><span>09</span>클로닝 준비할 때</div><h2 id="c9-h">프라이머 100 μM 만들기</h2></div>
+  <div class="formula an">튜브에 적힌 nmol × 10 = 넣을 물 μL</div>
+  <div class="p-body">
+    <div class="inputs">
+      <div class="fields">
+        <div class="field an"><label for="c9-n">튜브에 적힌 양</label><div class="box"><input id="c9-n" inputmode="decimal" value="31.2"><span class="u">nmol</span></div></div>
+        <div class="field an"><label for="c9-c">만들 스톡 농도</label><div class="box"><input id="c9-c" inputmode="decimal" value="100"><span class="u">μM</span></div></div>
+      </div>
+      <p class="subhead an">쓸 때는 작업액으로 한 번 더</p>
+      <div class="fields">
+        <div class="field an"><label for="c9-wc">작업액 농도</label><div class="box"><input id="c9-wc" inputmode="decimal" value="10"><span class="u">μM</span></div></div>
+        <div class="field an"><label for="c9-wv">작업액 부피</label><div class="box"><input id="c9-wv" inputmode="decimal" value="100"><span class="u">μL</span></div></div>
+      </div>
+    </div>
+    <div class="result an" aria-live="polite">
+      <div class="r-lbl">튜브에 넣을 물(또는 TE)</div><div class="r-val"><span class="r-n" id="c9-out">–</span><span class="r-u">μL</span></div>
+      <p class="r-work" id="c9-work"></p><p class="r-msg" id="c9-msg"></p>
+      <div class="r-lbl" style="margin-top:16px">작업액에 넣을 스톡</div><div class="r-val"><span class="r-n" id="c9-wout">–</span><span class="r-u">μL</span></div><div class="r-also" id="c9-walso"></div>
+      <p class="r-work" id="c9-wwork"></p>
+    </div>
+  </div>
+  <ul class="notes an">
+    <li>녹이기 전에 튜브를 스핀다운하세요. 가루가 뚜껑에 붙어 있어요.</li>
+    <li>TE는 Tris-EDTA 버퍼예요.</li>
+  </ul>
+</section>
+
+<!-- 10 -->
+<section class="panel" id="c10" aria-labelledby="c10-h">
+  <div class="p-head an"><div class="ic" data-icon="ligate"></div><div class="meta"><span>10</span>클로닝 준비할 때</div><h2 id="c10-h">라이게이션 insert 양</h2></div>
+  <div class="formula an">insert ng = 몰비 × vector ng × (insert bp ÷ vector bp)</div>
+  <div class="p-body">
+    <div class="inputs">
+      <div class="fields">
+        <div class="field an"><label for="c10-vb">vector 길이</label><div class="box"><input id="c10-vb" inputmode="decimal" value="3000"><span class="u">bp</span></div></div>
+        <div class="field an"><label for="c10-vn">vector 양</label><div class="box"><input id="c10-vn" inputmode="decimal" value="50"><span class="u">ng</span></div></div>
+        <div class="field an"><label for="c10-ib">insert 길이</label><div class="box"><input id="c10-ib" inputmode="decimal" value="1000"><span class="u">bp</span></div></div>
+        <div class="field an"><label for="c10-r">몰비 insert : vector</label><div class="box"><input id="c10-r" inputmode="decimal" value="3"><span class="u">: 1</span></div></div>
+        <div class="field an"><label for="c10-ic">insert 농도 <small>있으면 부피도</small></label><div class="box"><input id="c10-ic" inputmode="decimal" value="25"><span class="u">ng/μL</span></div></div>
+      </div>
+      <div class="chips an" id="c10-chips"><span>몰비</span>
+        <button type="button" data-r="1">1 : 1</button>
+        <button type="button" data-r="3">3 : 1</button>
+        <button type="button" data-r="5">5 : 1</button>
+        <button type="button" data-r="7">7 : 1</button>
+      </div>
+    </div>
+    <div class="result an" aria-live="polite"><div class="r-lbl">넣을 insert</div><div class="r-val"><span class="r-n" id="c10-out">–</span><span class="r-u">ng</span></div><div class="r-also" id="c10-also"></div><p class="r-work" id="c10-work"></p><p class="r-msg" id="c10-msg"></p></div>
+  </div>
+  <ul class="notes an">
+    <li>3 : 1이 흔한 시작점이에요. 잘 안 붙으면 비율을 바꿔 가며 테스트하세요.</li>
+    <li>NEB(New England Biolabs) 계산기와 같은 식이에요.</li>
+  </ul>
+</section>
+
+      <div class="pn" id="pn"><button type="button" class="prev" id="prev"><small>이전</small><b></b></button><button type="button" class="next" id="next"><small>다음</small><b></b></button></div>
+    </div>
+  </div>
 </main>
 
 <footer class="dm">
   <div class="wrap">
-    <h2>풀이와 실전 흐름은 DM으로</h2>
-    <p>공식마다 실제 숫자로 푼 예시, LB 배지 1 L부터 라이게이션까지 한 실험을 따라 계산하는 흐름, 엑셀 수식, 단위 환산표는 노션 페이지에 정리해 뒀어요.</p>
-    <p>인스타 게시물에 '계산' 한 단어를 남기면 DM으로 보내 드려요.</p>
-    <div class="btns">
-      <a class="solid" href="https://www.instagram.com/p/Df6IpWooCru/" target="_blank" rel="noopener">게시물에 댓글 남기기</a>
-      <a href="https://www.instagram.com/mi._.mic/" target="_blank" rel="noopener">@mi._.mic 팔로우</a>
+    <div class="card">
+      <h2>풀이와 실전 흐름은 DM으로 보내 드려요</h2>
+      <p>공식마다 실제 숫자로 푼 예시, LB 배지 1&nbsp;L부터 라이게이션까지 한 실험을 따라 계산하는 흐름, 엑셀 수식, 단위 환산표를 노션 페이지에 정리해 뒀어요.</p>
+      <p>인스타 게시물에 '계산' 한 단어를 댓글로 남기면 DM으로 보내 드려요.</p>
+      <div class="btns">
+        <a class="btn solid" href="https://www.instagram.com/p/Df6IpWooCru/" target="_blank" rel="noopener">게시물에 댓글 남기기</a>
+        <a class="btn" href="https://www.instagram.com/mi._.mic/" target="_blank" rel="noopener">@mi._.mic 팔로우</a>
+      </div>
     </div>
     <div class="fine">
-      <p>계산은 이 페이지 안에서만 해요. 넣은 숫자는 어디에도 저장하거나 보내지 않아요.</p>
-      <p>결과는 참고용이에요. 랩 프로토콜과 시약 라벨 값이 우선이에요.</p>
-      <p>공식 출처: <a href="https://nebiocalculator.neb.com/#!/ligation" target="_blank" rel="noopener">NEBioCalculator</a>, <a href="https://www.thermofisher.com/kr/ko/home/life-science/lab-equipment/lab-equipment-learning-center/centrifuges/centrifuge-best-practices.html" target="_blank" rel="noopener">Thermo Fisher 원심분리 가이드</a>, <a href="https://assets.thermofisher.com/TFS-Assets/CAD/Product-Bulletins/TN52646-E-0215M-NucleicAcid.pdf" target="_blank" rel="noopener">Thermo Fisher NanoDrop 기술 노트</a>, IDT 프라이머 FAQ(Frequently Asked Questions)</p>
-      <p>mi._.mic, 경북대학교 분자미생물학 연구실</p>
+      <span>계산은 이 페이지 안에서만 해요. 넣은 숫자는 어디에도 저장하거나 보내지 않아요.</span>
+      <span>결과는 참고용이에요. 랩 프로토콜과 시약 라벨 값이 우선이에요.</span>
+      <span>공식 출처: <a href="https://nebiocalculator.neb.com/#!/ligation" target="_blank" rel="noopener">NEBioCalculator</a>, <a href="https://www.thermofisher.com/kr/ko/home/life-science/lab-equipment/lab-equipment-learning-center/centrifuges/centrifuge-best-practices.html" target="_blank" rel="noopener">Thermo Fisher 원심분리 가이드</a>, <a href="https://assets.thermofisher.com/TFS-Assets/CAD/Product-Bulletins/TN52646-E-0215M-NucleicAcid.pdf" target="_blank" rel="noopener">Thermo Fisher NanoDrop 기술 노트</a>, IDT 프라이머 FAQ(Frequently Asked Questions)</span>
+      <span>mi._.mic, 경북대학교 분자미생물학 연구실</span>
     </div>
   </div>
 </footer>
 
+<button type="button" class="fab" id="fab" aria-haspopup="dialog"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg><span id="fab-t">다른 계산기</span></button>
+<dialog class="sheet" id="sheet" aria-labelledby="sheet-h">
+  <div class="grab"></div>
+  <div class="sh"><b id="sheet-h">계산기 고르기</b><button type="button" id="sheet-x">닫기</button></div>
+  <div class="list" id="sheet-list"></div>
+</dialog>
+
 <script>
 (() => {
   const $ = id => document.getElementById(id);
+  const RM = matchMedia('(prefers-reduced-motion: reduce)');
+
+  // ---------- icons (24px line icons drawn for each calculator)
+  const ICON = {
+    scale:'<path d="M12 4v15M8 20h8M5 7h14M5 7l-2.5 6h5zM19 7l-2.5 6h5z"/><circle cx="12" cy="4" r=".9"/>',
+    flask:'<path d="M9 3h6M10 3v6.2L5.2 17.6A2.3 2.3 0 0 0 7.2 21h9.6a2.3 2.3 0 0 0 2-3.4L14 9.2V3"/><path d="M7 15.5h10"/><circle cx="10.5" cy="18" r=".6" fill="currentColor" stroke="none"/><circle cx="13.6" cy="17.4" r=".8" fill="currentColor" stroke="none"/>',
+    dilute:'<path d="M3 9h6v9.5A1.5 1.5 0 0 1 7.5 20h-3A1.5 1.5 0 0 1 3 18.5z"/><path d="M3 12.5h6"/><path d="M14 6h7v12.5a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M14 16h7"/><path d="M8.5 5.5c1.6-2 4-2 5.5-.3"/><path d="M12.6 3.6l1.6 1.6-2 .8"/>',
+    bottle:'<path d="M9.5 2.5h5v3h-5z"/><path d="M9 5.5h6l2 3.2V20a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 7 20V8.7z"/><path d="M7 12h10v5.5H7"/>',
+    dish:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="6.6"/><circle cx="9.6" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.2" cy="9.4" r=".8" fill="currentColor" stroke="none"/><circle cx="13.6" cy="14.2" r="1.2" fill="currentColor" stroke="none"/><circle cx="9.9" cy="14.6" r=".7" fill="currentColor" stroke="none"/>',
+    rotor:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.7"/><path d="M12 5.6v3.2M12 15.2v3.2M5.6 12h3.2M15.2 12h3.2"/><path d="M19.8 5.6A11 11 0 0 1 22 9.5"/><path d="M4.2 18.4A11 11 0 0 1 2 14.5"/>',
+    cuvette:'<rect x="9" y="3.5" width="6" height="17" rx="1"/><path d="M9 12.5h6"/><path d="M2 10h5M17 10h5"/><path d="M20 8l2 2-2 2"/>',
+    gauge:'<path d="M3.8 17a8.2 8.2 0 0 1 16.4 0"/><path d="M12 17l4.2-5.2"/><circle cx="12" cy="17" r="1.3"/><path d="M6.3 12.6l1 .6M12 8.8V10M17.7 12.6l-1 .6"/>',
+    tube:'<path d="M7.5 3.5h9M8.5 3.5v3h7v-3"/><path d="M9 6.5v7.6l3 6.4 3-6.4V6.5"/><path d="M9 11h6"/>',
+    ligate:'<path d="M2.5 9h7v2.5h2M2.5 15h9"/><path d="M21.5 9h-9M21.5 15h-7v-2.5h-2"/><path d="M12 6v1.2M12 16.8V18"/>'
+  };
+  const svg = (k, cls = 'i') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+  document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = svg(el.dataset.icon));
+
+  // ---------- menu data
+  const CALCS = [
+    {id:'c1', no:'01', name:'몰농도로 무게 재기', when:'시약 가루로 몰농도 용액', g:'용액 만들 때', icon:'scale'},
+    {id:'c2', no:'02', name:'% 농도 w/v, v/v', when:'아가로스, 에탄올 %', g:'용액 만들 때', icon:'flask'},
+    {id:'c3', no:'03', name:'C1V1 = C2V2', when:'진한 용액을 원하는 농도로', g:'희석할 때', icon:'dilute'},
+    {id:'c4', no:'04', name:'10X 스톡을 1X로', when:'10X, 5X 버퍼 쓸 때', g:'희석할 때', icon:'bottle'},
+    {id:'c5', no:'05', name:'CFU 계산', when:'플레이트 콜로니 셀 때', g:'균 세고 원심분리할 때', icon:'dish'},
+    {id:'c6', no:'06', name:'rpm과 ×g 바꾸기', when:'프로토콜이 ×g로 적혀 있을 때', g:'균 세고 원심분리할 때', icon:'rotor'},
+    {id:'c7', no:'07', name:'A260으로 DNA 농도', when:'DNA, RNA 농도 볼 때', g:'DNA 농도 잴 때', icon:'cuvette'},
+    {id:'c8', no:'08', name:'260/280 순도', when:'순도 괜찮은지 볼 때', g:'DNA 농도 잴 때', icon:'gauge'},
+    {id:'c9', no:'09', name:'프라이머 100 μM 만들기', when:'프라이머 처음 받았을 때', g:'클로닝 준비할 때', icon:'tube'},
+    {id:'c10', no:'10', name:'라이게이션 insert 양', when:'라이게이션 세팅할 때', g:'클로닝 준비할 때', icon:'ligate'}
+  ];
+  const listHTML = () => {
+    let html = '', last = '';
+    CALCS.forEach(c => {
+      if (c.g !== last) { html += `<div class="grp">${c.g}</div>`; last = c.g; }
+      html += `<button type="button" class="mi" data-go="${c.id}"><span class="n">${c.no}</span>${svg(c.icon)}<span>${c.name}</span></button>`;
+    });
+    return html;
+  };
+  $('side').innerHTML = listHTML();
+  $('sheet-list').innerHTML = listHTML();
+  $('tiles').innerHTML = CALCS.map((c, i) => `<button type="button" class="tile" data-go="${c.id}" style="--i:${i}"><span class="ic">${svg(c.icon)}</span><span class="no">${c.no}</span><b>${c.name}</b><small>${c.when}</small></button>`).join('');
+
+  // ---------- selection
+  const panels = CALCS.map(c => $(c.id));
+  let cur = null;
+  const isWide = () => matchMedia('(min-width:1000px)').matches;
+  function select(id, opts = {}) {
+    const i = CALCS.findIndex(c => c.id === id); if (i < 0) return;
+    const changed = cur !== id; cur = id;
+    panels.forEach(p => p.hidden = p.id !== id);
+    document.querySelectorAll('[data-go]').forEach(b => b.setAttribute('aria-current', String(b.dataset.go === id)));
+    const prev = CALCS[i - 1], next = CALCS[i + 1];
+    $('prev').disabled = !prev; $('next').disabled = !next;
+    $('prev').querySelector('b').textContent = prev ? `${prev.no} ${prev.name}` : '';
+    $('next').querySelector('b').textContent = next ? `${next.no} ${next.name}` : '';
+    $('fab-t').textContent = `${CALCS[i].no} ${CALCS[i].name}`;
+    if (changed) {
+      const p = $(id);
+      p.classList.remove('enter'); void p.offsetWidth;
+      p.querySelectorAll('.an').forEach((el, k) => el.style.setProperty('--i', k + (opts.silent ? 4 : 0)));
+      p.classList.add('enter');
+      if (!opts.silent) history.replaceState(null, '', '#' + id);
+    }
+    if (opts.scroll) {
+      const top = $('stage').getBoundingClientRect().top + scrollY - 72;
+      if (!isWide() || scrollY > top) scrollTo({top, behavior: RM.matches ? 'auto' : 'smooth'});
+    }
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-go]'); if (!b) return;
+    if ($('sheet').open) $('sheet').close();
+    select(b.dataset.go, {scroll: true});
+  });
+  $('prev').addEventListener('click', () => { const i = CALCS.findIndex(c => c.id === cur); if (i > 0) select(CALCS[i - 1].id, {scroll: true}); });
+  $('next').addEventListener('click', () => { const i = CALCS.findIndex(c => c.id === cur); if (i < CALCS.length - 1) select(CALCS[i + 1].id, {scroll: true}); });
+  addEventListener('hashchange', () => { const id = location.hash.slice(1); if (CALCS.some(c => c.id === id)) select(id, {scroll: true}); });
+
+  // floating switcher shows once the tile menu is off screen (mobile only)
+  const fab = $('fab');
+  fab.addEventListener('click', () => $('sheet').showModal());
+  $('sheet-x').addEventListener('click', () => $('sheet').close());
+  $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) $('sheet').close(); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([en]) => fab.classList.toggle('show', !en.isIntersecting && en.boundingClientRect.top < 0)).observe($('menu'));
+  }
+  const topbar = $('top');
+  addEventListener('scroll', () => topbar.classList.toggle('scrolled', scrollY > 8), {passive: true});
+
+  // ---------- number helpers
   const SUP = {'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
   const sup = s => String(s).split('').map(c => SUP[c] || c).join('');
-
-  // read a number from a text field; '' or junk gives NaN
   const num = id => {
     const raw = $(id).value.trim().replace(/,/g, '');
     if (raw === '' || !/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(raw)) return NaN;
     return parseFloat(raw);
   };
   const ok = (...xs) => xs.every(x => Number.isFinite(x));
-
-  // n significant digits, thousands separators, scientific with superscript when very big/small
   const fmt = (x, sig = 4) => {
     if (!Number.isFinite(x)) return '–';
     if (x === 0) return '0';
@@ -480,68 +644,71 @@ a{color:inherit}
     const dec = Math.max(0, sig - 1 - Math.floor(Math.log10(Math.abs(r))));
     return r.toLocaleString('ko-KR', {maximumFractionDigits: dec});
   };
+  const fmt3 = x => fmt(x, 3);
   const fint = x => Math.round(x).toLocaleString('ko-KR');
-
-  const VOL = [[1, 'L'], [1e-3, 'mL'], [1e-6, 'μL']];
-  // pick a readable unit for a volume given in litres
-  const vol = L => {
-    const a = Math.abs(L);
-    if (a >= 1) return [L, 'L'];
-    if (a >= 1e-3) return [L * 1e3, 'mL'];
-    return [L * 1e6, 'μL'];
-  };
+  const f2 = x => x.toFixed(2);
+  const vol = L => { const a = Math.abs(L); return a >= 1 ? [L, 'L'] : a >= 1e-3 ? [L * 1e3, 'mL'] : [L * 1e6, 'μL']; };
   const mass = g => Math.abs(g) >= 0.1 ? [g, 'g'] : (Math.abs(g) >= 1e-3 ? [g * 1e3, 'mg'] : [g * 1e6, 'μg']);
-  const unitName = (sel) => sel.options[sel.selectedIndex].text;
+  const unitName = sel => sel.options[sel.selectedIndex].text;
 
-  const show = (id, text) => {
+  // readout: numbers roll from the old value to the new one
+  function show(id, val, f = fmt) {
     const el = $(id);
-    if (el.textContent !== text) {
-      el.textContent = text;
-      el.classList.toggle('wait', text === '–');
-      el.classList.remove('tick'); void el.offsetWidth; if (text !== '–') el.classList.add('tick');
-    }
-  };
+    if (el._raf) cancelAnimationFrame(el._raf);
+    if (!Number.isFinite(val)) { el.textContent = '–'; el.classList.add('wait'); el._v = NaN; return; }
+    el.classList.remove('wait');
+    const from = el._v, to = val; el._v = val;
+    const sci = Math.abs(to) >= 1e6 || (to !== 0 && Math.abs(to) < 1e-3);
+    if (RM.matches || !Number.isFinite(from) || from === to || sci || el.offsetParent === null) { el.textContent = f(to); return; }
+    const t0 = performance.now(), D = 420;
+    const step = t => {
+      const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = f(k < 1 ? from + (to - from) * e : to);
+      if (k < 1) el._raf = requestAnimationFrame(step);
+    };
+    el._raf = requestAnimationFrame(step);
+  }
   const set = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
   const EMPTY = '빈 칸이나 숫자가 아닌 값이 있어요. 숫자를 넣으면 계산돼요.';
+  const clear = (p, msg) => { show(p + '-out', NaN); set(p + '-also', ''); set(p + '-work', ''); set(p + '-msg', msg); };
 
-  // ---------- 01 몰농도 → 무게
+  // ---------- 01
   function c1() {
     const m = num('c1-m'), mu = +$('c1-mu').value, v = num('c1-v'), vu = +$('c1-vu').value, mw = num('c1-mw');
     $('c1-chips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(Math.abs(+b.dataset.mw - mw) < 1e-9)));
-    if (!ok(m, v, mw) || m <= 0 || v <= 0 || mw <= 0) { show('c1-out', '–'); set('c1-also', ''); set('c1-work', ''); set('c1-msg', EMPTY); return; }
-    const g = m * mu * v * vu * mw;
-    const [mv, mUnit] = mass(g);
-    show('c1-out', fmt(mv)); $('c1-unit').textContent = mUnit;
-    set('c1-also', mUnit === 'g' ? '' : `= <b>${fmt(g)}</b> g`);
+    if (!ok(m, v, mw) || m <= 0 || v <= 0 || mw <= 0) return clear('c1', EMPTY);
+    const g = m * mu * v * vu * mw, [mv, u] = mass(g);
+    show('c1-out', mv); $('c1-unit').textContent = u;
+    set('c1-also', u === 'g' ? '' : `= <b>${fmt(g)}</b> g`);
     set('c1-work', `${fmt(m * mu)} M × ${fmt(v * vu)} L × ${fmt(mw)} g/mol = ${fmt(g)} g`);
     set('c1-msg', '');
   }
   $('c1-chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $('c1-mw').value = b.dataset.mw; c1(); });
 
-  // ---------- 02 % 농도
+  // ---------- 02
   let c2mode = 'wv';
   function c2() {
     const wv = c2mode === 'wv';
     $('c2-f-wv').hidden = !wv; $('c2-f-vv').hidden = wv;
     $('c2-wv').setAttribute('aria-pressed', String(wv)); $('c2-vv').setAttribute('aria-pressed', String(!wv));
     $('c2-formula').textContent = wv ? 'w/v(weight/volume)는 100 mL에 몇 g' : 'v/v(volume/volume)는 100 mL에 몇 mL';
-    $('c2-note').textContent = wv ? '아가로스는 끓이면서 증발한 만큼 물로 다시 채우세요.' : '원액이 95%면 그대로 70 mL가 아니라 더 넣어야 해요. 원액을 재고 나서 물로 최종 부피까지 채우세요.';
+    $('c2-note').textContent = wv ? '아가로스는 끓이면서 증발한 만큼 물로 다시 채우세요.' : '95% 원액으로 70%를 만들면 원액을 70 mL보다 더 넣어야 해요. 원액을 재고 물로 최종 부피까지 채우세요.';
     if (wv) {
       const p = num('c2-p'), v = num('c2-v');
       $('c2-lbl').textContent = '넣을 가루';
-      if (!ok(p, v) || p <= 0 || v <= 0) { show('c2-out', '–'); set('c2-also', ''); set('c2-work', ''); set('c2-msg', EMPTY); return; }
-      const g = p / 100 * v; const [mv, u] = mass(g);
-      show('c2-out', fmt(mv)); $('c2-unit').textContent = u;
+      if (!ok(p, v) || p <= 0 || v <= 0) return clear('c2', EMPTY);
+      const g = p / 100 * v, [mv, u] = mass(g);
+      show('c2-out', mv); $('c2-unit').textContent = u;
       set('c2-also', `물을 채워 최종 <b>${fmt(v)}</b> mL`);
       set('c2-work', `${fmt(p)} ÷ 100 × ${fmt(v)} mL = ${fmt(g)} g`);
       set('c2-msg', '');
     } else {
       const pt = num('c2-pt'), vt = num('c2-vt'), ps = num('c2-ps');
-      $('c2-lbl').textContent = '넣을 원액';
-      if (!ok(pt, vt, ps) || pt <= 0 || vt <= 0 || ps <= 0) { show('c2-out', '–'); set('c2-also', ''); set('c2-work', ''); set('c2-msg', EMPTY); return; }
-      if (pt > ps) { show('c2-out', '–'); set('c2-also', ''); set('c2-work', ''); set('c2-msg', '만들 농도가 원액보다 진해요. 희석으로는 만들 수 없어요.'); return; }
+      $('c2-lbl').textContent = '넣을 원액'; $('c2-unit').textContent = 'mL';
+      if (!ok(pt, vt, ps) || pt <= 0 || vt <= 0 || ps <= 0) return clear('c2', EMPTY);
+      if (pt > ps) return clear('c2', '만들 농도가 원액보다 진해요. 희석으로는 만들 수 없어요.');
       const ml = pt * vt / ps;
-      show('c2-out', fmt(ml)); $('c2-unit').textContent = 'mL';
+      show('c2-out', ml);
       set('c2-also', `물 약 <b>${fmt(vt - ml)}</b> mL로 최종 ${fmt(vt)} mL`);
       set('c2-work', `${fmt(pt)} % × ${fmt(vt)} mL ÷ ${fmt(ps)} % = ${fmt(ml)} mL`);
       set('c2-msg', '');
@@ -550,43 +717,31 @@ a{color:inherit}
   $('c2-wv').addEventListener('click', () => { c2mode = 'wv'; c2(); });
   $('c2-vv').addEventListener('click', () => { c2mode = 'vv'; c2(); });
 
-  // ---------- 03 C1V1 = C2V2
-  const CONC = [
-    ['mol', 1, 'M'], ['mol', 1e-3, 'mM'], ['mol', 1e-6, 'μM'], ['mol', 1e-9, 'nM'],
-    ['mass', 1, 'mg/mL'], ['mass', 1e-3, 'μg/mL'], ['mass', 1e-3, 'ng/μL'], ['mass', 1e-6, 'ng/mL'],
-    ['pct', 1, '%'], ['x', 1, 'X']
-  ];
-  ['c3-c1u', 'c3-c2u'].forEach((id, i) => {
-    const sel = $(id);
-    CONC.forEach(([k, f, n], j) => { const o = new Option(n, j); sel.add(o); });
-    sel.value = i === 0 ? '0' : '1';
-  });
+  // ---------- 03
+  const CONC = [['mol',1,'M'],['mol',1e-3,'mM'],['mol',1e-6,'μM'],['mol',1e-9,'nM'],['mass',1,'mg/mL'],['mass',1e-3,'μg/mL'],['mass',1e-3,'ng/μL'],['mass',1e-6,'ng/mL'],['pct',1,'%'],['x',1,'X']];
+  ['c3-c1u', 'c3-c2u'].forEach((id, i) => { const sel = $(id); CONC.forEach(([, , n], j) => sel.add(new Option(n, j))); sel.value = i === 0 ? '0' : '1'; });
   function c3() {
     const c1 = num('c3-c1'), c2v = num('c3-c2'), v2 = num('c3-v2');
     const u1 = CONC[+$('c3-c1u').value], u2 = CONC[+$('c3-c2u').value], vu = +$('c3-v2u').value;
-    if (!ok(c1, c2v, v2) || c1 <= 0 || c2v <= 0 || v2 <= 0) { show('c3-out', '–'); set('c3-also', ''); set('c3-work', ''); set('c3-msg', EMPTY); return; }
-    if (u1[0] !== u2[0]) { show('c3-out', '–'); set('c3-also', ''); set('c3-work', ''); set('c3-msg', `${u1[2]} 단위와 ${u2[2]} 단위는 서로 바꿀 수 없어요. 같은 종류의 단위로 맞춰 주세요.`); return; }
+    if (!ok(c1, c2v, v2) || c1 <= 0 || c2v <= 0 || v2 <= 0) return clear('c3', EMPTY);
+    if (u1[0] !== u2[0]) return clear('c3', `${u1[2]} 단위와 ${u2[2]} 단위는 서로 바꿀 수 없어요. 같은 종류의 단위로 맞춰 주세요.`);
     const C1 = c1 * u1[1], C2 = c2v * u2[1];
-    if (C2 > C1) { show('c3-out', '–'); set('c3-also', ''); set('c3-work', ''); set('c3-msg', '원하는 농도가 원액보다 진해요. 희석으로는 만들 수 없어요.'); return; }
-    const V2L = v2 * vu, V1L = C2 * V2L / C1;
-    const [a, au] = vol(V1L), [b, bu] = vol(V2L - V1L);
-    show('c3-out', fmt(a)); $('c3-unit').textContent = au;
+    if (C2 > C1) return clear('c3', '원하는 농도가 원액보다 진해요. 희석으로는 만들 수 없어요.');
+    const V2L = v2 * vu, V1L = C2 * V2L / C1, [a, au] = vol(V1L), [b, bu] = vol(V2L - V1L);
+    show('c3-out', a); $('c3-unit').textContent = au;
     set('c3-also', `용매 <b>${fmt(b)}</b> ${bu}를 더해 총 ${fmt(v2)} ${unitName($('c3-v2u'))}`);
-    // show the work in C2's unit so the numbers read naturally (1 M → 1000 mM)
-    const c1In2 = C1 / u2[1];
-    set('c3-work', `${fmt(c1In2)} ${u2[2]} × V1 = ${fmt(c2v)} ${u2[2]} × ${fmt(v2)} ${unitName($('c3-v2u'))}  →  V1 = ${fmt(a)} ${au}`);
+    set('c3-work', `${fmt(C1 / u2[1])} ${u2[2]} × V1 = ${fmt(c2v)} ${u2[2]} × ${fmt(v2)} ${unitName($('c3-v2u'))}  →  V1 = ${fmt(a)} ${au}`);
     set('c3-msg', '');
   }
 
-  // ---------- 04 10X → 1X
+  // ---------- 04
   function c4() {
     const s = num('c4-s'), t = num('c4-t'), v = num('c4-v'), vu = +$('c4-vu').value;
     $('c4-chips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.s === s && +b.dataset.t === t && +b.dataset.v === v && +b.dataset.vu === vu)));
-    if (!ok(s, t, v) || s <= 0 || t <= 0 || v <= 0) { show('c4-out', '–'); set('c4-also', ''); set('c4-work', ''); set('c4-msg', EMPTY); return; }
-    if (t > s) { show('c4-out', '–'); set('c4-also', ''); set('c4-work', ''); set('c4-msg', '원하는 배수가 스톡보다 높아요. 스톡 배수를 확인해 주세요.'); return; }
-    const VL = v * vu, SL = VL * t / s;
-    const [a, au] = vol(SL), [b, bu] = vol(VL - SL);
-    show('c4-out', fmt(a)); $('c4-unit').textContent = au;
+    if (!ok(s, t, v) || s <= 0 || t <= 0 || v <= 0) return clear('c4', EMPTY);
+    if (t > s) return clear('c4', '원하는 배수가 스톡보다 높아요. 스톡 배수를 확인해 주세요.');
+    const VL = v * vu, SL = VL * t / s, [a, au] = vol(SL), [b, bu] = vol(VL - SL);
+    show('c4-out', a); $('c4-unit').textContent = au;
     set('c4-also', `나머지 <b>${fmt(b)}</b> ${bu}는 물(반응이면 물과 다른 시약)`);
     set('c4-work', `${fmt(v)} ${unitName($('c4-vu'))} × ${fmt(t)}X ÷ ${fmt(s)}X = ${fmt(a)} ${au}`);
     set('c4-msg', '');
@@ -594,23 +749,20 @@ a{color:inherit}
   $('c4-chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
     $('c4-s').value = b.dataset.s; $('c4-t').value = b.dataset.t; $('c4-v').value = b.dataset.v; $('c4-vu').value = b.dataset.vu; c4(); });
 
-  // ---------- 05 CFU
+  // ---------- 05
   function c5() {
     const n1 = num('c5-n1'), n2raw = $('c5-n2').value.trim(), n2 = num('c5-n2'), d = num('c5-d'), p = num('c5-p'), pu = +$('c5-pu').value;
-    if (!ok(n1, d, p) || n1 < 0 || d < 0 || p <= 0 || (n2raw !== '' && !(n2 >= 0))) { show('c5-out', '–'); set('c5-also', ''); set('c5-work', ''); set('c5-msg', n2raw !== '' && !(n2 >= 0) ? '두 번째 판 콜로니 수를 숫자로 넣거나 비워 주세요.' : EMPTY); return; }
-    const two = n2raw !== '';
-    const n = two ? (n1 + n2) / 2 : n1;
-    const mL = p * pu, cfu = n * 10 ** d / mL;
-    show('c5-out', fmt(cfu, 3));
+    const bad2 = n2raw !== '' && !(n2 >= 0);
+    if (!ok(n1, d, p) || n1 < 0 || d < 0 || p <= 0 || bad2) return clear('c5', bad2 ? '두 번째 판 콜로니 수를 숫자로 넣거나 비워 주세요.' : EMPTY);
+    const two = n2raw !== '', n = two ? (n1 + n2) / 2 : n1, mL = p * pu, cfu = n * 10 ** d / mL;
+    show('c5-out', cfu, fmt3);
     set('c5-also', two ? `두 판 평균 <b>${fmt(n)}</b>개로 계산` : '');
-    set('c5-work', `${two ? `(${fmt(n1)} + ${fmt(n2)}) ÷ 2` : fmt(n1)} × 10${sup(d)} ÷ ${fmt(mL)} mL = ${fmt(cfu, 3)} CFU/mL`);
-    const out = [n1].concat(two ? [n2] : []).some(x => x < 30 || x > 300);
-    set('c5-msg', out ? '30~300개 범위 밖인 판이 있어요. 이 범위에 든 희석 단계 판을 세면 더 정확해요.' : '');
+    set('c5-work', `${two ? `(${fmt(n1)} + ${fmt(n2)}) ÷ 2` : fmt(n1)} × 10${sup(d)} ÷ ${fmt(mL)} mL = ${fmt3(cfu)} CFU/mL`);
+    set('c5-msg', [n1].concat(two ? [n2] : []).some(x => x < 30 || x > 300) ? '30~300개 범위 밖인 판이 있어요. 이 범위에 든 희석 단계 판을 세면 더 정확해요.' : '');
   }
 
-  // ---------- 06 rpm ↔ ×g
-  let c6mode = 'g';
-  const K = 0.00001118;
+  // ---------- 06
+  let c6mode = 'g'; const K = 0.00001118;
   function c6() {
     const toG = c6mode === 'g';
     $('c6-tog').setAttribute('aria-pressed', String(toG)); $('c6-tor').setAttribute('aria-pressed', String(!toG));
@@ -620,96 +772,83 @@ a{color:inherit}
     const r = num('c6-r');
     if (toG) {
       const rpm = num('c6-rpm');
-      if (!ok(r, rpm) || r <= 0 || rpm <= 0) { show('c6-out', '–'); set('c6-work', ''); set('c6-msg', EMPTY); return; }
+      if (!ok(r, rpm) || r <= 0 || rpm <= 0) return clear('c6', EMPTY);
       const g = K * r * rpm * rpm;
-      show('c6-out', fint(g));
-      set('c6-work', `0.00001118 × ${fmt(r)} cm × ${fint(rpm)}² = ${fint(g)} ×g`);
+      show('c6-out', g, fint); set('c6-work', `0.00001118 × ${fmt(r)} cm × ${fint(rpm)}² = ${fint(g)} ×g`);
     } else {
       const g = num('c6-g');
-      if (!ok(r, g) || r <= 0 || g <= 0) { show('c6-out', '–'); set('c6-work', ''); set('c6-msg', EMPTY); return; }
+      if (!ok(r, g) || r <= 0 || g <= 0) return clear('c6', EMPTY);
       const rpm = Math.sqrt(g / (K * r));
-      show('c6-out', fint(rpm));
-      set('c6-work', `√(${fint(g)} ÷ (0.00001118 × ${fmt(r)} cm)) = ${fint(rpm)} rpm`);
+      show('c6-out', rpm, fint); set('c6-work', `√(${fint(g)} ÷ (0.00001118 × ${fmt(r)} cm)) = ${fint(rpm)} rpm`);
     }
-    set('c6-msg', r > 0 && r < 2 ? '반지름이 너무 작아요. 단위가 cm인지 확인해 주세요.' : (r > 40 ? '반지름이 너무 커요. 단위가 cm인지 확인해 주세요.' : ''));
+    set('c6-msg', r < 2 ? '반지름이 너무 작아요. 단위가 cm인지 확인해 주세요.' : (r > 40 ? '반지름이 너무 커요. 단위가 cm인지 확인해 주세요.' : ''));
   }
   $('c6-tog').addEventListener('click', () => { c6mode = 'g'; c6(); });
   $('c6-tor').addEventListener('click', () => { c6mode = 'r'; c6(); });
 
-  // ---------- 07 A260
+  // ---------- 07
   function c7() {
     const a = num('c7-a'), k = +$('c7-k').value, d = num('c7-d');
-    if (!ok(a, d) || a < 0 || d <= 0) { show('c7-out', '–'); set('c7-also', ''); set('c7-work', ''); set('c7-msg', EMPTY); return; }
+    if (!ok(a, d) || a < 0 || d <= 0) return clear('c7', EMPTY);
     const c = a * k * d;
-    show('c7-out', fmt(c));
-    set('c7-also', `= <b>${fmt(c)}</b> μg/mL`);
+    show('c7-out', c); set('c7-also', `= <b>${fmt(c)}</b> μg/mL`);
     set('c7-work', `${fmt(a)} × ${k} × ${fmt(d)} = ${fmt(c)} μg/mL`);
     set('c7-msg', a < 0.1 ? 'A260이 0.1보다 낮으면 오차가 커요. 덜 희석해서 다시 재 보세요.' : '');
   }
 
-  // ---------- 08 순도
+  // ---------- 08
   let c8type = 'dna';
-  function verdict280(r) {
-    if (c8type === 'dna') return r < 1.7 ? '낮음, 단백질·페놀 의심' : (r > 2.0 ? '높음, RNA가 섞였을 수 있음' : '양호');
-    return r < 1.8 ? '낮음, 단백질·페놀 의심' : (r > 2.2 ? '높음, 다시 측정 권장' : '양호');
-  }
-  function verdict230(r) { return r < 1.8 ? '낮음, 염·구아니딘 의심' : (r < 2.0 ? '조금 낮음' : '양호'); }
+  const v280 = r => c8type === 'dna'
+    ? (r < 1.7 ? ['낮음, 단백질·페놀 의심', 'bad'] : r > 2.0 ? ['높음, RNA가 섞였을 수 있음', 'bad'] : ['양호', 'ok'])
+    : (r < 1.8 ? ['낮음, 단백질·페놀 의심', 'bad'] : r > 2.2 ? ['높음, 다시 측정 권장', 'bad'] : ['양호', 'ok']);
+  const v230 = r => r < 1.8 ? ['낮음, 염·구아니딘 의심', 'bad'] : r < 2.0 ? ['조금 낮음', 'bad'] : ['양호', 'ok'];
+  const badge = (id, [t, c]) => { const el = $(id); el.textContent = t; el.className = 'badge ' + c; };
   function c8() {
     $('c8-dna').setAttribute('aria-pressed', String(c8type === 'dna')); $('c8-rna').setAttribute('aria-pressed', String(c8type === 'rna'));
     const a260 = num('c8-260'), a280 = num('c8-280'), a230raw = $('c8-230').value.trim(), a230 = num('c8-230');
-    if (!ok(a260, a280) || a260 <= 0 || a280 <= 0) { show('c8-r1', '–'); show('c8-r2', '–'); set('c8-v1', ''); set('c8-v2', ''); set('c8-work', ''); set('c8-msg', EMPTY); return; }
-    const r1 = a260 / a280;
-    show('c8-r1', r1.toFixed(2)); set('c8-v1', verdict280(r1));
-    let work = `${fmt(a260)} ÷ ${fmt(a280)} = ${r1.toFixed(2)}`;
-    if (a230raw !== '' && a230 > 0) {
-      const r2 = a260 / a230; show('c8-r2', r2.toFixed(2)); set('c8-v2', verdict230(r2));
-      work += `   ·   ${fmt(a260)} ÷ ${fmt(a230)} = ${r2.toFixed(2)}`;
-    } else { show('c8-r2', '–'); set('c8-v2', 'A230을 넣으면 계산돼요'); }
+    if (!ok(a260, a280) || a260 <= 0 || a280 <= 0) { show('c8-r1', NaN); show('c8-r2', NaN); badge('c8-v1', ['', '']); badge('c8-v2', ['', '']); set('c8-work', ''); set('c8-msg', EMPTY); return; }
+    const r1 = a260 / a280; show('c8-r1', r1, f2); badge('c8-v1', v280(r1));
+    let work = `${fmt(a260)} ÷ ${fmt(a280)} = ${f2(r1)}`;
+    if (a230raw !== '' && a230 > 0) { const r2 = a260 / a230; show('c8-r2', r2, f2); badge('c8-v2', v230(r2)); work += `<br>${fmt(a260)} ÷ ${fmt(a230)} = ${f2(r2)}`; }
+    else { show('c8-r2', NaN); badge('c8-v2', ['A230을 넣으면 계산돼요', '']); }
     set('c8-work', work);
     set('c8-msg', a260 < 0.1 ? 'A260이 0.1보다 낮으면 비율도 믿기 어려워요.' : '');
   }
   $('c8-dna').addEventListener('click', () => { c8type = 'dna'; c8(); });
   $('c8-rna').addEventListener('click', () => { c8type = 'rna'; c8(); });
 
-  // ---------- 09 프라이머
+  // ---------- 09
   function c9() {
     const n = num('c9-n'), c = num('c9-c');
-    if (!ok(n, c) || n <= 0 || c <= 0) { show('c9-out', '–'); set('c9-work', ''); set('c9-msg', EMPTY); }
-    else {
-      const uL = n * 1000 / c;
-      show('c9-out', fmt(uL));
-      set('c9-work', `${fmt(n)} nmol × 1,000 ÷ ${fmt(c)} μM = ${fmt(uL)} μL`);
-      set('c9-msg', '');
-    }
-    const stock = ok(c) && c > 0 ? c : NaN, wc = num('c9-wc'), wv = num('c9-wv');
-    if (!ok(stock, wc, wv) || wc <= 0 || wv <= 0) { show('c9-wout', '–'); set('c9-walso', ''); set('c9-wwork', ''); return; }
-    if (wc > stock) { show('c9-wout', '–'); set('c9-walso', '작업액이 스톡보다 진해요.'); set('c9-wwork', ''); return; }
+    if (!ok(n, c) || n <= 0 || c <= 0) { show('c9-out', NaN); set('c9-work', ''); set('c9-msg', EMPTY); }
+    else { const uL = n * 1000 / c; show('c9-out', uL); set('c9-work', `${fmt(n)} nmol × 1,000 ÷ ${fmt(c)} μM = ${fmt(uL)} μL`); set('c9-msg', ''); }
+    const stock = c > 0 ? c : NaN, wc = num('c9-wc'), wv = num('c9-wv');
+    if (!ok(stock, wc, wv) || wc <= 0 || wv <= 0) { show('c9-wout', NaN); set('c9-walso', ''); set('c9-wwork', ''); return; }
+    if (wc > stock) { show('c9-wout', NaN); set('c9-walso', '작업액이 스톡보다 진해요.'); set('c9-wwork', ''); return; }
     const s = wc * wv / stock;
-    show('c9-wout', fmt(s));
-    set('c9-walso', `물 <b>${fmt(wv - s)}</b> μL를 더해 총 ${fmt(wv)} μL`);
+    show('c9-wout', s); set('c9-walso', `물 <b>${fmt(wv - s)}</b> μL를 더해 총 ${fmt(wv)} μL`);
     set('c9-wwork', `${fmt(wc)} μM × ${fmt(wv)} μL ÷ ${fmt(stock)} μM = ${fmt(s)} μL`);
   }
 
-  // ---------- 10 라이게이션
+  // ---------- 10
   function c10() {
     const vb = num('c10-vb'), vn = num('c10-vn'), ib = num('c10-ib'), r = num('c10-r'), icRaw = $('c10-ic').value.trim(), ic = num('c10-ic');
     $('c10-chips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.r === r)));
-    if (!ok(vb, vn, ib, r) || vb <= 0 || vn <= 0 || ib <= 0 || r <= 0) { show('c10-out', '–'); set('c10-also', ''); set('c10-work', ''); set('c10-msg', EMPTY); return; }
+    if (!ok(vb, vn, ib, r) || vb <= 0 || vn <= 0 || ib <= 0 || r <= 0) return clear('c10', EMPTY);
     const ng = r * vn * (ib / vb);
-    show('c10-out', fmt(ng));
+    show('c10-out', ng);
     set('c10-also', icRaw !== '' && ic > 0 ? `${fmt(ic)} ng/μL 기준 <b>${fmt(ng / ic)}</b> μL` : '');
     set('c10-work', `${fmt(r)} × ${fmt(vn)} ng × (${fint(ib)} ÷ ${fint(vb)}) = ${fmt(ng)} ng`);
     set('c10-msg', '');
   }
   $('c10-chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $('c10-r').value = b.dataset.r; c10(); });
 
-  const ALL = {c1, c2, c3, c4, c5, c6, c7, c8, c9, c10};
-  document.querySelectorAll('.calc').forEach(sec => {
-    const fn = ALL[sec.id];
-    sec.addEventListener('input', fn);
-    sec.addEventListener('change', fn);
-    fn();
-  });
+  const FN = {c1, c2, c3, c4, c5, c6, c7, c8, c9, c10};
+  panels.forEach(p => { const fn = FN[p.id]; p.addEventListener('input', fn); p.addEventListener('change', fn); fn(); });
+
+  const start = location.hash.slice(1);
+  select(CALCS.some(c => c.id === start) ? start : 'c1', {silent: true});
+  if (CALCS.some(c => c.id === start)) setTimeout(() => select(start, {scroll: true}), 60);
 })();
 </script>
 </body>
