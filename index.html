@@ -4,978 +4,613 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>실험실 계산기 | mi._.mic</title>
-<meta name="description" content="몰농도, 희석, CFU, rpm과 ×g, A260, 프라이머, 라이게이션까지. 숫자만 넣으면 바로 계산되는 실험실 계산 공식 10개.">
+<meta name="description" content="몰농도, 희석, DNA·RNA 희석, 카피 수, qPCR 효율, 마스터믹스, 라이게이션, CFU, OD, rpm과 ×g까지. 숫자만 넣으면 바로 계산되는 실험실 계산기 19개.">
 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0B0E14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#10141D" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:title" content="실험실 계산 공식 10개, 숫자만 넣으면 바로 계산">
-<meta property="og:description" content="몰농도, 희석, CFU, rpm과 ×g, A260, 프라이머, 라이게이션까지. 경북대학교 분자미생물학 연구실 @mi._.mic">
+<meta property="og:title" content="실험실 계산기, 숫자만 넣으면 바로 계산">
+<meta property="og:description" content="몰농도, 희석, DNA·RNA 희석, 카피 수, qPCR 효율, 마스터믹스, CFU, OD, rpm과 ×g까지 19개. 경북대학교 분자미생물학 연구실 @mi._.mic">
 <meta property="og:url" content="https://mimic-knu.github.io/">
 <meta property="og:image" content="https://mimic-knu.github.io/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2323376B'/%3E%3Cpath d='M32 14v34M22 50h20M14 22h36M14 22l-6 14h12zM50 22l-6 14h12z' stroke='%23fff' stroke-width='4' fill='none' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231F3366'/%3E%3Cpath d='M32 14v34M22 50h20M14 22h36M14 22l-6 14h12zM50 22l-6 14h12z' stroke='%23fff' stroke-width='4' fill='none' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquare.css">
 <style>
-@property --a{syntax:'<angle>'; inherits:false; initial-value:0deg}
+/* 4색: navy(기본) sky(바탕 강조) teal(양호) coral(오류) + 회색 */
 :root{
-  --bg:#FFFFFF; --bg-2:#F8F9FC; --card:#FFFFFF; --glass:rgba(255,255,255,.72);
-  --fg:#121826; --muted:#5F6878; --faint:#A0A7B5; --line:#ECEEF3; --line-2:#DADEE7;
-  --accent:#23376B; --accent-2:#5163E0; --accent-soft:#F2F4FF; --accent-ink:#1B2B55;
-  --ok:#1F8A5B; --ok-soft:#E8F7EF; --warn:#C2412F; --warn-soft:#FDEFEC;
-  --shadow:0 1px 2px rgba(18,24,38,.04),0 10px 30px -14px rgba(18,24,38,.14);
-  --shadow-lg:0 2px 6px rgba(18,24,38,.04),0 30px 64px -26px rgba(35,55,107,.30);
-  --spot:rgba(81,99,224,.07);
-  --au1:#DCE5FF; --au2:#EEE4FF; --au3:#D8F6EC; --au-op:.85;
+  --navy:#1F3366; --navy-2:#2E4A8F; --sky:#EAF0FB; --sky-2:#C9D7F2;
+  --teal:#2A9D8F; --teal-ink:#1C7266; --teal-soft:#E2F3F0;
+  --coral:#E2704F; --coral-ink:#A9472A; --coral-soft:#FCECE6;
+  --bg:#FFFFFF; --bg-2:#F5F7FA; --card:#FFFFFF; --fg:#172033; --muted:#4F586A; --faint:#646C7E;
+  --line:#E3E7EE; --field:#8A93A3; --ring:rgba(46,74,143,.22);
+  --shadow:0 1px 2px rgba(23,32,51,.05),0 8px 22px -14px rgba(23,32,51,.18);
+  --shadow-lg:0 2px 6px rgba(23,32,51,.05),0 22px 44px -24px rgba(31,51,102,.30);
   --head:'NanumSquare','Noto Sans KR',sans-serif;
   --body:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
   --num:'IBM Plex Mono',ui-monospace,monospace;
-  --ease:cubic-bezier(.22,1,.36,1); --r:20px;
+  --ease:cubic-bezier(.22,1,.36,1); --r:18px; --tap:40px;
 }
-.g-sol{--hue:#3B5BDB; --hue-bg:linear-gradient(140deg,#F1F5FF,#E1E9FF)}
-.g-dil{--hue:#7048E8; --hue-bg:linear-gradient(140deg,#F6F2FF,#E9E0FF)}
-.g-cfu{--hue:#0B8A6F; --hue-bg:linear-gradient(140deg,#EBFAF5,#D6F2E8)}
-.g-dna{--hue:#D3500F; --hue-bg:linear-gradient(140deg,#FFF6EC,#FFE6CF)}
-.g-clone{--hue:#C2255C; --hue-bg:linear-gradient(140deg,#FFF2F6,#FFDDE8)}
+@media (pointer:coarse){ :root{ --tap:44px } }
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#0B0E14; --bg-2:#10141D; --card:#121722; --glass:rgba(18,23,34,.72);
-    --fg:#EEF1F6; --muted:#9AA3B5; --faint:#5D6679; --line:#1F2633; --line-2:#2E3747;
-    --accent:#A3B5F5; --accent-2:#C0CCFF; --accent-soft:#161D31; --accent-ink:#DCE5FB;
-    --ok:#6CC59A; --ok-soft:#12251C; --warn:#F08A7E; --warn-soft:#2A1715;
-    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -16px rgba(0,0,0,.8); --shadow-lg:0 2px 6px rgba(0,0,0,.4),0 30px 64px -26px rgba(0,0,0,.9);
-    --spot:rgba(163,181,245,.08); --au1:#1A2550; --au2:#2A1D4D; --au3:#103A30; --au-op:.7; }
-  .g-sol{--hue:#8EA6FF; --hue-bg:linear-gradient(140deg,#18213F,#1D2850)}
-  .g-dil{--hue:#B39CFF; --hue-bg:linear-gradient(140deg,#211A3D,#2A2050)}
-  .g-cfu{--hue:#5FD3B3; --hue-bg:linear-gradient(140deg,#0F2A24,#12352D)}
-  .g-dna{--hue:#FFAA70; --hue-bg:linear-gradient(140deg,#2E1E10,#3A2614)}
-  .g-clone{--hue:#FF8DB3; --hue-bg:linear-gradient(140deg,#2E1520,#3A1A28)}
+  :root{ --navy:#9DB3F0; --navy-2:#BCCBF7; --sky:#1A2340; --sky-2:#2C3A63;
+    --teal:#5CC6B6; --teal-ink:#7FD8CA; --teal-soft:#14302C; --coral:#F08C6E; --coral-ink:#FFB49C; --coral-soft:#3A1F17;
+    --bg:#10141D; --bg-2:#161B26; --card:#171D29; --fg:#ECEFF5; --muted:#B4BBC9; --faint:#9AA2B2;
+    --line:#262E3D; --field:#5E687B; --ring:rgba(157,179,240,.28);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 22px -14px rgba(0,0,0,.8); --shadow-lg:0 2px 6px rgba(0,0,0,.4),0 22px 44px -24px rgba(0,0,0,.9); }
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
-body{margin:0; background:var(--bg); color:var(--fg); font-family:var(--body); font-size:16px; line-height:1.6; word-break:keep-all; overflow-wrap:anywhere; overflow-x:hidden}
+body{margin:0; background:var(--bg); color:var(--fg); font-family:var(--body); font-size:16px; line-height:1.6; word-break:keep-all; overflow-wrap:anywhere; overflow-x:hidden; -webkit-tap-highlight-color:transparent}
 a{color:inherit}
-button{font:inherit; color:inherit}
-:focus-visible{outline:3px solid var(--accent-2); outline-offset:2px; border-radius:8px}
-.wrap{max-width:1180px; margin:0 auto; padding:0 20px}
+button,input,select,textarea{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--navy-2); outline-offset:2px; border-radius:8px}
+.wrap{max-width:1180px; margin:0 auto; padding:0 16px}
 svg.i{width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex:none}
-
-/* cursor spotlight on cards */
-.spot{position:relative; isolation:isolate}
-.spot::after{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:0; opacity:0; transition:opacity .35s; background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),var(--spot),transparent 45%)}
-.spot:hover::after{opacity:1}
-.spot > *{position:relative; z-index:1}
+.skip{position:absolute; left:-999px; top:8px; z-index:50; background:var(--navy); color:#fff; padding:8px 14px; border-radius:10px}
+.skip:focus{left:8px}
 
 /* top bar */
-.top{position:sticky; top:0; z-index:20; background:var(--glass); backdrop-filter:saturate(1.6) blur(14px); -webkit-backdrop-filter:saturate(1.6) blur(14px); border-bottom:1px solid transparent; transition:border-color .3s,box-shadow .3s}
-.top.scrolled{border-bottom-color:var(--line); box-shadow:0 6px 20px -16px rgba(18,24,38,.4)}
-.top .wrap{display:flex; align-items:center; gap:12px; height:62px}
+.top{position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--bg) 86%,transparent); backdrop-filter:saturate(1.5) blur(12px); -webkit-backdrop-filter:saturate(1.5) blur(12px); border-bottom:1px solid transparent; transition:border-color .3s}
+.top.scrolled{border-bottom-color:var(--line)}
+.top .wrap{display:flex; align-items:center; gap:10px; height:56px}
 .brand{display:flex; align-items:center; gap:10px; text-decoration:none; font-family:var(--head); font-weight:800; font-size:17px}
-.brand .mk{display:grid; place-items:center; width:32px; height:32px; border-radius:10px; background:linear-gradient(140deg,#2C4380,#23376B 55%,#1A2850); color:#fff; box-shadow:0 6px 14px -6px rgba(35,55,107,.6), inset 0 1px 0 rgba(255,255,255,.25)}
+.brand .mk{display:grid; place-items:center; width:32px; height:32px; border-radius:10px; background:#1F3366; color:#fff}
 .brand .mk svg{width:18px; height:18px; stroke-width:2}
-.top nav{margin-left:auto; display:flex; gap:6px; align-items:center}
-.top nav a{text-decoration:none; font-size:14px; font-weight:500; color:var(--muted); padding:7px 12px; border-radius:999px; transition:color .2s,background .2s}
-.top nav a:hover{color:var(--fg); background:var(--bg-2)}
-@media (max-width:560px){ .top nav a.hide-s{display:none} }
-
-/* buttons */
-.btn{position:relative; overflow:hidden; display:inline-flex; align-items:center; gap:8px; text-decoration:none; font-weight:700; font-size:15px; padding:11px 20px; border-radius:999px; border:1px solid var(--line-2); background:var(--card); box-shadow:var(--shadow); transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .2s}
-.btn:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg)}
-.btn.solid{border-color:transparent; color:#fff; background:linear-gradient(135deg,#2C4380,#23376B 50%,#3D4FB8); box-shadow:0 10px 24px -10px rgba(35,55,107,.6), inset 0 1px 0 rgba(255,255,255,.2)}
-.btn.solid::after{content:""; position:absolute; top:0; bottom:0; left:-60%; width:40%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent); transform:skewX(-20deg); transition:left .7s var(--ease)}
-.btn.solid:hover::after{left:130%}
-.btn.sm{font-size:13.5px; padding:7px 14px}
+.top a.ig{margin-left:auto; display:inline-flex; align-items:center; min-height:var(--tap); text-decoration:none; font-size:14px; font-weight:500; color:var(--muted); padding:0 12px; border-radius:999px}
+.top a.ig:hover{color:var(--fg); background:var(--bg-2)}
 
 /* hero */
-.hero{position:relative; padding:52px 0 26px}
-.aurora{position:absolute; inset:-140px -10% auto -10%; height:640px; pointer-events:none; filter:blur(70px); opacity:var(--au-op); overflow:hidden; z-index:0}
-.aurora span{position:absolute; border-radius:50%}
-.aurora .a1{width:560px; height:520px; left:2%; top:40px; background:var(--au1); animation:drift1 18s ease-in-out infinite alternate}
-.aurora .a2{width:480px; height:440px; left:42%; top:-10px; background:var(--au2); animation:drift2 22s ease-in-out infinite alternate}
-.aurora .a3{width:420px; height:400px; right:0; top:150px; background:var(--au3); animation:drift3 20s ease-in-out infinite alternate}
-@keyframes drift1{to{transform:translate(80px,60px) scale(1.08)}}
-@keyframes drift2{to{transform:translate(-70px,70px) scale(.92)}}
-@keyframes drift3{to{transform:translate(-60px,-50px) scale(1.1)}}
-.hero::before{content:""; position:absolute; inset:-62px 0 0; z-index:0; background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px); background-size:44px 44px; -webkit-mask-image:radial-gradient(ellipse 60% 70% at 30% 20%,#000 20%,transparent 70%); mask-image:radial-gradient(ellipse 60% 70% at 30% 20%,#000 20%,transparent 70%); opacity:.7; pointer-events:none}
-.hero-in{position:relative; z-index:1; display:grid; gap:28px; align-items:center}
-@media (min-width:920px){ .hero-in{grid-template-columns:1.25fr .9fr} }
-.pill{display:inline-flex; align-items:center; gap:9px; font-size:13.5px; color:var(--muted); background:var(--glass); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid var(--line); border-radius:999px; padding:6px 14px 6px 10px; box-shadow:var(--shadow)}
-.pill i{position:relative; width:8px; height:8px; border-radius:50%; background:var(--ok)}
-.pill i::after{content:""; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--ok); opacity:0; animation:ping 2.4s var(--ease) infinite}
-@keyframes ping{0%{transform:scale(.6); opacity:.7} 80%,100%{transform:scale(1.8); opacity:0}}
-.hero h1{font-family:var(--head); font-weight:800; font-size:clamp(40px,7.4vw,70px); line-height:1.08; letter-spacing:-.03em; margin:20px 0 16px}
-.hero h1 .w{display:inline-block; background:linear-gradient(180deg,var(--fg) 35%,color-mix(in srgb,var(--fg) 55%,var(--accent-2))); -webkit-background-clip:text; background-clip:text; color:transparent; padding-bottom:.06em}
-.hero p.lead{font-size:clamp(16px,2.4vw,19px); color:var(--muted); margin:0; max-width:31em}
-.hero .lab{margin-top:18px; font-size:14px; color:var(--faint)}
+.hero{padding:18px 0 4px; background:radial-gradient(70% 120% at 90% -20%,var(--sky),transparent 60%)}
+.hero h1{font-family:var(--head); font-weight:800; font-size:clamp(26px,5vw,44px); line-height:1.15; letter-spacing:-.03em; margin:0 0 4px}
+.hero p.lead{font-size:15px; color:var(--muted); margin:0 0 14px}
+@media (min-width:1000px){ .hero{padding:30px 0 6px} .hero p.lead{font-size:17px; margin-bottom:4px} .hero .finder{display:none} }
+.search{position:relative; display:block}
+.search svg.i{position:absolute; left:14px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--faint); pointer-events:none}
+.search input{width:100%; height:48px; border:1px solid var(--field); border-radius:14px; padding:0 14px 0 44px; font-size:16px; background:var(--card); outline:none; transition:border-color .2s,box-shadow .2s}
+.search input:focus{border-color:var(--navy); box-shadow:0 0 0 4px var(--ring)}
+.cats{display:flex; flex-wrap:wrap; gap:6px; padding:12px 0 2px}
+.cats button{min-height:var(--tap); border:1px solid var(--line); background:var(--card); border-radius:999px; padding:0 14px; font-size:14.5px; font-weight:500; color:var(--muted); cursor:pointer; transition:background .2s,color .2s,border-color .2s}
+.cats button:hover{border-color:var(--field); color:var(--fg)}
+.cats button[aria-pressed="true"]{background:#1F3366; border-color:#1F3366; color:#fff}
+@media (prefers-color-scheme: dark){ .cats button[aria-pressed="true"]{background:var(--navy); color:#10141D} }
 
-/* live demo card */
-.demo{position:relative; display:none; width:100%; max-width:420px; justify-self:end; text-align:left; cursor:pointer; border:0; padding:22px 24px 20px; border-radius:24px; background:var(--glass); backdrop-filter:blur(16px) saturate(1.4); -webkit-backdrop-filter:blur(16px) saturate(1.4); box-shadow:var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,.7); animation:rise .9s var(--ease) both, bob 6s ease-in-out 1s infinite; animation-delay:calc(var(--i,0)*90ms),1.2s}
-@media (min-width:920px){ .demo{display:block} }
-@keyframes bob{50%{transform:translateY(-8px)}}
-.demo .ring{position:absolute; inset:0; border-radius:inherit; padding:1.5px; background:conic-gradient(from var(--a),transparent 0 62%,#9DB0FF 74%,#7048E8 82%,#5FD3B3 88%,transparent 96%); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:beam 6s linear infinite; pointer-events:none}
-.demo .ring2{position:absolute; inset:0; border-radius:inherit; border:1px solid var(--line); pointer-events:none}
-@keyframes beam{to{--a:360deg}}
-.demo-top{display:flex; align-items:center; gap:10px; font-size:13px; color:var(--muted)}
-.demo-top .dots{display:flex; gap:5px}
-.demo-top .dots i{width:9px; height:9px; border-radius:50%; background:var(--line-2)}
-.demo-top .dots i:nth-child(1){background:#FF8A80} .demo-top .dots i:nth-child(2){background:#FFD166} .demo-top .dots i:nth-child(3){background:#7BD8A8}
-.demo-body{display:block; margin-top:18px; transition:opacity .35s var(--ease),filter .35s var(--ease),transform .35s var(--ease)}
-.demo-body.out{opacity:0; filter:blur(6px); transform:translateY(6px)}
-.demo-q{display:block; font-size:15px; color:var(--fg); font-weight:500}
-.demo-n{display:flex; align-items:baseline; gap:10px; margin-top:6px}
-.demo-n b{font-family:var(--num); font-weight:600; font-size:46px; line-height:1.1; letter-spacing:-.02em; background:linear-gradient(90deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; background-clip:text; color:transparent}
-.demo-n em{font-style:normal; font-family:var(--head); font-weight:800; font-size:20px; color:var(--accent-ink)}
-.demo-w{display:block; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line-2); font-family:var(--num); font-size:13px; color:var(--muted)}
-.demo-go{display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-size:13px; color:var(--faint)}
-.demo-go .prog{flex:1; height:3px; border-radius:3px; background:var(--line); margin-right:12px; overflow:hidden}
-.demo-go .prog i{display:block; height:100%; width:100%; background:linear-gradient(90deg,var(--accent-2),#7048E8); transform-origin:left; animation:prog 3.6s linear infinite}
-@keyframes prog{from{transform:scaleX(0)} to{transform:scaleX(1)}}
+/* tiles (phone / tablet) */
+.tiles-sec{padding:10px 0 4px}
+.tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+@media (min-width:600px){ .tiles{grid-template-columns:repeat(4,1fr); gap:10px} }
+@media (min-width:800px){ .tiles{grid-template-columns:repeat(5,1fr)} }
+.tile{display:flex; flex-direction:column; align-items:flex-start; gap:6px; min-height:100px; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:11px 10px 10px; cursor:pointer; box-shadow:var(--shadow); transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .2s,background .2s}
+.tiles.intro .tile{animation:pop .5s var(--ease) both; animation-delay:calc(var(--i,0)*25ms + .1s)}
+@media (hover:hover){ .tile:hover{transform:translateY(-3px); box-shadow:var(--shadow-lg)} .tile:hover .ic{transform:scale(1.06)} }
+.tile:active{transform:scale(.97)}
+.tile .ic{display:grid; place-items:center; width:36px; height:36px; border-radius:11px; background:var(--sky); color:var(--navy); transition:transform .3s var(--ease)}
+.tile .ic svg.i{width:21px; height:21px}
+.tile b{font-family:var(--head); font-weight:800; font-size:15px; line-height:1.25}
+.tile small{font-size:12.5px; color:var(--faint); line-height:1.3; margin-top:-3px}
+.tile[aria-current="true"]{border-color:var(--navy); background:var(--sky); box-shadow:0 0 0 1px var(--navy)}
+.tile[aria-current="true"] .ic{background:#1F3366; color:#fff}
+.empty{padding:18px 4px; color:var(--muted); font-size:15px}
 
-/* formula marquee */
-.marquee{position:relative; z-index:1; overflow:hidden; padding:14px 0 6px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.track{display:flex; gap:10px; width:max-content; animation:slide 48s linear infinite}
-.marquee:hover .track{animation-play-state:paused}
-@keyframes slide{to{transform:translateX(-50%)}}
-.fchip{display:inline-flex; align-items:center; gap:8px; white-space:nowrap; font-size:14px; color:var(--muted); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:7px 14px 7px 10px; cursor:pointer; box-shadow:var(--shadow); transition:color .2s,border-color .2s,transform .3s var(--ease)}
-.fchip:hover{color:var(--fg); border-color:var(--line-2); transform:translateY(-2px)}
-.fchip i{width:22px; height:22px; border-radius:7px; display:grid; place-items:center; background:var(--hue-bg); color:var(--hue)}
-.fchip i svg.i{width:14px; height:14px; stroke-width:2}
-
-/* mobile tiles */
-.tiles-sec{padding:18px 0 6px}
-.sec-h{font-family:var(--head); font-weight:800; font-size:20px; margin:0 0 12px}
-.tiles{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
-@media (min-width:640px){ .tiles{grid-template-columns:repeat(3,1fr)} }
-.tile{display:flex; flex-direction:column; gap:6px; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px 14px 13px; cursor:pointer; box-shadow:var(--shadow); transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .25s}
-.tile:hover{transform:translateY(-4px); box-shadow:var(--shadow-lg)}
-.tile:active{transform:translateY(0) scale(.98)}
-.tile .ic{display:grid; place-items:center; width:42px; height:42px; border-radius:13px; background:var(--hue-bg); color:var(--hue); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--hue) 12%,transparent); transition:transform .45s var(--ease)}
-.tile:hover .ic{transform:rotate(-8deg) scale(1.08)}
-.tile .no{position:absolute; top:12px; right:14px; font-family:var(--num); font-size:12px; color:var(--faint)}
-.tile b{font-family:var(--head); font-weight:800; font-size:15.5px; line-height:1.3}
-.tile small{font-size:12.5px; color:var(--muted); line-height:1.4}
-.tile[aria-current="true"]{border-color:color-mix(in srgb,var(--hue) 55%,transparent); box-shadow:0 0 0 3px color-mix(in srgb,var(--hue) 14%,transparent),var(--shadow-lg)}
-
-/* app layout */
-.app{display:block; padding:16px 0 10px}
+/* app */
+.app{display:block; padding:14px 0 6px}
 .side{display:none}
 @media (min-width:1000px){
   .tiles-sec{display:none}
-  .app{display:grid; grid-template-columns:276px 1fr; gap:28px; align-items:start; padding-top:22px}
-  .side{display:block; position:sticky; top:80px; max-height:calc(100vh - 96px); overflow:auto; padding:18px 12px 14px; background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
-  .side .sec-h{padding:0 8px; font-size:16px}
+  .app{display:grid; grid-template-columns:250px 1fr; gap:24px; align-items:start; padding-top:14px}
+  .side{display:block; position:sticky; top:70px; max-height:calc(100vh - 82px); overflow:auto; padding:12px 8px; background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow)}
 }
-.grp{font-size:12.5px; font-weight:700; color:var(--faint); margin:14px 10px 4px}
-.grp:first-of-type{margin-top:0}
-.mi{position:relative; display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:0; background:transparent; padding:8px 10px; border-radius:12px; cursor:pointer; color:var(--muted); font-size:14.5px; transition:background .25s,color .25s}
-.mi .ico{display:grid; place-items:center; width:28px; height:28px; border-radius:9px; background:var(--hue-bg); color:var(--hue); transition:transform .35s var(--ease)}
-.mi .ico svg.i{width:17px; height:17px; stroke-width:1.8}
-.mi .n{font-family:var(--num); font-size:12px; color:var(--faint); width:18px}
+.side .search{margin:0 4px 4px}
+.side .search input{height:42px; font-size:15px; border-radius:12px}
+.grp{font-size:13px; font-weight:700; color:var(--faint); margin:10px 10px 0}
+.mi{display:flex; align-items:center; gap:10px; width:100%; min-height:36px; text-align:left; border:0; background:transparent; padding:4px 8px; border-radius:10px; cursor:pointer; color:var(--muted); font-size:15px; transition:background .2s,color .2s}
+.mi .ico{display:grid; place-items:center; width:26px; height:26px; border-radius:8px; background:var(--bg-2); color:var(--navy); transition:background .2s}
+.mi .ico svg.i{width:16px; height:16px; stroke-width:1.8}
 .mi:hover{background:var(--bg-2); color:var(--fg)}
-.mi:hover .ico{transform:scale(1.1) rotate(-6deg)}
-.mi[aria-current="true"]{background:var(--bg-2); color:var(--fg); font-weight:700; box-shadow:inset 0 0 0 1px var(--line)}
-.mi[aria-current="true"] .n{color:var(--hue)}
-.mi[aria-current="true"]::before{content:""; position:absolute; left:-12px; top:9px; bottom:9px; width:3px; border-radius:3px; background:var(--hue)}
+.mi[aria-current="true"]{background:var(--sky); color:var(--navy); font-weight:700}
+.mi[aria-current="true"] .ico{background:#1F3366; color:#fff}
 
 /* panel */
 .stage{min-width:0}
-.panel{background:linear-gradient(90deg,var(--hue),color-mix(in srgb,var(--hue) 35%,transparent) 55%,transparent) top/100% 3px no-repeat,var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow-lg); padding:24px 20px 20px; scroll-margin-top:76px}
-@media (min-width:700px){ .panel{padding:32px 32px 26px} }
-.p-head{display:grid; grid-template-columns:auto 1fr; gap:4px 16px; align-items:center}
-.p-head .ic{grid-row:span 2; display:grid; place-items:center; width:58px; height:58px; border-radius:18px; background:var(--hue-bg); color:var(--hue); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--hue) 14%,transparent),0 10px 20px -12px color-mix(in srgb,var(--hue) 60%,transparent)}
-.p-head .ic svg.i{width:30px; height:30px}
-.panel.enter .p-head .ic{animation:popin .7s var(--ease) both}
-@keyframes popin{0%{transform:scale(.6) rotate(-12deg); opacity:0} 60%{transform:scale(1.08) rotate(3deg); opacity:1} 100%{transform:none}}
-.p-head .meta{font-size:13.5px; color:var(--muted)}
-.p-head .meta span{font-family:var(--num); color:var(--hue); margin-right:6px; font-weight:600}
-.p-head h2{font-family:var(--head); font-weight:800; font-size:clamp(24px,4.4vw,32px); line-height:1.2; margin:0; letter-spacing:-.015em}
-.formula{display:inline-flex; align-items:flex-start; gap:10px; margin:18px 0 0; font-family:var(--body); font-weight:500; font-size:15px; color:var(--fg); background:var(--bg-2); border:1px solid var(--line); border-radius:12px; padding:8px 14px 8px 8px; line-height:1.5}
-.formula::before{content:"공식"; flex:none; margin-top:1px; font-size:12px; font-weight:700; color:var(--hue); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:1px 7px}
-.p-body{display:grid; gap:22px; margin-top:22px}
-@media (min-width:1100px){ .p-body{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); align-items:start} .result{position:sticky; top:86px} }
+.pick{padding:26px 18px; text-align:center; color:var(--muted); border:1px dashed var(--field); border-radius:var(--r)}
+.panel{position:relative; background:var(--card); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow-lg); padding:16px 14px 16px; scroll-margin-top:64px}
+@media (min-width:700px){ .panel{padding:26px 28px 22px} }
+.p-top{display:flex; align-items:center; gap:6px; margin-bottom:10px}
+.p-top .crumb{font-size:13.5px; color:var(--faint); margin-right:auto}
+.tool{display:inline-flex; align-items:center; gap:5px; min-height:var(--tap); border:1px solid var(--line); background:var(--card); border-radius:999px; padding:0 12px; font-size:13.5px; color:var(--muted); cursor:pointer}
+.tool:hover{color:var(--fg); border-color:var(--field)}
+.tool svg.i{width:16px; height:16px}
+.p-head{display:flex; gap:12px; align-items:center}
+.p-head .ic{display:grid; place-items:center; flex:none; width:48px; height:48px; border-radius:15px; background:var(--sky); color:var(--navy)}
+.p-head .ic svg.i{width:26px; height:26px}
+.panel.enter .p-head .ic{animation:popin .6s var(--ease) both}
+@keyframes popin{0%{transform:scale(.6) rotate(-10deg); opacity:0} 60%{transform:scale(1.06); opacity:1} 100%{transform:none}}
+.p-head h2{font-family:var(--head); font-weight:800; font-size:clamp(21px,4.4vw,29px); line-height:1.25; margin:0; letter-spacing:-.015em}
+.formula{display:flex; align-items:flex-start; gap:8px; margin:14px 0 0; font-size:14.5px; font-weight:500; background:var(--bg-2); border:1px solid var(--line); border-radius:12px; padding:8px 11px 8px 8px; line-height:1.55}
+.formula::before{content:"공식"; flex:none; font-size:12.5px; font-weight:700; color:var(--navy); background:var(--sky); border-radius:7px; padding:1px 7px; margin-top:1px}
+.p-body{display:grid; grid-template-columns:minmax(0,1fr); gap:16px; margin-top:16px}
+@media (min-width:1100px){ .p-body{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); align-items:start; gap:24px} .result{position:sticky; top:80px} }
 
-.seg{position:relative; display:inline-flex; padding:4px; gap:4px; background:var(--bg-2); border:1px solid var(--line); border-radius:13px; margin-bottom:16px}
-.seg button{border:0; background:transparent; font-size:14.5px; font-weight:500; color:var(--muted); padding:7px 15px; border-radius:10px; cursor:pointer; transition:background .3s var(--ease),color .3s,box-shadow .3s}
-.seg button[aria-pressed="true"]{background:var(--card); color:var(--fg); font-weight:700; box-shadow:0 1px 2px rgba(18,24,38,.08),0 4px 10px -4px rgba(18,24,38,.18)}
-.fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px}
-.field label{display:block; font-size:13.5px; font-weight:500; color:var(--muted); margin-bottom:6px}
-.field label small{font-weight:400; color:var(--faint)}
-.box{display:flex; align-items:stretch; background:var(--card); border:1px solid var(--line-2); border-radius:13px; overflow:hidden; box-shadow:0 1px 2px rgba(18,24,38,.04); transition:border-color .25s,box-shadow .25s}
-.box:hover{border-color:color-mix(in srgb,var(--hue) 35%,var(--line-2))}
-.box:focus-within{border-color:var(--hue); box-shadow:0 0 0 4px color-mix(in srgb,var(--hue) 13%,transparent)}
+.seg{display:flex; flex-wrap:wrap; gap:4px; padding:4px; background:var(--bg-2); border:1px solid var(--line); border-radius:13px; margin-bottom:14px; width:fit-content; max-width:100%}
+.seg button{min-height:var(--tap); border:0; background:transparent; font-size:15px; font-weight:500; color:var(--muted); padding:0 14px; border-radius:10px; cursor:pointer; transition:background .25s,color .25s,box-shadow .25s}
+.seg button[aria-pressed="true"]{background:var(--card); color:var(--navy); font-weight:700; box-shadow:0 1px 2px rgba(23,32,51,.1),0 4px 10px -4px rgba(23,32,51,.2)}
+.fields{display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px 10px; align-items:end}
+@media (min-width:700px){ .fields{grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:14px} }
+.field.wide{grid-column:1/-1}
+@media (max-width:519px){ .field.sel{grid-column:1/-1} }
+.field label{display:block; font-size:15px; font-weight:500; color:var(--fg); margin-bottom:5px; line-height:1.35}
+.field label small{display:block; font-size:13px; font-weight:400; color:var(--faint)}
+.box{display:flex; align-items:stretch; min-height:48px; background:var(--card); border:1px solid var(--field); border-radius:12px; overflow:hidden; transition:border-color .2s,box-shadow .2s}
+.box:focus-within{border-color:var(--navy); box-shadow:0 0 0 4px var(--ring)}
 .box .pre{display:flex; align-items:center; padding-left:12px; color:var(--muted); font-family:var(--num)}
-.box input{flex:1; min-width:0; font-family:var(--num); font-size:18px; font-weight:500; color:var(--fg); background:transparent; border:0; padding:11px 12px; outline:none}
+.box input,.box textarea{flex:1; min-width:0; width:100%; font-family:var(--num); font-size:17px; font-weight:500; background:transparent; border:0; padding:10px 11px; outline:none}
+.box textarea{min-height:120px; resize:vertical; line-height:1.5}
+.box input.ex,.box textarea.ex{color:var(--faint)}
 .box input::placeholder{font-family:var(--body); font-size:14px; font-weight:400; color:var(--faint)}
-.box select,.box .u{flex:none; font-size:14.5px; color:var(--muted); background:var(--bg-2); border:0; border-left:1px solid var(--line); padding:0 12px; display:flex; align-items:center}
-.box select{cursor:pointer; padding-right:6px}
-.box select.full{flex:1; border-left:0; background:var(--card); color:var(--fg); font-size:15px}
-.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:14px}
-.chips span{font-size:12.5px; color:var(--faint); align-self:center; margin-right:2px}
-.chips button{font-size:13px; padding:5px 12px; border-radius:999px; border:1px solid var(--line); background:var(--card); cursor:pointer; box-shadow:0 1px 2px rgba(18,24,38,.04); transition:transform .3s var(--ease),border-color .2s,background .2s,color .2s}
-.chips button:hover{border-color:color-mix(in srgb,var(--hue) 40%,var(--line)); transform:translateY(-2px)}
-.chips button[aria-pressed="true"]{background:var(--hue-bg); border-color:color-mix(in srgb,var(--hue) 45%,transparent); color:var(--hue); font-weight:700}
-.subhead{font-family:var(--head); font-weight:800; font-size:16px; margin:22px 0 10px}
+.box select,.box .u{flex:none; font-size:16px; color:var(--muted); background:var(--bg-2); border:0; border-left:1px solid var(--line); padding:0 8px 0 10px; display:flex; align-items:center; max-width:50%}
+.box select{cursor:pointer}
+.box select:focus-visible{outline:3px solid var(--navy-2); outline-offset:-3px; border-radius:0}
+.box select.full{flex:1; max-width:none; border-left:0; background:var(--card); color:var(--fg); padding-left:12px}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; align-items:center}
+.chips span{font-size:13px; color:var(--faint); margin-right:2px}
+.chips button{min-height:var(--tap); font-size:14px; padding:0 12px; border-radius:999px; border:1px solid var(--line); background:var(--card); cursor:pointer; transition:border-color .2s,background .2s,color .2s}
+.chips button:hover{border-color:var(--field)}
+.chips button[aria-pressed="true"]{background:var(--sky); border-color:var(--navy); color:var(--navy); font-weight:700}
 
 /* result */
-.result{position:relative; border-radius:18px; background:radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--hue) 9%,var(--card)),var(--card) 60%); padding:20px 20px 18px; box-shadow:inset 0 0 0 1px var(--line),0 18px 40px -26px color-mix(in srgb,var(--hue) 70%,transparent)}
-.result::before{content:""; position:absolute; inset:0; border-radius:inherit; padding:1.5px; background:conic-gradient(from var(--a),transparent 0 70%,color-mix(in srgb,var(--hue) 60%,transparent) 82%,var(--hue) 88%,transparent 95%); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:beam 5s linear infinite; pointer-events:none}
-.r-lbl{font-size:13.5px; font-weight:500; color:var(--muted)}
-.r-val{display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 10px; margin-top:2px}
-.r-n{font-family:var(--num); font-weight:600; font-size:clamp(34px,6.4vw,48px); line-height:1.15; letter-spacing:-.02em; font-variant-numeric:tabular-nums; background:linear-gradient(100deg,var(--accent) 0%,var(--accent) 40%,var(--accent-2) 50%,var(--accent) 60%,var(--accent) 100%); background-size:260% 100%; background-position:100% 0; -webkit-background-clip:text; background-clip:text; color:transparent}
-.r-n.shine{animation:shine .9s var(--ease)}
-@keyframes shine{from{background-position:100% 0} to{background-position:0 0}}
-.r-n.wait{background:none; color:var(--faint); -webkit-text-fill-color:var(--faint)}
-.r-u{font-family:var(--head); font-weight:800; font-size:20px; color:var(--accent-ink)}
-.r-also{margin-top:4px; font-size:14.5px; color:var(--muted)}
+.result{border-radius:16px; background:linear-gradient(180deg,var(--sky),var(--card) 80%); border:1px solid var(--sky-2); padding:14px 15px 13px}
+.r-lbl{font-size:14px; font-weight:500; color:var(--muted)}
+.r-val{display:flex; flex-wrap:wrap; align-items:baseline; gap:0 8px; margin-top:1px}
+.r-n{font-family:var(--num); font-weight:600; font-size:clamp(30px,7vw,44px); line-height:1.15; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--navy)}
+.r-n.wait{color:var(--faint)}
+.r-n.flash{animation:flash .5s var(--ease)}
+@keyframes flash{0%{opacity:.35; transform:translateY(3px)} 100%{opacity:1; transform:none}}
+.r-u{font-family:var(--head); font-weight:800; font-size:19px; color:var(--navy)}
+.r-also{margin-top:3px; font-size:15px; color:var(--muted)}
 .r-also:empty{display:none}
-.r-also b{color:var(--fg); font-weight:700}
-.r-work{margin:14px 0 0; padding-top:12px; border-top:1px dashed var(--line-2); font-family:var(--num); font-size:13.5px; color:var(--muted); overflow-x:auto; white-space:nowrap}
+.r-also b{color:var(--fg)}
+.checks{display:grid; gap:6px; margin-top:10px}
+.checks:empty{display:none}
+.checks div{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:14.5px}
+.checks b{font-family:var(--num); font-size:16px}
+.r-work{margin:10px 0 0; padding-top:9px; border-top:1px dashed var(--sky-2); font-size:14.5px; font-variant-numeric:tabular-nums; color:var(--muted); line-height:1.55}
 .r-work:empty{display:none}
-.r-msg{margin:12px 0 0; font-size:14px; color:var(--warn); background:var(--warn-soft); border-radius:10px; padding:8px 11px}
-.r-msg:empty{display:none}
+.note-box{margin:10px 0 0; font-size:14.5px; border-radius:10px; padding:8px 11px; display:flex; gap:8px}
+.note-box:empty{display:none}
+.note-box::before{flex:none; font-weight:700}
+.r-warn{background:var(--card); border:1px solid var(--sky-2); color:var(--fg)}
+.r-warn::before{content:"주의"; color:var(--navy)}
+.r-err{background:var(--coral-soft); color:var(--coral-ink)}
+.r-err::before{content:"계산 불가"}
+.r-2{margin-top:12px; padding-top:10px; border-top:1px solid var(--sky-2)}
 .pair{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-.badge{display:inline-block; margin-top:4px; font-size:12.5px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--bg-2); color:var(--muted)}
-.badge.ok{background:var(--ok-soft); color:var(--ok)}
-.badge.bad{background:var(--warn-soft); color:var(--warn)}
+.badge{display:inline-flex; align-items:center; gap:4px; margin-top:2px; font-size:13px; font-weight:700; padding:3px 10px; border-radius:999px; background:var(--bg-2); color:var(--muted)}
+.badge.ok{background:var(--teal-soft); color:var(--teal-ink)}
+.badge.ok::before{content:"✓"}
+.badge.bad{background:var(--coral-soft); color:var(--coral-ink)}
+.badge.bad::before{content:"!"}
 .badge:empty{display:none}
+.tbl-wrap{overflow-x:auto; margin-top:10px}
+.tbl{width:100%; border-collapse:collapse; font-size:14.5px}
+.tbl th{font-size:13px; font-weight:700; color:var(--faint); text-align:left; padding:4px 6px; border-bottom:1px solid var(--sky-2)}
+.tbl td{padding:6px; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums}
+.tbl th:not(:first-child),.tbl td:not(:first-child){text-align:right}
+.tbl.sum tr:last-child td{border-bottom:0; font-weight:700}
 
-.notes{list-style:none; margin:24px 0 0; padding:16px 0 0; border-top:1px solid var(--line); display:grid; gap:8px}
-.notes li{display:flex; gap:10px; font-size:14px; color:var(--muted)}
-.notes li::before{content:""; flex:none; width:6px; height:6px; border-radius:50%; background:color-mix(in srgb,var(--hue) 55%,transparent); margin-top:.62em}
+.notes{list-style:none; margin:18px 0 0; padding:12px 0 0; border-top:1px solid var(--line); display:grid; gap:6px}
+.notes li{display:flex; gap:9px; font-size:14.5px; color:var(--muted)}
+.notes li::before{content:""; flex:none; width:6px; height:6px; border-radius:50%; background:var(--sky-2); margin-top:.65em}
+.abbr{margin:10px 0 0; font-size:13px; color:var(--faint)}
+details.src{margin-top:8px; font-size:13.5px; color:var(--faint)}
+details.src summary{cursor:pointer; min-height:var(--tap); display:flex; align-items:center}
+details.src a{color:var(--muted); display:inline-block; margin:2px 10px 2px 0}
 
-.pn{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px}
-.pn button{display:flex; align-items:center; gap:12px; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px; cursor:pointer; box-shadow:var(--shadow); transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .2s}
-.pn button:hover{transform:translateY(-3px); box-shadow:var(--shadow-lg)}
-.pn button.next{flex-direction:row-reverse; text-align:right}
-.pn .ar{display:grid; place-items:center; flex:none; width:32px; height:32px; border-radius:10px; background:var(--bg-2); color:var(--muted); transition:transform .35s var(--ease)}
-.pn .ar svg.i{width:18px; height:18px}
-.pn button.prev:hover .ar{transform:translateX(-3px)}
-.pn button.next:hover .ar{transform:translateX(3px)}
-.pn .tx{display:flex; flex-direction:column; min-width:0}
-.pn small{font-size:12px; color:var(--faint)}
-.pn b{font-size:14.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.pn button:disabled{visibility:hidden}
+/* motion */
+@keyframes rise{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+@keyframes pop{from{opacity:0; transform:translateY(10px) scale(.97)} to{opacity:1; transform:none}}
+.panel.enter .an{animation:rise .45s var(--ease) both; animation-delay:calc(var(--i,0)*35ms)}
+.toast{position:fixed; left:50%; bottom:90px; transform:translateX(-50%); background:var(--fg); color:var(--bg); padding:9px 16px; border-radius:999px; font-size:14.5px; z-index:60; animation:rise .3s var(--ease)}
 
-/* entrance + switch animation */
-@keyframes rise{from{opacity:0; transform:translateY(14px); filter:blur(6px)} to{opacity:1; transform:none; filter:none}}
-@keyframes pop{from{opacity:0; transform:translateY(16px) scale(.96)} to{opacity:1; transform:none}}
-.hero .w,.hero .pill,.hero .lead,.hero .lab{animation:rise .9s var(--ease) both; animation-delay:calc(var(--i,0)*90ms)}
-.marquee{animation:rise 1s var(--ease) .6s both}
-.tile{animation:pop .65s var(--ease) both; animation-delay:calc(350ms + var(--i,0)*45ms)}
-.panel.enter .an{animation:rise .6s var(--ease) both; animation-delay:calc(var(--i,0)*45ms)}
-
-/* floating switcher (mobile) */
-.fab{position:fixed; left:50%; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:30; transform:translate(-50%,160%); display:flex; align-items:center; gap:10px; max-width:calc(100vw - 32px); background:var(--glass); backdrop-filter:blur(16px) saturate(1.5); -webkit-backdrop-filter:blur(16px) saturate(1.5); color:var(--fg); border:1px solid var(--line); border-radius:999px; padding:9px 18px 9px 9px; box-shadow:var(--shadow-lg); cursor:pointer; transition:transform .5s var(--ease)}
-.fab.show{transform:translate(-50%,0)}
-.fab .ico{display:grid; place-items:center; width:32px; height:32px; border-radius:50%; background:linear-gradient(140deg,#2C4380,#23376B 55%,#3D4FB8); color:#fff}
-.fab .ico svg.i{width:17px; height:17px}
-.fab span.t{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:14.5px; font-weight:700}
-@media (min-width:1000px){ .fab{display:none} }
-dialog.sheet{margin:auto auto 0; width:100%; max-width:560px; max-height:84vh; border:0; padding:0; border-radius:26px 26px 0 0; background:var(--card); color:var(--fg); box-shadow:var(--shadow-lg)}
-dialog.sheet::backdrop{background:rgba(18,24,38,.35); backdrop-filter:blur(3px)}
-dialog.sheet[open]{animation:sheet .45s var(--ease)}
+/* bottom bar (phone) */
+.bar{position:fixed; left:0; right:0; bottom:0; z-index:30; display:flex; align-items:center; gap:10px; padding:8px 12px calc(8px + env(safe-area-inset-bottom)); background:color-mix(in srgb,var(--card) 94%,transparent); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-top:1px solid var(--line); transform:translateY(110%); transition:transform .4s var(--ease)}
+.bar.show{transform:none}
+.bar .res{flex:1; min-width:0; border:0; background:transparent; text-align:left; padding:2px 4px; cursor:pointer}
+.bar .res small{display:block; font-size:12.5px; color:var(--faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.bar .res b{display:block; font-family:var(--num); font-size:19px; color:var(--navy); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.bar .res.hide{visibility:hidden}
+.bar .menu{display:inline-flex; align-items:center; gap:8px; min-height:46px; border:0; border-radius:999px; padding:0 18px 0 14px; background:#1F3366; color:#fff; font-weight:700; font-size:15px; cursor:pointer}
+.bar .menu svg.i{width:18px; height:18px}
+@media (min-width:1000px){ .bar{display:none} }
+body.has-bar{padding-bottom:76px}
+dialog.sheet{margin:auto auto 0; width:100%; max-width:560px; max-height:86vh; border:0; padding:0; border-radius:22px 22px 0 0; background:var(--card); color:var(--fg); box-shadow:var(--shadow-lg)}
+dialog.sheet::backdrop{background:rgba(23,32,51,.4)}
+dialog.sheet[open]{animation:sheet .35s var(--ease)}
 @keyframes sheet{from{transform:translateY(100%)} to{transform:none}}
-.sheet .grab{width:42px; height:5px; border-radius:5px; background:var(--line-2); margin:10px auto 4px}
-.sheet .sh{display:flex; align-items:center; justify-content:space-between; padding:6px 18px 4px}
-.sheet .sh b{font-family:var(--head); font-weight:800; font-size:18px}
-.sheet .sh button{border:0; background:var(--bg-2); border-radius:999px; padding:6px 12px; font-size:14px; cursor:pointer}
-.sheet .list{overflow:auto; max-height:calc(84vh - 70px); padding:6px 12px calc(18px + env(safe-area-inset-bottom))}
-.sheet .mi{padding:10px 12px; font-size:15.5px}
-.sheet .mi[aria-current="true"]::before{left:0}
+.sheet .grab{width:42px; height:5px; border-radius:5px; background:var(--line); margin:10px auto 4px}
+.sheet .sh{display:flex; align-items:center; gap:8px; padding:6px 12px 8px}
+.sheet .sh .search{flex:1}
+.sheet .sh button.x{min-height:44px; border:0; background:var(--bg-2); border-radius:999px; padding:0 16px; font-size:15px; cursor:pointer}
+.sheet .list{overflow:auto; max-height:calc(86vh - 84px); padding:0 8px calc(16px + env(safe-area-inset-bottom))}
+.sheet .mi{min-height:46px; font-size:16px}
 
 /* footer */
-.dm{padding:44px 0 52px}
-.dm .card{position:relative; overflow:hidden; background:var(--card); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow-lg); padding:30px 22px}
-@media (min-width:700px){ .dm .card{padding:40px 44px} }
-.dm .aurora{inset:-120px -20% -120px 30%; height:auto; filter:blur(60px); opacity:.7}
-.dm .aurora .a1{width:300px; height:300px; left:30%; top:40px}
-.dm .aurora .a2{width:260px; height:260px; left:60%; top:120px}
-.dm .aurora .a3{width:240px; height:240px; right:-40px; top:0}
-.dm .txt{position:relative; z-index:1}
-.dm h2{font-family:var(--head); font-weight:800; font-size:clamp(24px,4.6vw,34px); line-height:1.25; margin:0 0 10px; letter-spacing:-.015em}
-.dm p{color:var(--muted); margin:0 0 8px; max-width:38em}
-.dm .btns{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px}
-.fine{margin-top:22px; font-size:13px; color:var(--faint); display:grid; gap:4px}
-.fine a{color:var(--muted)}
+.dm{padding:34px 0 40px}
+.dm .card{display:flex; flex-wrap:wrap; align-items:center; gap:12px 18px; background:var(--bg-2); border:1px solid var(--line); border-radius:18px; padding:18px 18px}
+.dm .card p{flex:1 1 280px; margin:0; color:var(--muted); font-size:15px}
+.dm .card p b{color:var(--fg)}
+.btn{display:inline-flex; align-items:center; min-height:44px; text-decoration:none; font-weight:700; font-size:15px; padding:0 18px; border-radius:999px; border:1px solid var(--field); background:var(--card)}
+.btn:hover{border-color:var(--navy)}
+.fine{margin-top:16px; font-size:13.5px; color:var(--faint); display:grid; gap:3px}
 
 @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important; transition:none!important} }
 </style>
 </head>
 <body>
+<a class="skip" href="#stage">계산기로 바로 가기</a>
 
 <header class="top" id="top">
   <div class="wrap">
     <a class="brand" href="./" aria-label="실험실 계산기 처음으로"><span class="mk"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v15M8 20h8M5 7h14M5 7l-2.5 6h5zM19 7l-2.5 6h5z"/></svg></span>실험실 계산기</a>
-    <nav aria-label="바깥 링크">
-      <a class="hide-s" href="https://www.instagram.com/mi._.mic/" target="_blank" rel="noopener">@mi._.mic</a>
-      <a class="btn solid sm" href="https://www.instagram.com/p/Df6IpWooCru/" target="_blank" rel="noopener">풀이 받기</a>
-    </nav>
+    <a class="ig" href="https://www.instagram.com/mi._.mic/" target="_blank" rel="noopener">@mi._.mic</a>
   </div>
 </header>
 
 <section class="hero">
-  <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
-  <div class="wrap hero-in">
-    <div>
-      <span class="pill" style="--i:0"><i></i>용액 만들기부터 클로닝까지 매주 쓰는 계산</span>
-      <h1><span class="w" style="--i:1">실험실</span> <span class="w" style="--i:2">계산</span> <span class="w" style="--i:3">공식</span> <span class="w" style="--i:4">10개</span></h1>
-      <p class="lead" style="--i:5">필요한 계산기를 고르고 숫자만 바꾸면 바로 계산돼요. 예시 숫자가 들어 있고, 계산 과정도 한 줄로 같이 보여 드려요.</p>
-      <p class="lab" style="--i:6">mi._.mic, 경북대학교 분자미생물학 연구실</p>
+  <div class="wrap">
+    <h1>실험실 계산기</h1>
+    <p class="lead">계산을 고르고 숫자만 바꾸면 바로 결과와 계산 과정이 나와요.</p>
+    <div class="finder">
+      <label class="search" for="q"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input id="q" type="search" placeholder="계산기 찾기 (예: 희석, qPCR)" autocomplete="off" enterkeyhint="go" aria-label="계산기 찾기"></label>
+      <div class="cats" id="cats" role="group" aria-label="분류"></div>
     </div>
-    <button type="button" class="demo" id="demo" style="--i:5" aria-label="예시 계산기 열기">
-      <span class="ring"></span><span class="ring2"></span>
-      <span class="demo-top"><span class="dots"><i></i><i></i><i></i></span><span id="demo-name">01 몰농도로 무게 재기</span></span>
-      <span class="demo-body" id="demo-body">
-        <span class="demo-q" id="demo-q">0.5 M NaCl 200 mL</span>
-        <span class="demo-n"><b id="demo-n">5.844</b><em id="demo-u">g</em></span>
-        <span class="demo-w" id="demo-w">0.5 M × 0.2 L × 58.44 g/mol</span>
-      </span>
-      <span class="demo-go"><span class="prog"><i id="demo-prog"></i></span>눌러서 직접 계산</span>
-    </button>
   </div>
-  <div class="marquee" aria-label="공식으로 바로가기"><div class="track" id="track"></div></div>
 </section>
 
 <main class="wrap">
-  <section class="tiles-sec" id="menu" aria-labelledby="tiles-h">
-    <h2 class="sec-h" id="tiles-h">어떤 계산이 필요해요?</h2>
-    <div class="tiles" id="tiles"></div>
+  <section class="tiles-sec" id="menu" aria-label="계산기 목록">
+    <div class="tiles intro" id="tiles"></div>
+    <p class="empty" id="empty" hidden>찾는 계산기가 없어요. '희석', 'DNA', 'OD'처럼 짧게 검색해 보세요.</p>
   </section>
 
   <div class="app">
-    <aside class="side spot" aria-labelledby="side-h">
-      <h2 class="sec-h" id="side-h">계산기 고르기</h2>
+    <aside class="side" aria-label="계산기 고르기">
+      <label class="search" for="q2"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input id="q2" type="search" placeholder="계산기 찾기  /" autocomplete="off" aria-label="계산기 찾기"></label>
       <div id="side"></div>
     </aside>
-
-    <div class="stage" id="stage">
-
-<!-- 01 -->
-<section class="panel" id="c1" aria-labelledby="c1-h">
-  <div class="p-head an"><div class="ic" data-icon="scale"></div><div class="meta"><span>01</span>용액 만들 때</div><h2 id="c1-h">몰농도로 무게 재기</h2></div>
-  <div class="formula an">무게(g) = 몰농도(M) × 부피(L) × 분자량(g/mol)</div>
-  <div class="p-body">
-    <div class="inputs">
-      <div class="fields">
-        <div class="field an"><label for="c1-m">만들 몰농도</label>
-          <div class="box"><input id="c1-m" inputmode="decimal" value="0.5"><select id="c1-mu" aria-label="몰농도 단위"><option value="1">M</option><option value="1e-3">mM</option><option value="1e-6">μM</option></select></div></div>
-        <div class="field an"><label for="c1-v">만들 부피</label>
-          <div class="box"><input id="c1-v" inputmode="decimal" value="200"><select id="c1-vu" aria-label="부피 단위"><option value="1">L</option><option value="1e-3" selected>mL</option><option value="1e-6">μL</option></select></div></div>
-        <div class="field an"><label for="c1-mw">분자량 <small>MW(Molecular Weight)</small></label>
-          <div class="box"><input id="c1-mw" inputmode="decimal" value="58.44"><span class="u">g/mol</span></div></div>
-      </div>
-      <div class="chips an" id="c1-chips"><span>분자량 넣기</span>
-        <button type="button" data-mw="58.44">NaCl</button>
-        <button type="button" data-mw="74.55">KCl</button>
-        <button type="button" data-mw="121.14">Tris base</button>
-        <button type="button" data-mw="372.24">Na₂EDTA·2H₂O</button>
-        <button type="button" data-mw="203.30">MgCl₂·6H₂O</button>
-        <button type="button" data-mw="147.01">CaCl₂·2H₂O</button>
-        <button type="button" data-mw="40.00">NaOH</button>
-        <button type="button" data-mw="180.16">포도당</button>
-        <button type="button" data-mw="288.38">SDS</button>
-      </div>
-    </div>
-    <div class="result an" aria-live="polite"><div class="r-lbl">저울에 올릴 양</div><div class="r-val"><span class="r-n" id="c1-out">–</span><span class="r-u" id="c1-unit">g</span></div><div class="r-also" id="c1-also"></div><p class="r-work" id="c1-work"></p><p class="r-msg" id="c1-msg"></p></div>
-  </div>
-  <ul class="notes an">
-    <li>물을 다 넣지 말고 녹인 다음, 마지막에 눈금까지 채우세요.</li>
-    <li>수화물은 물까지 포함한 분자량이라 시약병 라벨의 FW(Formula Weight)가 우선이에요.</li>
-    <li>EDTA는 Ethylenediaminetetraacetic acid, SDS는 Sodium Dodecyl Sulfate.</li>
-  </ul>
-</section>
-
-<!-- 02 -->
-<section class="panel" id="c2" aria-labelledby="c2-h">
-  <div class="p-head an"><div class="ic" data-icon="flask"></div><div class="meta"><span>02</span>용액 만들 때</div><h2 id="c2-h">% 농도 w/v, v/v</h2></div>
-  <div class="formula an" id="c2-formula">w/v(weight/volume)는 100 mL에 몇 g</div>
-  <div class="p-body">
-    <div class="inputs">
-      <div class="seg an" role="group" aria-label="농도 종류"><button type="button" id="c2-wv" aria-pressed="true">w/v 가루</button><button type="button" id="c2-vv" aria-pressed="false">v/v 액체</button></div>
-      <div class="fields" id="c2-f-wv">
-        <div class="field an"><label for="c2-p">만들 농도</label><div class="box"><input id="c2-p" inputmode="decimal" value="1"><span class="u">%</span></div></div>
-        <div class="field an"><label for="c2-v">최종 부피</label><div class="box"><input id="c2-v" inputmode="decimal" value="50"><span class="u">mL</span></div></div>
-      </div>
-      <div class="fields" id="c2-f-vv" hidden>
-        <div class="field an"><label for="c2-pt">만들 농도</label><div class="box"><input id="c2-pt" inputmode="decimal" value="70"><span class="u">%</span></div></div>
-        <div class="field an"><label for="c2-vt">최종 부피</label><div class="box"><input id="c2-vt" inputmode="decimal" value="100"><span class="u">mL</span></div></div>
-        <div class="field an"><label for="c2-ps">갖고 있는 원액 <small>순수하면 100</small></label><div class="box"><input id="c2-ps" inputmode="decimal" value="95"><span class="u">%</span></div></div>
-      </div>
-    </div>
-    <div class="result an" aria-live="polite"><div class="r-lbl" id="c2-lbl">넣을 가루</div><div class="r-val"><span class="r-n" id="c2-out">–</span><span class="r-u" id="c2-unit">g</span></div><div class="r-also" id="c2-also"></div><p class="r-work" id="c2-work"></p><p class="r-msg" id="c2-msg"></p></div>
-  </div>
-  <ul class="notes an"><li id="c2-note">아가로스는 끓이면서 증발한 만큼 물로 다시 채우세요.</li></ul>
-</section>
-
-<!-- 03 -->
-<section class="panel" id="c3" aria-labelledby="c3-h">
-  <div class="p-head an"><div class="ic" data-icon="dilute"></div><div class="meta"><span>03</span>희석할 때</div><h2 id="c3-h">C1V1 = C2V2</h2></div>
-  <div class="formula an">원액 농도 × 넣을 양 = 원하는 농도 × 총량</div>
-  <div class="p-body">
-    <div class="inputs"><div class="fields">
-      <div class="field an"><label for="c3-c1">원액 농도 C1</label><div class="box"><input id="c3-c1" inputmode="decimal" value="1"><select id="c3-c1u" aria-label="원액 농도 단위"></select></div></div>
-      <div class="field an"><label for="c3-c2">원하는 농도 C2</label><div class="box"><input id="c3-c2" inputmode="decimal" value="50"><select id="c3-c2u" aria-label="원하는 농도 단위"></select></div></div>
-      <div class="field an"><label for="c3-v2">만들 총량 V2</label><div class="box"><input id="c3-v2" inputmode="decimal" value="500"><select id="c3-v2u" aria-label="총량 단위"><option value="1">L</option><option value="1e-3" selected>mL</option><option value="1e-6">μL</option></select></div></div>
-    </div></div>
-    <div class="result an" aria-live="polite"><div class="r-lbl">넣을 원액 V1</div><div class="r-val"><span class="r-n" id="c3-out">–</span><span class="r-u" id="c3-unit">mL</span></div><div class="r-also" id="c3-also"></div><p class="r-work" id="c3-work"></p><p class="r-msg" id="c3-msg"></p></div>
-  </div>
-  <ul class="notes an"><li>C1과 C2는 같은 종류의 단위끼리만 계산돼요(몰농도끼리, 질량농도끼리).</li></ul>
-</section>
-
-<!-- 04 -->
-<section class="panel" id="c4" aria-labelledby="c4-h">
-  <div class="p-head an"><div class="ic" data-icon="bottle"></div><div class="meta"><span>04</span>희석할 때</div><h2 id="c4-h">10X 스톡을 1X로</h2></div>
-  <div class="formula an">넣을 스톡 = 총량 × 원하는 배수 ÷ 스톡 배수</div>
-  <div class="p-body">
-    <div class="inputs">
-      <div class="fields">
-        <div class="field an"><label for="c4-s">스톡 배수</label><div class="box"><input id="c4-s" inputmode="decimal" value="10"><span class="u">X</span></div></div>
-        <div class="field an"><label for="c4-t">원하는 배수</label><div class="box"><input id="c4-t" inputmode="decimal" value="1"><span class="u">X</span></div></div>
-        <div class="field an"><label for="c4-v">만들 총량</label><div class="box"><input id="c4-v" inputmode="decimal" value="1"><select id="c4-vu" aria-label="총량 단위"><option value="1" selected>L</option><option value="1e-3">mL</option><option value="1e-6">μL</option></select></div></div>
-      </div>
-      <div class="chips an" id="c4-chips"><span>예시</span>
-        <button type="button" data-s="10" data-t="1" data-v="1" data-vu="1">10X TAE로 1X 1 L</button>
-        <button type="button" data-s="5" data-t="1" data-v="20" data-vu="1e-6">5X 버퍼로 PCR 20 μL</button>
-        <button type="button" data-s="10" data-t="1" data-v="50" data-vu="1e-6">10X 버퍼로 50 μL 반응</button>
-      </div>
-    </div>
-    <div class="result an" aria-live="polite"><div class="r-lbl">넣을 스톡</div><div class="r-val"><span class="r-n" id="c4-out">–</span><span class="r-u" id="c4-unit">mL</span></div><div class="r-also" id="c4-also"></div><p class="r-work" id="c4-work"></p><p class="r-msg" id="c4-msg"></p></div>
-  </div>
-  <ul class="notes an">
-    <li>효소 반응은 버퍼와 물을 먼저 넣고 효소는 마지막에 넣으세요.</li>
-    <li>TAE는 Tris-Acetate-EDTA, PCR은 Polymerase Chain Reaction.</li>
-  </ul>
-</section>
-
-<!-- 05 -->
-<section class="panel" id="c5" aria-labelledby="c5-h">
-  <div class="p-head an"><div class="ic" data-icon="dish"></div><div class="meta"><span>05</span>균 셀 때</div><h2 id="c5-h">CFU 계산</h2></div>
-  <div class="formula an">CFU/mL = 콜로니 수 × 희석배수 ÷ 도말량(mL)</div>
-  <div class="p-body">
-    <div class="inputs"><div class="fields">
-      <div class="field an"><label for="c5-n1">센 콜로니 수</label><div class="box"><input id="c5-n1" inputmode="decimal" value="152"><span class="u">개</span></div></div>
-      <div class="field an"><label for="c5-n2">같은 희석 판 하나 더 <small>있으면</small></label><div class="box"><input id="c5-n2" inputmode="decimal" value="" placeholder="비워 둬도 돼요"><span class="u">개</span></div></div>
-      <div class="field an"><label for="c5-d">몇 번째 희석 판인지 <small>10⁻⁶이면 6</small></label><div class="box"><span class="pre">10⁻</span><input id="c5-d" inputmode="numeric" value="6"></div></div>
-      <div class="field an"><label for="c5-p">도말량</label><div class="box"><input id="c5-p" inputmode="decimal" value="100"><select id="c5-pu" aria-label="도말량 단위"><option value="1e-3" selected>μL</option><option value="1">mL</option></select></div></div>
-    </div></div>
-    <div class="result an" aria-live="polite"><div class="r-lbl">원래 배양액의 균 수</div><div class="r-val"><span class="r-n" id="c5-out">–</span><span class="r-u">CFU/mL</span></div><div class="r-also" id="c5-also"></div><p class="r-work" id="c5-work"></p><p class="r-msg" id="c5-msg"></p></div>
-  </div>
-  <ul class="notes an">
-    <li>CFU(Colony Forming Unit)는 콜로니를 만든 균의 수예요.</li>
-    <li>콜로니 30~300개가 나온 판을 세는 게 흔한 기준이에요(기준에 따라 25~250).</li>
-  </ul>
-</section>
-
-<!-- 06 -->
-<section class="panel" id="c6" aria-labelledby="c6-h">
-  <div class="p-head an"><div class="ic" data-icon="rotor"></div><div class="meta"><span>06</span>원심분리할 때</div><h2 id="c6-h">rpm과 ×g 바꾸기</h2></div>
-  <div class="formula an">×g = 0.00001118 × r(cm) × rpm²</div>
-  <div class="p-body">
-    <div class="inputs">
-      <div class="seg an" role="group" aria-label="바꿀 방향"><button type="button" id="c6-tog" aria-pressed="true">×g 구하기</button><button type="button" id="c6-tor" aria-pressed="false">rpm 구하기</button></div>
-      <div class="fields">
-        <div class="field an"><label for="c6-r">로터 반지름 r</label><div class="box"><input id="c6-r" inputmode="decimal" value="8"><span class="u">cm</span></div></div>
-        <div class="field an" id="c6-f-rpm"><label for="c6-rpm">돌릴 rpm</label><div class="box"><input id="c6-rpm" inputmode="decimal" value="13000"><span class="u">rpm</span></div></div>
-        <div class="field an" id="c6-f-g" hidden><label for="c6-g">프로토콜의 ×g</label><div class="box"><input id="c6-g" inputmode="decimal" value="5000"><span class="u">×g</span></div></div>
-      </div>
-    </div>
-    <div class="result an" aria-live="polite"><div class="r-lbl" id="c6-lbl">걸리는 힘</div><div class="r-val"><span class="r-n" id="c6-out">–</span><span class="r-u" id="c6-unit">×g</span></div><p class="r-work" id="c6-work"></p><p class="r-msg" id="c6-msg"></p></div>
-  </div>
-  <ul class="notes an">
-    <li>×g는 RCF(Relative Centrifugal Force)예요. 논문과 프로토콜은 ×g로 적는 게 원칙이에요.</li>
-    <li>반지름은 로터 매뉴얼이나 뚜껑에 적힌 최대 반지름(rmax)을 넣으세요. 같은 rpm도 로터가 크면 힘이 세요.</li>
-  </ul>
-</section>
-
-<!-- 07 -->
-<section class="panel" id="c7" aria-labelledby="c7-h">
-  <div class="p-head an"><div class="ic" data-icon="cuvette"></div><div class="meta"><span>07</span>DNA 농도 잴 때</div><h2 id="c7-h">A260으로 DNA 농도</h2></div>
-  <div class="formula an">농도(μg/mL) = A260 × 계수 × 희석배수</div>
-  <div class="p-body">
-    <div class="inputs"><div class="fields">
-      <div class="field an"><label for="c7-a">A260 <small>260 nm 흡광도</small></label><div class="box"><input id="c7-a" inputmode="decimal" value="0.25"></div></div>
-      <div class="field an"><label for="c7-k">시료 종류</label><div class="box"><select id="c7-k" class="full"><option value="50">dsDNA, 계수 50</option><option value="40">RNA, 계수 40</option><option value="33">ssDNA, 계수 33</option></select></div></div>
-      <div class="field an"><label for="c7-d">희석 배수 <small>안 했으면 1</small></label><div class="box"><input id="c7-d" inputmode="decimal" value="10"><span class="u">배</span></div></div>
-    </div></div>
-    <div class="result an" aria-live="polite"><div class="r-lbl">원래 시료 농도</div><div class="r-val"><span class="r-n" id="c7-out">–</span><span class="r-u">ng/μL</span></div><div class="r-also" id="c7-also"></div><p class="r-work" id="c7-work"></p><p class="r-msg" id="c7-msg"></p></div>
-  </div>
-  <ul class="notes an">
-    <li>dsDNA는 double-stranded DNA(Deoxyribonucleic Acid), ssDNA는 single-stranded DNA, RNA는 Ribonucleic Acid.</li>
-    <li>나노드롭은 이 계산을 자동으로 해 줘요. 큐벳으로 직접 잰 값이면 여기서 계산하세요.</li>
-  </ul>
-</section>
-
-<!-- 08 -->
-<section class="panel" id="c8" aria-labelledby="c8-h">
-  <div class="p-head an"><div class="ic" data-icon="gauge"></div><div class="meta"><span>08</span>DNA 농도 잴 때</div><h2 id="c8-h">260/280 순도</h2></div>
-  <div class="formula an">DNA 1.8, RNA 2.0 근처면 양호</div>
-  <div class="p-body">
-    <div class="inputs">
-      <div class="seg an" role="group" aria-label="시료 종류"><button type="button" id="c8-dna" aria-pressed="true">DNA</button><button type="button" id="c8-rna" aria-pressed="false">RNA</button></div>
-      <div class="fields">
-        <div class="field an"><label for="c8-260">A260</label><div class="box"><input id="c8-260" inputmode="decimal" value="1.25"></div></div>
-        <div class="field an"><label for="c8-280">A280</label><div class="box"><input id="c8-280" inputmode="decimal" value="0.68"></div></div>
-        <div class="field an"><label for="c8-230">A230 <small>있으면</small></label><div class="box"><input id="c8-230" inputmode="decimal" value="0.60"></div></div>
-      </div>
-    </div>
-    <div class="result an" aria-live="polite">
-      <div class="pair">
-        <div><div class="r-lbl">260/280</div><div class="r-val"><span class="r-n" id="c8-r1">–</span></div><span class="badge" id="c8-v1"></span></div>
-        <div><div class="r-lbl">260/230</div><div class="r-val"><span class="r-n" id="c8-r2">–</span></div><span class="badge" id="c8-v2"></span></div>
-      </div>
-      <p class="r-work" id="c8-work"></p><p class="r-msg" id="c8-msg"></p>
-    </div>
-  </div>
-  <ul class="notes an">
-    <li>260/280이 낮으면 단백질이나 페놀이 남았을 수 있어요.</li>
-    <li>260/230은 보통 2.0~2.2를 기대하고, 낮으면 염이나 구아니딘이 남았을 수 있어요.</li>
-  </ul>
-</section>
-
-<!-- 09 -->
-<section class="panel" id="c9" aria-labelledby="c9-h">
-  <div class="p-head an"><div class="ic" data-icon="tube"></div><div class="meta"><span>09</span>클로닝 준비할 때</div><h2 id="c9-h">프라이머 100 μM 만들기</h2></div>
-  <div class="formula an">튜브에 적힌 nmol × 10 = 넣을 물 μL</div>
-  <div class="p-body">
-    <div class="inputs">
-      <div class="fields">
-        <div class="field an"><label for="c9-n">튜브에 적힌 양</label><div class="box"><input id="c9-n" inputmode="decimal" value="31.2"><span class="u">nmol</span></div></div>
-        <div class="field an"><label for="c9-c">만들 스톡 농도</label><div class="box"><input id="c9-c" inputmode="decimal" value="100"><span class="u">μM</span></div></div>
-      </div>
-      <p class="subhead an">쓸 때는 작업액으로 한 번 더</p>
-      <div class="fields">
-        <div class="field an"><label for="c9-wc">작업액 농도</label><div class="box"><input id="c9-wc" inputmode="decimal" value="10"><span class="u">μM</span></div></div>
-        <div class="field an"><label for="c9-wv">작업액 부피</label><div class="box"><input id="c9-wv" inputmode="decimal" value="100"><span class="u">μL</span></div></div>
-      </div>
-    </div>
-    <div class="result an" aria-live="polite">
-      <div class="r-lbl">튜브에 넣을 물(또는 TE)</div><div class="r-val"><span class="r-n" id="c9-out">–</span><span class="r-u">μL</span></div>
-      <p class="r-work" id="c9-work"></p><p class="r-msg" id="c9-msg"></p>
-      <div class="r-lbl" style="margin-top:16px">작업액에 넣을 스톡</div><div class="r-val"><span class="r-n" id="c9-wout">–</span><span class="r-u">μL</span></div><div class="r-also" id="c9-walso"></div>
-      <p class="r-work" id="c9-wwork"></p>
-    </div>
-  </div>
-  <ul class="notes an">
-    <li>녹이기 전에 튜브를 스핀다운하세요. 가루가 뚜껑에 붙어 있어요.</li>
-    <li>TE는 Tris-EDTA 버퍼예요.</li>
-  </ul>
-</section>
-
-<!-- 10 -->
-<section class="panel" id="c10" aria-labelledby="c10-h">
-  <div class="p-head an"><div class="ic" data-icon="ligate"></div><div class="meta"><span>10</span>클로닝 준비할 때</div><h2 id="c10-h">라이게이션 insert 양</h2></div>
-  <div class="formula an">insert ng = 몰비 × vector ng × (insert bp ÷ vector bp)</div>
-  <div class="p-body">
-    <div class="inputs">
-      <div class="fields">
-        <div class="field an"><label for="c10-vb">vector 길이</label><div class="box"><input id="c10-vb" inputmode="decimal" value="3000"><span class="u">bp</span></div></div>
-        <div class="field an"><label for="c10-vn">vector 양</label><div class="box"><input id="c10-vn" inputmode="decimal" value="50"><span class="u">ng</span></div></div>
-        <div class="field an"><label for="c10-ib">insert 길이</label><div class="box"><input id="c10-ib" inputmode="decimal" value="1000"><span class="u">bp</span></div></div>
-        <div class="field an"><label for="c10-r">몰비 insert : vector</label><div class="box"><input id="c10-r" inputmode="decimal" value="3"><span class="u">: 1</span></div></div>
-        <div class="field an"><label for="c10-ic">insert 농도 <small>있으면 부피도</small></label><div class="box"><input id="c10-ic" inputmode="decimal" value="25"><span class="u">ng/μL</span></div></div>
-      </div>
-      <div class="chips an" id="c10-chips"><span>몰비</span>
-        <button type="button" data-r="1">1 : 1</button>
-        <button type="button" data-r="3">3 : 1</button>
-        <button type="button" data-r="5">5 : 1</button>
-        <button type="button" data-r="7">7 : 1</button>
-      </div>
-    </div>
-    <div class="result an" aria-live="polite"><div class="r-lbl">넣을 insert</div><div class="r-val"><span class="r-n" id="c10-out">–</span><span class="r-u">ng</span></div><div class="r-also" id="c10-also"></div><p class="r-work" id="c10-work"></p><p class="r-msg" id="c10-msg"></p></div>
-  </div>
-  <ul class="notes an">
-    <li>3 : 1이 흔한 시작점이에요. 잘 안 붙으면 비율을 바꿔 가며 테스트하세요.</li>
-    <li>NEB(New England Biolabs) 계산기와 같은 식이에요.</li>
-  </ul>
-</section>
-
-      <div class="pn" id="pn">
-        <button type="button" class="prev" id="prev"><span class="ar"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span><span class="tx"><small>이전</small><b></b></span></button>
-        <button type="button" class="next" id="next"><span class="ar"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><span class="tx"><small>다음</small><b></b></span></button>
-      </div>
+    <div class="stage" id="stage" tabindex="-1">
+      <div id="panels"></div>
     </div>
   </div>
 </main>
 
 <footer class="dm">
   <div class="wrap">
-    <div class="card spot"><div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div><div class="txt">
-      <h2>풀이와 실전 흐름은 DM으로 보내 드려요</h2>
-      <p>공식마다 실제 숫자로 푼 예시, LB 배지 1&nbsp;L부터 라이게이션까지 한 실험을 따라 계산하는 흐름, 엑셀 수식, 단위 환산표를 노션 페이지에 정리해 뒀어요.</p>
-      <p>인스타 게시물에 '계산' 한 단어를 댓글로 남기면 DM으로 보내 드려요.</p>
-      <div class="btns">
-        <a class="btn solid" href="https://www.instagram.com/p/Df6IpWooCru/" target="_blank" rel="noopener">게시물에 댓글 남기기</a>
-        <a class="btn" href="https://www.instagram.com/mi._.mic/" target="_blank" rel="noopener">@mi._.mic 팔로우</a>
-      </div>
-    </div></div>
+    <div class="card">
+      <p><b>계산 풀이가 필요하면</b> 인스타 게시물에 '계산'을 남겨 주세요. 실제 숫자로 푼 예시와 엑셀 수식을 DM으로 보내 드려요.</p>
+      <a class="btn" href="https://www.instagram.com/p/Df6IpWooCru/" target="_blank" rel="noopener">게시물 열기</a>
+    </div>
     <div class="fine">
       <span>계산은 이 페이지 안에서만 해요. 넣은 숫자는 어디에도 저장하거나 보내지 않아요.</span>
-      <span>결과는 참고용이에요. 랩 프로토콜과 시약 라벨 값이 우선이에요.</span>
-      <span>공식 출처: <a href="https://nebiocalculator.neb.com/#!/ligation" target="_blank" rel="noopener">NEBioCalculator</a>, <a href="https://www.thermofisher.com/kr/ko/home/life-science/lab-equipment/lab-equipment-learning-center/centrifuges/centrifuge-best-practices.html" target="_blank" rel="noopener">Thermo Fisher 원심분리 가이드</a>, <a href="https://assets.thermofisher.com/TFS-Assets/CAD/Product-Bulletins/TN52646-E-0215M-NucleicAcid.pdf" target="_blank" rel="noopener">Thermo Fisher NanoDrop 기술 노트</a>, IDT 프라이머 FAQ(Frequently Asked Questions)</span>
+      <span>결과는 참고용이에요. 랩 프로토콜, 키트 설명서, 시약 라벨 값이 우선이에요.</span>
       <span>mi._.mic, 경북대학교 분자미생물학 연구실</span>
     </div>
   </div>
 </footer>
 
-<button type="button" class="fab" id="fab" aria-haspopup="dialog"><span class="ico"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></span><span class="t" id="fab-t">다른 계산기</span></button>
-<dialog class="sheet" id="sheet" aria-labelledby="sheet-h">
+<div class="bar" id="bar">
+  <button type="button" class="res" id="bar-res" aria-label="결과로 이동"><small id="bar-l"></small><b id="bar-n"></b></button>
+  <button type="button" class="menu" id="bar-menu" aria-haspopup="dialog"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>계산기</button>
+</div>
+<dialog class="sheet" id="sheet" aria-label="계산기 고르기">
   <div class="grab"></div>
-  <div class="sh"><b id="sheet-h">계산기 고르기</b><button type="button" id="sheet-x">닫기</button></div>
+  <div class="sh"><label class="search" for="q3"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input id="q3" type="search" placeholder="계산기 찾기" autocomplete="off" aria-label="계산기 찾기"></label><button type="button" class="x" id="sheet-x" autofocus>닫기</button></div>
   <div class="list" id="sheet-list"></div>
 </dialog>
 
+<script src="calc.js"></script>
 <script>
 (() => {
+  const {CATS, CALCS, ALIAS, parseNum, fmt, fsci, fint, f2} = window.LabCalc;
   const $ = id => document.getElementById(id);
   const RM = matchMedia('(prefers-reduced-motion: reduce)');
+  const WIDE = matchMedia('(min-width:1000px)');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let cur = null, resultVisible = false, menuVisible = true, io = null;
+  const bar = document.getElementById('bar');
 
-  // ---------- icons (24px line icons drawn for each calculator)
   const ICON = {
     scale:'<path d="M12 4v15M8 20h8M5 7h14M5 7l-2.5 6h5zM19 7l-2.5 6h5z"/><circle cx="12" cy="4" r=".9"/>',
-    flask:'<path d="M9 3h6M10 3v6.2L5.2 17.6A2.3 2.3 0 0 0 7.2 21h9.6a2.3 2.3 0 0 0 2-3.4L14 9.2V3"/><path d="M7 15.5h10"/><circle cx="10.5" cy="18" r=".6" fill="currentColor" stroke="none"/><circle cx="13.6" cy="17.4" r=".8" fill="currentColor" stroke="none"/>',
+    flask:'<path d="M9 3h6M10 3v6.2L5.2 17.6A2.3 2.3 0 0 0 7.2 21h9.6a2.3 2.3 0 0 0 2-3.4L14 9.2V3"/><path d="M7 15.5h10"/>',
+    swap:'<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
     dilute:'<path d="M3 9h6v9.5A1.5 1.5 0 0 1 7.5 20h-3A1.5 1.5 0 0 1 3 18.5z"/><path d="M3 12.5h6"/><path d="M14 6h7v12.5a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5z"/><path d="M14 16h7"/><path d="M8.5 5.5c1.6-2 4-2 5.5-.3"/><path d="M12.6 3.6l1.6 1.6-2 .8"/>',
     bottle:'<path d="M9.5 2.5h5v3h-5z"/><path d="M9 5.5h6l2 3.2V20a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 7 20V8.7z"/><path d="M7 12h10v5.5H7"/>',
-    dish:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="6.6"/><circle cx="9.6" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.2" cy="9.4" r=".8" fill="currentColor" stroke="none"/><circle cx="13.6" cy="14.2" r="1.2" fill="currentColor" stroke="none"/><circle cx="9.9" cy="14.6" r=".7" fill="currentColor" stroke="none"/>',
-    rotor:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.7"/><path d="M12 5.6v3.2M12 15.2v3.2M5.6 12h3.2M15.2 12h3.2"/><path d="M19.8 5.6A11 11 0 0 1 22 9.5"/><path d="M4.2 18.4A11 11 0 0 1 2 14.5"/>',
+    tubes:'<path d="M4 4v13a2 2 0 0 0 4 0V4M10 4v13a2 2 0 0 0 4 0V4M16 4v13a2 2 0 0 0 4 0V4"/><path d="M4 9h4M10 12h4M16 15h4"/>',
     cuvette:'<rect x="9" y="3.5" width="6" height="17" rx="1"/><path d="M9 12.5h6"/><path d="M2 10h5M17 10h5"/><path d="M20 8l2 2-2 2"/>',
-    gauge:'<path d="M3.8 17a8.2 8.2 0 0 1 16.4 0"/><path d="M12 17l4.2-5.2"/><circle cx="12" cy="17" r="1.3"/><path d="M6.3 12.6l1 .6M12 8.8V10M17.7 12.6l-1 .6"/>',
+    helix:'<path d="M8 3c0 4.5 8 4.5 8 9s-8 4.5-8 9"/><path d="M16 3c0 4.5-8 4.5-8 9s8 4.5 8 9"/><path d="M9.6 6h4.8M9.6 18h4.8"/>',
+    curve:'<path d="M3.5 3.5v17h17"/><path d="M6 18c5 0 6-10.5 14-11.5"/>',
+    pair:'<circle cx="7" cy="12" r="3.6"/><circle cx="17" cy="12" r="3.6"/><path d="M10.6 12h2.8"/>',
     tube:'<path d="M7.5 3.5h9M8.5 3.5v3h7v-3"/><path d="M9 6.5v7.6l3 6.4 3-6.4V6.5"/><path d="M9 11h6"/>',
-    ligate:'<path d="M2.5 9h7v2.5h2M2.5 15h9"/><path d="M21.5 9h-9M21.5 15h-7v-2.5h-2"/><path d="M12 6v1.2M12 16.8V18"/>'
+    rack:'<path d="M3 15h18M4.5 15v4.5h15V15"/><path d="M6 15V6.5l1.5-2 1.5 2V15M11 15V6.5l1.5-2 1.5 2V15M16 15V6.5l1.5-2 1.5 2V15"/>',
+    ligate:'<path d="M2.5 9h7v2.5h2M2.5 15h9"/><path d="M21.5 9h-9M21.5 15h-7v-2.5h-2"/>',
+    plasmid:'<circle cx="11" cy="12" r="7.5"/><path d="M15.5 6.2l2.4 1.9-1.9 2.4"/><circle cx="20" cy="18" r="1" fill="currentColor" stroke="none"/><circle cx="21" cy="14" r=".8" fill="currentColor" stroke="none"/>',
+    dish:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="6.6"/><circle cx="9.6" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.2" cy="9.4" r=".8" fill="currentColor" stroke="none"/><circle cx="13.6" cy="14.2" r="1.2" fill="currentColor" stroke="none"/><circle cx="9.9" cy="14.6" r=".7" fill="currentColor" stroke="none"/>',
+    culture:'<path d="M9 3h6M10 3v15a2 2 0 0 0 4 0V3"/><path d="M10 10h4"/><circle cx="11.6" cy="13" r=".7" fill="currentColor" stroke="none"/><circle cx="12.6" cy="15.6" r=".7" fill="currentColor" stroke="none"/><path d="M17.5 7c1.2 1 1.2 3 0 4M19.6 5.5c2 1.8 2 5.2 0 7"/>',
+    growth:'<path d="M3.5 3.5v17h17"/><path d="M6.5 16l4-3.5 3 1.5 6-7"/><path d="M15.5 7h4v4"/>',
+    rotor:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.7"/><path d="M12 5.6v3.2M12 15.2v3.2M5.6 12h3.2M15.2 12h3.2"/><path d="M19.8 5.6A11 11 0 0 1 22 9.5"/><path d="M4.2 18.4A11 11 0 0 1 2 14.5"/>'
   };
-  const svg = k => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
+  const svg = k => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICON[k] || ''}</svg>`;
+  const catName = id => CATS.find(c => c.id === id).name;
+  const byId = id => CALCS.find(c => c.id === id);
 
-  // ---------- menu data (k = colour group)
-  const CALCS = [
-    {id:'c1', no:'01', name:'몰농도로 무게 재기', when:'시약 가루로 몰농도 용액', g:'용액 만들 때', k:'sol', icon:'scale', f:'g = M × L × MW'},
-    {id:'c2', no:'02', name:'% 농도 w/v, v/v', when:'아가로스, 에탄올 %', g:'용액 만들 때', k:'sol', icon:'flask', f:'w/v는 100 mL에 몇 g'},
-    {id:'c3', no:'03', name:'C1V1 = C2V2', when:'진한 용액을 원하는 농도로', g:'희석할 때', k:'dil', icon:'dilute', f:'C1V1 = C2V2'},
-    {id:'c4', no:'04', name:'10X 스톡을 1X로', when:'10X, 5X 버퍼 쓸 때', g:'희석할 때', k:'dil', icon:'bottle', f:'스톡 = 총량 ÷ 배수'},
-    {id:'c5', no:'05', name:'CFU 계산', when:'플레이트 콜로니 셀 때', g:'균 세고 원심분리할 때', k:'cfu', icon:'dish', f:'CFU/mL = 콜로니 × 희석배수 ÷ mL'},
-    {id:'c6', no:'06', name:'rpm과 ×g 바꾸기', when:'프로토콜이 ×g로 적혀 있을 때', g:'균 세고 원심분리할 때', k:'cfu', icon:'rotor', f:'×g = 0.00001118 × r × rpm²'},
-    {id:'c7', no:'07', name:'A260으로 DNA 농도', when:'DNA, RNA 농도 볼 때', g:'DNA 농도 잴 때', k:'dna', icon:'cuvette', f:'A260 × 50 × 희석배수'},
-    {id:'c8', no:'08', name:'260/280 순도', when:'순도 괜찮은지 볼 때', g:'DNA 농도 잴 때', k:'dna', icon:'gauge', f:'260/280 ≈ 1.8'},
-    {id:'c9', no:'09', name:'프라이머 100 μM 만들기', when:'프라이머 처음 받았을 때', g:'클로닝 준비할 때', k:'clone', icon:'tube', f:'nmol × 10 = μL'},
-    {id:'c10', no:'10', name:'라이게이션 insert 양', when:'라이게이션 세팅할 때', g:'클로닝 준비할 때', k:'clone', icon:'ligate', f:'insert ng = 몰비 × vector ng × 길이비'}
-  ];
-  const listHTML = () => {
-    let html = '', last = '';
-    CALCS.forEach(c => {
-      if (c.g !== last) { html += `<div class="grp">${c.g}</div>`; last = c.g; }
-      html += `<button type="button" class="mi g-${c.k}" data-go="${c.id}"><span class="n">${c.no}</span><span class="ico">${svg(c.icon)}</span><span>${c.name}</span></button>`;
+  // ---------------- panels
+  const state = {};
+  function fieldHTML(c, f) {
+    const id = `${c.id}-${f.id}`, modes = f.modes ? ` data-modes="${f.modes.join(' ')}"` : '';
+    const lab = `<label for="${id}">${esc(f.label)}${f.small ? `<small>${esc(f.small)}</small>` : ''}</label>`;
+    if (f.select) return `<div class="field wide an"${modes}>${lab}<div class="box"><select class="full" id="${id}">${f.select.map(([n], i) => `<option value="${i}">${esc(n)}</option>`).join('')}</select></div></div>`;
+    const cls = ['field', 'an', f.wide || f.area ? 'wide' : '', f.units ? 'sel' : ''].filter(Boolean).join(' ');
+    const pre = f.pre ? `<span class="pre">${esc(f.pre)}</span>` : '';
+    const unit = f.units ? `<select id="${id}-u" aria-label="${esc(f.label)} 단위">${f.units.map((u, i) => `<option value="${i}"${i === (f.uv || 0) ? ' selected' : ''}>${esc(u[0])}</option>`).join('')}</select>` : (f.unit ? `<span class="u">${esc(f.unit)}</span>` : '');
+    const ex = f.v ? ' ex' : '';
+    const ctl = f.area ? `<textarea id="${id}" class="${ex.trim()}" rows="5" spellcheck="false">${esc(f.v || '')}</textarea>`
+      : `<input id="${id}" class="${ex.trim()}" inputmode="${f.sci ? 'text' : 'decimal'}" value="${esc(f.v ?? '')}"${f.ph ? ` placeholder="${esc(f.ph === '선택' ? '비워도 돼요' : f.ph)}"` : ''} autocomplete="off" autocapitalize="off" spellcheck="false">`;
+    return `<div class="${cls}"${modes}>${lab}<div class="box">${pre}${ctl}${unit}</div></div>`;
+  }
+  function panelHTML(c) {
+    const seg = c.modes ? `<div class="seg an" role="group" aria-label="계산 방식">${c.modes.map((m, i) => `<button type="button" data-mode="${m.id}" aria-pressed="${i === 0}">${esc(m.label)}</button>`).join('')}</div>` : '';
+    const chips = (c.chips || []).map((g, gi) => `<div class="chips an"${g.modes ? ` data-modes="${g.modes.join(' ')}"` : ''}><span>${esc(g.label)}</span>${g.items.map(([n], i) => `<button type="button" data-chip="${gi}-${i}">${esc(n)}</button>`).join('')}</div>`).join('');
+    return `<section class="panel" id="p-${c.id}" aria-labelledby="h-${c.id}" hidden>
+      <div class="p-top"><span class="crumb">${esc(catName(c.cat))}</span>
+        <button type="button" class="tool" data-reset><svg class="i" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></svg>예시로</button>
+        <button type="button" class="tool" data-copy><svg class="i" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>결과 복사</button></div>
+      <div class="p-head an"><div class="ic">${svg(c.icon)}</div><h2 id="h-${c.id}">${esc(c.title)}</h2></div>
+      <div class="formula an" data-formula>${esc(c.modes ? c.modes[0].formula : c.formula)}</div>
+      <div class="p-body">
+        <div class="inputs">${seg}<div class="fields">${c.fields.map(f => fieldHTML(c, f)).join('')}</div>${chips}</div>
+        <div class="result an" aria-live="polite" data-out></div>
+      </div>
+      <ul class="notes an">${c.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>
+      ${c.abbr ? `<p class="abbr an">약어: ${esc(c.abbr)}</p>` : ''}
+      ${c.src ? `<details class="src an"><summary>근거 자료 ${c.src.length}개</summary>${c.src.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(n)}</a>`).join('')}</details>` : ''}
+    </section>`;
+  }
+  $('panels').innerHTML = `<div class="pick" id="pick">위에서 계산기를 고르면 여기에 나와요.</div>` + CALCS.map(panelHTML).join('');
+
+  function read(c) {
+    const v = {raw: {}};
+    c.fields.forEach(f => {
+      const el = $(`${c.id}-${f.id}`);
+      if (f.select) { v[f.id] = f.select[+el.value][1]; return; }
+      v.raw[f.id] = el.value.trim(); v[f.id] = parseNum(el.value);
+      if (f.units) { const i = +$(`${c.id}-${f.id}-u`).value; v[f.id + '_i'] = i; v[f.id + '_u'] = f.units[i][1]; v[f.id + '_n'] = f.units[i][0]; }
     });
-    return html;
-  };
-  $('side').innerHTML = listHTML();
-  $('sheet-list').innerHTML = listHTML();
-  $('tiles').innerHTML = CALCS.map((c, i) => `<button type="button" class="tile spot g-${c.k}" data-go="${c.id}" style="--i:${i}"><span class="ic">${svg(c.icon)}</span><span class="no">${c.no}</span><b>${c.name}</b><small>${c.when}</small></button>`).join('');
-  const chip = (c, hide) => `<button type="button" class="fchip g-${c.k}" data-go="${c.id}"${hide ? ' tabindex="-1" aria-hidden="true"' : ''}><i>${svg(c.icon)}</i>${c.f}</button>`;
-  $('track').innerHTML = CALCS.map(c => chip(c, false)).join('') + CALCS.map(c => chip(c, true)).join('');
-
-  const panels = CALCS.map(c => $(c.id));
-  panels.forEach((p, i) => { p.classList.add('g-' + CALCS[i].k, 'spot'); p.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = svg(el.dataset.icon)); });
-
-  // ---------- cursor spotlight
-  document.addEventListener('pointermove', e => {
-    const el = e.target.closest && e.target.closest('.spot'); if (!el) return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty('--mx', (e.clientX - r.left) + 'px'); el.style.setProperty('--my', (e.clientY - r.top) + 'px');
-  }, {passive: true});
-
-  // ---------- selection
-  let cur = null;
-  const isWide = () => matchMedia('(min-width:1000px)').matches;
-  function select(id, opts = {}) {
-    const i = CALCS.findIndex(c => c.id === id); if (i < 0) return;
-    const changed = cur !== id; cur = id;
-    panels.forEach(p => p.hidden = p.id !== id);
-    document.querySelectorAll('[data-go]').forEach(b => { if (!b.classList.contains('fchip')) b.setAttribute('aria-current', String(b.dataset.go === id)); });
-    const prev = CALCS[i - 1], next = CALCS[i + 1];
-    $('prev').disabled = !prev; $('next').disabled = !next;
-    $('prev').querySelector('b').textContent = prev ? `${prev.no} ${prev.name}` : '';
-    $('next').querySelector('b').textContent = next ? `${next.no} ${next.name}` : '';
-    $('fab-t').textContent = `${CALCS[i].no} ${CALCS[i].name}`;
-    if (changed) {
-      const p = $(id);
-      p.classList.remove('enter'); void p.offsetWidth;
-      p.querySelectorAll('.an').forEach((el, k) => el.style.setProperty('--i', k + (opts.silent ? 4 : 0)));
-      p.classList.add('enter');
-      if (!opts.silent) history.replaceState(null, '', '#' + id);
-    }
-    if (opts.scroll) {
-      const top = $('stage').getBoundingClientRect().top + scrollY - 76;
-      if (!isWide() || Math.abs(scrollY - top) > 40) scrollTo({top, behavior: RM.matches ? 'auto' : 'smooth'});
-    }
+    return v;
   }
-  document.addEventListener('click', e => {
-    const b = e.target.closest('[data-go]'); if (!b) return;
-    if ($('sheet').open) $('sheet').close();
-    select(b.dataset.go, {scroll: true});
-  });
-  $('prev').addEventListener('click', () => { const i = CALCS.findIndex(c => c.id === cur); if (i > 0) select(CALCS[i - 1].id, {scroll: true}); });
-  $('next').addEventListener('click', () => { const i = CALCS.findIndex(c => c.id === cur); if (i < CALCS.length - 1) select(CALCS[i + 1].id, {scroll: true}); });
-  addEventListener('hashchange', () => { const id = location.hash.slice(1); if (CALCS.some(c => c.id === id)) select(id, {scroll: true}); });
-
-  // floating switcher shows once the tile menu is off screen (mobile only)
-  const fab = $('fab');
-  fab.addEventListener('click', () => $('sheet').showModal());
-  $('sheet-x').addEventListener('click', () => $('sheet').close());
-  $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) $('sheet').close(); });
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([en]) => fab.classList.toggle('show', !en.isIntersecting && en.boundingClientRect.top < 0)).observe($('menu'));
-  }
-  const topbar = $('top');
-  addEventListener('scroll', () => topbar.classList.toggle('scrolled', scrollY > 8), {passive: true});
-
-  // ---------- live demo card in the hero
-  const DEMOS = [
-    {id:'c1', q:'0.5 M NaCl 200 mL', n:'5.844', u:'g', w:'0.5 M × 0.2 L × 58.44 g/mol'},
-    {id:'c6', q:'반지름 8 cm 로터, 13,000 rpm', n:'15,115', u:'×g', w:'0.00001118 × 8 × 13,000²'},
-    {id:'c5', q:'10⁻⁶ 희석액 100 μL, 콜로니 152개', n:'1.52 × 10⁹', u:'CFU/mL', w:'152 × 10⁶ ÷ 0.1 mL'},
-    {id:'c9', q:'튜브에 적힌 31.2 nmol', n:'312', u:'μL', w:'31.2 nmol × 1,000 ÷ 100 μM'},
-    {id:'c10', q:'vector 3 kb 50 ng, insert 1 kb, 3 : 1', n:'50', u:'ng', w:'3 × 50 ng × (1,000 ÷ 3,000)'}
-  ];
-  let di = 0;
-  const demo = $('demo');
-  const paintDemo = d => { const c = CALCS.find(x => x.id === d.id); $('demo-name').textContent = `${c.no} ${c.name}`; $('demo-q').textContent = d.q; $('demo-n').textContent = d.n; $('demo-u').textContent = d.u; $('demo-w').textContent = d.w; demo.dataset.go = d.id; };
-  paintDemo(DEMOS[0]);
-  if (!RM.matches) setInterval(() => {
-    if (document.hidden || getComputedStyle(demo).display === 'none') return;
-    const body = $('demo-body'); body.classList.add('out');
-    setTimeout(() => { di = (di + 1) % DEMOS.length; paintDemo(DEMOS[di]); body.classList.remove('out'); }, 350);
-  }, 3600);
-  else $('demo-prog').parentElement.hidden = true;
-
-  // ---------- number helpers
-  const SUP = {'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
-  const sup = s => String(s).split('').map(c => SUP[c] || c).join('');
-  const num = id => {
-    const raw = $(id).value.trim().replace(/,/g, '');
-    if (raw === '' || !/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(raw)) return NaN;
-    return parseFloat(raw);
-  };
-  const ok = (...xs) => xs.every(x => Number.isFinite(x));
-  const fmt = (x, sig = 4) => {
-    if (!Number.isFinite(x)) return '–';
-    if (x === 0) return '0';
-    const a = Math.abs(x);
-    if (a >= 1e6 || a < 1e-3) {
-      const e = Math.floor(Math.log10(a));
-      const m = +(x / 10 ** e).toPrecision(3);
-      return `${m} × 10${sup(e)}`;
-    }
-    const r = +x.toPrecision(sig);
-    const dec = Math.max(0, sig - 1 - Math.floor(Math.log10(Math.abs(r))));
-    return r.toLocaleString('ko-KR', {maximumFractionDigits: dec});
-  };
-  const fmt3 = x => fmt(x, 3);
-  const fint = x => Math.round(x).toLocaleString('ko-KR');
-  const f2 = x => x.toFixed(2);
-  const vol = L => { const a = Math.abs(L); return a >= 1 ? [L, 'L'] : a >= 1e-3 ? [L * 1e3, 'mL'] : [L * 1e6, 'μL']; };
-  const mass = g => Math.abs(g) >= 0.1 ? [g, 'g'] : (Math.abs(g) >= 1e-3 ? [g * 1e3, 'mg'] : [g * 1e6, 'μg']);
-  const unitName = sel => sel.options[sel.selectedIndex].text;
-
-  // readout: numbers roll from the old value to the new one
-  function show(id, val, f = fmt) {
-    const el = $(id);
+  const FMT = {sci: fsci, int: fint, f2};
+  const fmtOf = kind => FMT[kind] || (x => fmt(x));
+  function setNum(el, val, kind, anim) {
     if (el._raf) cancelAnimationFrame(el._raf);
+    const f = fmtOf(kind);
     if (!Number.isFinite(val)) { el.textContent = '–'; el.classList.add('wait'); el._v = NaN; return; }
     el.classList.remove('wait');
-    const from = el._v, to = val; el._v = val;
-    const sci = Math.abs(to) >= 1e6 || (to !== 0 && Math.abs(to) < 1e-3);
-    if (Number.isFinite(from) && from !== to && !RM.matches) { el.classList.remove('shine'); void el.offsetWidth; el.classList.add('shine'); }
-    if (RM.matches || !Number.isFinite(from) || from === to || sci || el.offsetParent === null) { el.textContent = f(to); return; }
-    const t0 = performance.now(), D = 420;
-    const step = t => {
-      const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3);
-      el.textContent = f(k < 1 ? from + (to - from) * e : to);
-      if (k < 1) el._raf = requestAnimationFrame(step);
-    };
+    const from = el._v; el._v = val;
+    const roll = anim && !RM.matches && Number.isFinite(from) && from !== val && kind !== 'sci' && Math.abs(val) < 1e7 && el.offsetParent !== null;
+    if (anim && !RM.matches && from !== val) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+    if (!roll) { el.textContent = f(val); return; }
+    const t0 = performance.now(), D = 320;
+    const step = t => { const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3); el.textContent = f(k < 1 ? from + (val - from) * e : val); if (k < 1) el._raf = requestAnimationFrame(step); };
     el._raf = requestAnimationFrame(step);
   }
-  const set = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
-  const EMPTY = '빈 칸이나 숫자가 아닌 값이 있어요. 숫자를 넣으면 계산돼요.';
-  const clear = (p, msg) => { show(p + '-out', NaN); set(p + '-also', ''); set(p + '-work', ''); set(p + '-msg', msg); };
-
-  // ---------- 01
-  function c1() {
-    const m = num('c1-m'), mu = +$('c1-mu').value, v = num('c1-v'), vu = +$('c1-vu').value, mw = num('c1-mw');
-    $('c1-chips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(Math.abs(+b.dataset.mw - mw) < 1e-9)));
-    if (!ok(m, v, mw) || m <= 0 || v <= 0 || mw <= 0) return clear('c1', EMPTY);
-    const g = m * mu * v * vu * mw, [mv, u] = mass(g);
-    show('c1-out', mv); $('c1-unit').textContent = u;
-    set('c1-also', u === 'g' ? '' : `= <b>${fmt(g)}</b> g`);
-    set('c1-work', `${fmt(m * mu)} M × ${fmt(v * vu)} L × ${fmt(mw)} g/mol = ${fmt(g)} g`);
-    set('c1-msg', '');
-  }
-  $('c1-chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $('c1-mw').value = b.dataset.mw; c1(); });
-
-  // ---------- 02
-  let c2mode = 'wv';
-  function c2() {
-    const wv = c2mode === 'wv';
-    $('c2-f-wv').hidden = !wv; $('c2-f-vv').hidden = wv;
-    $('c2-wv').setAttribute('aria-pressed', String(wv)); $('c2-vv').setAttribute('aria-pressed', String(!wv));
-    $('c2-formula').textContent = wv ? 'w/v(weight/volume)는 100 mL에 몇 g' : 'v/v(volume/volume)는 100 mL에 몇 mL';
-    $('c2-note').textContent = wv ? '아가로스는 끓이면서 증발한 만큼 물로 다시 채우세요.' : '95% 원액으로 70%를 만들면 원액을 70 mL보다 더 넣어야 해요. 원액을 재고 물로 최종 부피까지 채우세요.';
-    if (wv) {
-      const p = num('c2-p'), v = num('c2-v');
-      $('c2-lbl').textContent = '넣을 가루';
-      if (!ok(p, v) || p <= 0 || v <= 0) return clear('c2', EMPTY);
-      const g = p / 100 * v, [mv, u] = mass(g);
-      show('c2-out', mv); $('c2-unit').textContent = u;
-      set('c2-also', `물을 채워 최종 <b>${fmt(v)}</b> mL`);
-      set('c2-work', `${fmt(p)} ÷ 100 × ${fmt(v)} mL = ${fmt(g)} g`);
-      set('c2-msg', '');
-    } else {
-      const pt = num('c2-pt'), vt = num('c2-vt'), ps = num('c2-ps');
-      $('c2-lbl').textContent = '넣을 원액'; $('c2-unit').textContent = 'mL';
-      if (!ok(pt, vt, ps) || pt <= 0 || vt <= 0 || ps <= 0) return clear('c2', EMPTY);
-      if (pt > ps) return clear('c2', '만들 농도가 원액보다 진해요. 희석으로는 만들 수 없어요.');
-      const ml = pt * vt / ps;
-      show('c2-out', ml);
-      set('c2-also', `물 약 <b>${fmt(vt - ml)}</b> mL로 최종 ${fmt(vt)} mL`);
-      set('c2-work', `${fmt(pt)} % × ${fmt(vt)} mL ÷ ${fmt(ps)} % = ${fmt(ml)} mL`);
-      set('c2-msg', '');
+  const block = key => `<div class="r-lbl" data-k="${key}-l"></div><div class="r-val"><span class="r-n" data-k="${key}-n">–</span><span class="r-u" data-k="${key}-u"></span></div><div class="r-also" data-k="${key}-a"></div>`;
+  const last = {};
+  function render(c, anim) {
+    const p = $('p-' + c.id), out = p.querySelector('[data-out]');
+    const r = c.calc(read(c), state[c.id]);
+    const shape = r.pair ? 'pair' : (r.second ? 'two' : (r.err ? (out.dataset.shape || 'one') : 'one'));
+    if (out.dataset.shape !== shape) {
+      out.dataset.shape = shape;
+      out.innerHTML = (shape === 'pair'
+        ? `<div class="pair">${[0, 1].map(i => `<div><div class="r-lbl" data-k="p${i}-l"></div><div class="r-val"><span class="r-n" data-k="p${i}-n">–</span></div><span class="badge" data-k="p${i}-b"></span></div>`).join('')}</div>`
+        : `${block('a')}<div class="checks" data-k="c"></div>`)
+        + `<p class="r-work" data-k="w"></p><p class="note-box r-warn" data-k="m"></p><p class="note-box r-err" data-k="e"></p><div data-k="t"></div>`
+        + (shape === 'two' ? `<div class="r-2">${block('b')}<p class="r-work" data-k="w2"></p></div>` : '');
     }
-  }
-  $('c2-wv').addEventListener('click', () => { c2mode = 'wv'; c2(); });
-  $('c2-vv').addEventListener('click', () => { c2mode = 'vv'; c2(); });
-
-  // ---------- 03
-  const CONC = [['mol',1,'M'],['mol',1e-3,'mM'],['mol',1e-6,'μM'],['mol',1e-9,'nM'],['mass',1,'mg/mL'],['mass',1e-3,'μg/mL'],['mass',1e-3,'ng/μL'],['mass',1e-6,'ng/mL'],['pct',1,'%'],['x',1,'X']];
-  ['c3-c1u', 'c3-c2u'].forEach((id, i) => { const sel = $(id); CONC.forEach(([, , n], j) => sel.add(new Option(n, j))); sel.value = i === 0 ? '0' : '1'; });
-  function c3() {
-    const c1 = num('c3-c1'), c2v = num('c3-c2'), v2 = num('c3-v2');
-    const u1 = CONC[+$('c3-c1u').value], u2 = CONC[+$('c3-c2u').value], vu = +$('c3-v2u').value;
-    if (!ok(c1, c2v, v2) || c1 <= 0 || c2v <= 0 || v2 <= 0) return clear('c3', EMPTY);
-    if (u1[0] !== u2[0]) return clear('c3', `${u1[2]} 단위와 ${u2[2]} 단위는 서로 바꿀 수 없어요. 같은 종류의 단위로 맞춰 주세요.`);
-    const C1 = c1 * u1[1], C2 = c2v * u2[1];
-    if (C2 > C1) return clear('c3', '원하는 농도가 원액보다 진해요. 희석으로는 만들 수 없어요.');
-    const V2L = v2 * vu, V1L = C2 * V2L / C1, [a, au] = vol(V1L), [b, bu] = vol(V2L - V1L);
-    show('c3-out', a); $('c3-unit').textContent = au;
-    set('c3-also', `용매 <b>${fmt(b)}</b> ${bu}를 더해 총 ${fmt(v2)} ${unitName($('c3-v2u'))}`);
-    set('c3-work', `${fmt(C1 / u2[1])} ${u2[2]} × V1 = ${fmt(c2v)} ${u2[2]} × ${fmt(v2)} ${unitName($('c3-v2u'))}  →  V1 = ${fmt(a)} ${au}`);
-    set('c3-msg', '');
-  }
-
-  // ---------- 04
-  function c4() {
-    const s = num('c4-s'), t = num('c4-t'), v = num('c4-v'), vu = +$('c4-vu').value;
-    $('c4-chips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.s === s && +b.dataset.t === t && +b.dataset.v === v && +b.dataset.vu === vu)));
-    if (!ok(s, t, v) || s <= 0 || t <= 0 || v <= 0) return clear('c4', EMPTY);
-    if (t > s) return clear('c4', '원하는 배수가 스톡보다 높아요. 스톡 배수를 확인해 주세요.');
-    const VL = v * vu, SL = VL * t / s, [a, au] = vol(SL), [b, bu] = vol(VL - SL);
-    show('c4-out', a); $('c4-unit').textContent = au;
-    set('c4-also', `나머지 <b>${fmt(b)}</b> ${bu}는 물(반응이면 물과 다른 시약)`);
-    set('c4-work', `${fmt(v)} ${unitName($('c4-vu'))} × ${fmt(t)}X ÷ ${fmt(s)}X = ${fmt(a)} ${au}`);
-    set('c4-msg', '');
-  }
-  $('c4-chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
-    $('c4-s').value = b.dataset.s; $('c4-t').value = b.dataset.t; $('c4-v').value = b.dataset.v; $('c4-vu').value = b.dataset.vu; c4(); });
-
-  // ---------- 05
-  function c5() {
-    const n1 = num('c5-n1'), n2raw = $('c5-n2').value.trim(), n2 = num('c5-n2'), d = num('c5-d'), p = num('c5-p'), pu = +$('c5-pu').value;
-    const bad2 = n2raw !== '' && !(n2 >= 0);
-    if (!ok(n1, d, p) || n1 < 0 || d < 0 || p <= 0 || bad2) return clear('c5', bad2 ? '두 번째 판 콜로니 수를 숫자로 넣거나 비워 주세요.' : EMPTY);
-    const two = n2raw !== '', n = two ? (n1 + n2) / 2 : n1, mL = p * pu, cfu = n * 10 ** d / mL;
-    show('c5-out', cfu, fmt3);
-    set('c5-also', two ? `두 판 평균 <b>${fmt(n)}</b>개로 계산` : '');
-    set('c5-work', `${two ? `(${fmt(n1)} + ${fmt(n2)}) ÷ 2` : fmt(n1)} × 10${sup(d)} ÷ ${fmt(mL)} mL = ${fmt3(cfu)} CFU/mL`);
-    set('c5-msg', [n1].concat(two ? [n2] : []).some(x => x < 30 || x > 300) ? '30~300개 범위 밖인 판이 있어요. 이 범위에 든 희석 단계 판을 세면 더 정확해요.' : '');
-  }
-
-  // ---------- 06
-  let c6mode = 'g'; const K = 0.00001118;
-  function c6() {
-    const toG = c6mode === 'g';
-    $('c6-tog').setAttribute('aria-pressed', String(toG)); $('c6-tor').setAttribute('aria-pressed', String(!toG));
-    $('c6-f-rpm').hidden = !toG; $('c6-f-g').hidden = toG;
-    $('c6-lbl').textContent = toG ? '걸리는 힘' : '맞춰야 할 회전수';
-    $('c6-unit').textContent = toG ? '×g' : 'rpm';
-    const r = num('c6-r');
-    if (toG) {
-      const rpm = num('c6-rpm');
-      if (!ok(r, rpm) || r <= 0 || rpm <= 0) return clear('c6', EMPTY);
-      const g = K * r * rpm * rpm;
-      show('c6-out', g, fint); set('c6-work', `0.00001118 × ${fmt(r)} cm × ${fint(rpm)}² = ${fint(g)} ×g`);
-    } else {
-      const g = num('c6-g');
-      if (!ok(r, g) || r <= 0 || g <= 0) return clear('c6', EMPTY);
-      const rpm = Math.sqrt(g / (K * r));
-      show('c6-out', rpm, fint); set('c6-work', `√(${fint(g)} ÷ (0.00001118 × ${fmt(r)} cm)) = ${fint(rpm)} rpm`);
+    const q = k => out.querySelector(`[data-k="${k}"]`);
+    const put = (k, html) => { const el = q(k); if (el) el.innerHTML = html || ''; };
+    put('e'); put('m');
+    if (r.err) {
+      out.querySelectorAll('.r-n').forEach(el => setNum(el, NaN)); out.querySelectorAll('.badge').forEach(b => { b.textContent = ''; });
+      ['a-a', 'c', 'w', 't', 'b-a', 'w2'].forEach(k => put(k)); put('e', esc(r.err));
+      last[c.id] = null; syncBar(); return;
     }
-    set('c6-msg', r < 2 ? '반지름이 너무 작아요. 단위가 cm인지 확인해 주세요.' : (r > 40 ? '반지름이 너무 커요. 단위가 cm인지 확인해 주세요.' : ''));
+    if (shape === 'pair') {
+      r.pair.forEach((x, i) => { put(`p${i}-l`, esc(x.lbl)); setNum(q(`p${i}-n`), x.n, x.f, anim); const b = q(`p${i}-b`); b.textContent = x.badge[0]; b.className = 'badge ' + (x.badge[1] || ''); });
+      last[c.id] = {l: r.pair.map(x => x.lbl).join(' · '), t: r.pair.map(x => Number.isFinite(x.n) ? f2(x.n) : '–').join(' · ')};
+    } else {
+      put('a-l', esc(r.lbl)); setNum(q('a-n'), r.n, r.f, anim); put('a-u', esc(r.u)); put('a-a', r.also);
+      put('c', (r.checks || []).map(x => `<div><span>${esc(x.lbl)}</span><b>${x.val}</b><span class="badge ${x.badge[1]}">${esc(x.badge[0])}</span></div>`).join(''));
+      if (r.second) { put('b-l', esc(r.second.lbl)); setNum(q('b-n'), r.second.n, r.second.f, anim); put('b-u', esc(r.second.u)); put('b-a', r.second.also); put('w2', r.second.work); }
+      last[c.id] = {l: r.lbl, t: `${fmtOf(r.f)(r.n)} ${r.u}`};
+    }
+    put('w', r.work); put('m', r.msg ? esc(r.msg) : '');
+    if (r.table) {
+      const head = r.table.head.filter(Boolean), n = head.length;
+      put('t', `<div class="tbl-wrap"><table class="tbl${r.table.rows.some(x => x[0] === '합계') ? ' sum' : ''}"><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${r.table.rows.map(row => `<tr>${row.slice(0, n).map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`);
+    } else put('t');
+    syncBar();
   }
-  $('c6-tog').addEventListener('click', () => { c6mode = 'g'; c6(); });
-  $('c6-tor').addEventListener('click', () => { c6mode = 'r'; c6(); });
-
-  // ---------- 07
-  function c7() {
-    const a = num('c7-a'), k = +$('c7-k').value, d = num('c7-d');
-    if (!ok(a, d) || a < 0 || d <= 0) return clear('c7', EMPTY);
-    const c = a * k * d;
-    show('c7-out', c); set('c7-also', `= <b>${fmt(c)}</b> μg/mL`);
-    set('c7-work', `${fmt(a)} × ${k} × ${fmt(d)} = ${fmt(c)} μg/mL`);
-    set('c7-msg', a < 0.1 ? 'A260이 0.1보다 낮으면 오차가 커요. 덜 희석해서 다시 재 보세요.' : '');
+  function applyMode(c) {
+    const p = $('p-' + c.id), mode = state[c.id];
+    p.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+    p.querySelectorAll('[data-modes]').forEach(el => el.hidden = !el.dataset.modes.split(' ').includes(mode));
+    p.querySelector('[data-formula]').textContent = c.modes.find(x => x.id === mode).formula;
   }
-
-  // ---------- 08
-  let c8type = 'dna';
-  const v280 = r => c8type === 'dna'
-    ? (r < 1.7 ? ['낮음, 단백질·페놀 의심', 'bad'] : r > 2.0 ? ['높음, RNA가 섞였을 수 있음', 'bad'] : ['양호', 'ok'])
-    : (r < 1.8 ? ['낮음, 단백질·페놀 의심', 'bad'] : r > 2.2 ? ['높음, 다시 측정 권장', 'bad'] : ['양호', 'ok']);
-  const v230 = r => r < 1.8 ? ['낮음, 염·구아니딘 의심', 'bad'] : r < 2.0 ? ['조금 낮음', 'bad'] : ['양호', 'ok'];
-  const badge = (id, [t, c]) => { const el = $(id); el.textContent = t; el.className = 'badge ' + c; };
-  function c8() {
-    $('c8-dna').setAttribute('aria-pressed', String(c8type === 'dna')); $('c8-rna').setAttribute('aria-pressed', String(c8type === 'rna'));
-    const a260 = num('c8-260'), a280 = num('c8-280'), a230raw = $('c8-230').value.trim(), a230 = num('c8-230');
-    if (!ok(a260, a280) || a260 <= 0 || a280 <= 0) { show('c8-r1', NaN); show('c8-r2', NaN); badge('c8-v1', ['', '']); badge('c8-v2', ['', '']); set('c8-work', ''); set('c8-msg', EMPTY); return; }
-    const r1 = a260 / a280; show('c8-r1', r1, f2); badge('c8-v1', v280(r1));
-    let work = `${fmt(a260)} ÷ ${fmt(a280)} = ${f2(r1)}`;
-    if (a230raw !== '' && a230 > 0) { const r2 = a260 / a230; show('c8-r2', r2, f2); badge('c8-v2', v230(r2)); work += `<br>${fmt(a260)} ÷ ${fmt(a230)} = ${f2(r2)}`; }
-    else { show('c8-r2', NaN); badge('c8-v2', ['A230을 넣으면 계산돼요', '']); }
-    set('c8-work', work);
-    set('c8-msg', a260 < 0.1 ? 'A260이 0.1보다 낮으면 비율도 믿기 어려워요.' : '');
+  function chipSet(c, key) { const [g, i] = key.split('-').map(Number); return c.chips[g].items[i][1]; }
+  function syncChips(c) {
+    if (!c.chips) return;
+    $('p-' + c.id).querySelectorAll('[data-chip]').forEach(b => {
+      const on = Object.entries(chipSet(c, b.dataset.chip)).every(([k, val]) => {
+        if (k === '_mode') return state[c.id] === val;
+        const m = k.match(/^(.+)_u$/); return m ? +$(`${c.id}-${m[1]}-u`).value === val : parseNum($(`${c.id}-${k}`).value) === parseNum(val);
+      });
+      b.setAttribute('aria-pressed', String(on));
+    });
   }
-  $('c8-dna').addEventListener('click', () => { c8type = 'dna'; c8(); });
-  $('c8-rna').addEventListener('click', () => { c8type = 'rna'; c8(); });
-
-  // ---------- 09
-  function c9() {
-    const n = num('c9-n'), c = num('c9-c');
-    if (!ok(n, c) || n <= 0 || c <= 0) { show('c9-out', NaN); set('c9-work', ''); set('c9-msg', EMPTY); }
-    else { const uL = n * 1000 / c; show('c9-out', uL); set('c9-work', `${fmt(n)} nmol × 1,000 ÷ ${fmt(c)} μM = ${fmt(uL)} μL`); set('c9-msg', ''); }
-    const stock = c > 0 ? c : NaN, wc = num('c9-wc'), wv = num('c9-wv');
-    if (!ok(stock, wc, wv) || wc <= 0 || wv <= 0) { show('c9-wout', NaN); set('c9-walso', ''); set('c9-wwork', ''); return; }
-    if (wc > stock) { show('c9-wout', NaN); set('c9-walso', '작업액이 스톡보다 진해요.'); set('c9-wwork', ''); return; }
-    const s = wc * wv / stock;
-    show('c9-wout', s); set('c9-walso', `물 <b>${fmt(wv - s)}</b> μL를 더해 총 ${fmt(wv)} μL`);
-    set('c9-wwork', `${fmt(wc)} μM × ${fmt(wv)} μL ÷ ${fmt(stock)} μM = ${fmt(s)} μL`);
+  function setDefaults(c) {
+    c.fields.forEach(f => {
+      const el = $(`${c.id}-${f.id}`);
+      if (f.select) { el.value = '0'; return; }
+      el.value = f.v || ''; el.classList.toggle('ex', !!f.v);
+      if (f.units) $(`${c.id}-${f.id}-u`).value = String(f.uv || 0);
+    });
+    if (c.modes) { state[c.id] = c.modes[0].id; applyMode(c); }
   }
+  function toast(t) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 1600); }
+  CALCS.forEach(c => {
+    const p = $('p-' + c.id);
+    if (c.modes) { state[c.id] = c.modes[0].id; applyMode(c); }
+    p.addEventListener('input', e => { e.target.classList && e.target.classList.remove('ex'); syncChips(c); render(c, false); });
+    p.addEventListener('change', e => { if (e.target.tagName === 'SELECT') { syncChips(c); render(c, true); } });
+    p.addEventListener('click', e => {
+      const mb = e.target.closest('[data-mode]');
+      if (mb) { state[c.id] = mb.dataset.mode; applyMode(c); syncChips(c); render(c, true); return; }
+      const cb = e.target.closest('[data-chip]');
+      if (cb) {
+        Object.entries(chipSet(c, cb.dataset.chip)).forEach(([k, val]) => {
+          if (k === '_mode') { state[c.id] = val; applyMode(c); return; }
+          const m = k.match(/^(.+)_u$/);
+          if (m) $(`${c.id}-${m[1]}-u`).value = val; else { const el = $(`${c.id}-${k}`); el.value = val; el.classList.remove('ex'); }
+        });
+        syncChips(c); render(c, true); return;
+      }
+      if (e.target.closest('[data-reset]')) { setDefaults(c); syncChips(c); render(c, true); toast('예시 숫자로 돌려놨어요'); return; }
+      if (e.target.closest('[data-copy]')) {
+        const res = last[c.id], work = p.querySelector('[data-k="w"]')?.innerText || '';
+        const text = res ? `${c.title}\n${res.l}: ${res.t}\n${work}` : '';
+        if (!text) return toast('복사할 결과가 없어요');
+        (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(() => toast('결과를 복사했어요'), () => toast('복사하지 못했어요'));
+      }
+    });
+    syncChips(c); render(c, false);
+  });
 
-  // ---------- 10
-  function c10() {
-    const vb = num('c10-vb'), vn = num('c10-vn'), ib = num('c10-ib'), r = num('c10-r'), icRaw = $('c10-ic').value.trim(), ic = num('c10-ic');
-    $('c10-chips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.r === r)));
-    if (!ok(vb, vn, ib, r) || vb <= 0 || vn <= 0 || ib <= 0 || r <= 0) return clear('c10', EMPTY);
-    const ng = r * vn * (ib / vb);
-    show('c10-out', ng);
-    set('c10-also', icRaw !== '' && ic > 0 ? `${fmt(ic)} ng/μL 기준 <b>${fmt(ng / ic)}</b> μL` : '');
-    set('c10-work', `${fmt(r)} × ${fmt(vn)} ng × (${fint(ib)} ÷ ${fint(vb)}) = ${fmt(ng)} ng`);
-    set('c10-msg', '');
+  // ---------------- search + menus
+  const STOP = new Set(['계산', '계산기', '만들기', '구하기', '하기', '방법', '어떻게', '변환기']);
+  const norm = s => String(s).toLowerCase().replace(/[μµ]/g, 'u').replace(/×/g, 'x').replace(/[\s·,()]/g, '');
+  const hasKo = s => /[가-힣]/.test(s);
+  function score(c, q) {
+    const terms = q.trim().split(/\s+/).map(norm).filter(t => t && !STOP.has(t));
+    if (!terms.length) return 1;
+    const name = norm(c.short), title = norm(c.title), words = `${c.short} ${c.sub} ${c.title} ${catName(c.cat)} ${c.kw}`.split(/\s+/).map(norm);
+    let s = 0;
+    for (const t of terms) {
+      let best = 0;
+      if (name === t) best = 100; else if (name.startsWith(t)) best = 60;
+      else if ((hasKo(t) || t.length >= 3) && (name.includes(t) || title.includes(t))) best = 40;
+      else if (words.some(w => w.startsWith(t))) best = 25;
+      else if (hasKo(t) && words.some(w => w.includes(t))) best = 10;
+      s += best;
+    }
+    return s;
   }
-  $('c10-chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $('c10-r').value = b.dataset.r; c10(); });
+  const filter = {q: '', cat: 'all'};
+  const ranked = (q, cat) => CALCS.map((c, i) => ({c, i, s: (cat === 'all' || c.cat === cat) ? score(c, q) : 0})).filter(x => x.s > 0).sort((a, b) => q.trim() ? b.s - a.s || a.i - b.i : a.i - b.i).map(x => x.c);
+  $('cats').innerHTML = [{id: 'all', name: '전체'}].concat(CATS).map(k => `<button type="button" data-cat="${k.id}" aria-pressed="${k.id === 'all'}">${esc(k.name)}</button>`).join('');
+  function listHTML(q) {
+    const vis = new Set(ranked(q, 'all').map(c => c.id));
+    let html = '';
+    if (q.trim()) return ranked(q, 'all').map(c => miHTML(c)).join('') || '<p class="empty">찾는 계산기가 없어요.</p>';
+    CATS.forEach(k => { const items = CALCS.filter(c => c.cat === k.id && vis.has(c.id)); if (items.length) html += `<div class="grp">${esc(k.name)}</div>` + items.map(miHTML).join(''); });
+    return html;
+  }
+  const miHTML = c => `<button type="button" class="mi" data-go="${c.id}"><span class="ico">${svg(c.icon)}</span><span>${esc(c.short)}</span></button>`;
+  function mark() { document.querySelectorAll('[data-go]').forEach(b => b.setAttribute('aria-current', String(b.dataset.go === cur))); }
+  function drawMenus(intro) {
+    const vis = ranked(filter.q, filter.cat);
+    const tiles = $('tiles');
+    tiles.classList.toggle('intro', !!intro);
+    tiles.innerHTML = vis.map((c, i) => `<button type="button" class="tile" data-go="${c.id}" style="--i:${i}"><span class="ic">${svg(c.icon)}</span><b>${esc(c.short)}</b><small>${esc(c.sub)}</small></button>`).join('');
+    $('empty').hidden = vis.length > 0;
+    $('side').innerHTML = listHTML(filter.q);
+    $('cats').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cat === filter.cat)));
+    mark();
+  }
+  const syncQ = (src) => ['q', 'q2'].forEach(id => { if ($(id) !== src) $(id).value = src.value; });
+  ['q', 'q2'].forEach(id => {
+    const inp = $(id);
+    inp.addEventListener('input', () => { filter.q = inp.value; syncQ(inp); if (filter.q.trim()) filter.cat = 'all'; drawMenus(false); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { const top = ranked(filter.q, filter.cat)[0]; if (top) { e.preventDefault(); select(top.id, {scroll: true, push: true, focus: true}); } } });
+  });
+  $('q3').addEventListener('input', () => { $('sheet-list').innerHTML = listHTML($('q3').value); mark(); });
+  $('q3').addEventListener('keydown', e => { if (e.key === 'Enter') { const top = ranked($('q3').value, 'all')[0]; if (top) { e.preventDefault(); $('sheet').close(); select(top.id, {scroll: true, push: true}); } } });
+  $('cats').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b) return; filter.cat = b.dataset.cat; drawMenus(false); });
+  addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); (WIDE.matches ? $('q2') : $('q')).focus(); } });
 
-  const FN = {c1, c2, c3, c4, c5, c6, c7, c8, c9, c10};
-  panels.forEach(p => { const fn = FN[p.id]; p.addEventListener('input', fn); p.addEventListener('change', fn); fn(); });
+  // ---------------- selection + history
+  function select(id, o = {}) {
+    id = ALIAS[id] || id;
+    const c = byId(id); if (!c) return;
+    const changed = cur !== id; cur = id;
+    $('pick').hidden = true;
+    CALCS.forEach(x => $('p-' + x.id).hidden = x.id !== id);
+    mark();
+    if (changed) {
+      const p = $('p-' + id);
+      p.classList.remove('enter'); void p.offsetWidth;
+      p.querySelectorAll('.an').forEach((el, k) => el.style.setProperty('--i', k));
+      p.classList.add('enter');
+      render(c, false);
+      if (o.push) history.pushState({id}, '', '#' + id); else if (!o.silent) history.replaceState({id}, '', '#' + id);
+      watchResult();
+    }
+    if (o.scroll) {
+      const top = $('stage').getBoundingClientRect().top + scrollY - 64;
+      if (!WIDE.matches || Math.abs(scrollY - top) > 40) scrollTo({top, behavior: RM.matches ? 'auto' : 'smooth'});
+    }
+    if (o.focus) setTimeout(() => { const f = $('p-' + id).querySelector('.field:not([hidden]) input, .field:not([hidden]) textarea'); f && f.focus({preventScroll: true}); }, RM.matches ? 0 : 350);
+    syncBar();
+  }
+  function unselect() {
+    cur = null; CALCS.forEach(x => $('p-' + x.id).hidden = true); $('pick').hidden = false; mark(); syncBar();
+    scrollTo({top: 0, behavior: RM.matches ? 'auto' : 'smooth'});
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-go]');
+    if (b) { if ($('sheet').open) $('sheet').close(); select(b.dataset.go, {scroll: true, push: true}); }
+  });
+  addEventListener('popstate', () => { const id = location.hash.slice(1); if (byId(ALIAS[id] || id)) select(id, {silent: true, scroll: true}); else if (!WIDE.matches) unselect(); });
 
+  // ---------------- phone bottom bar
+  function syncBar() {
+    const show = !WIDE.matches && !!cur && !menuVisible;
+    bar.classList.toggle('show', show); document.body.classList.toggle('has-bar', !WIDE.matches && !!cur);
+    const r = cur && last[cur];
+    $('bar-res').classList.toggle('hide', !r || resultVisible);
+    if (r) { $('bar-l').textContent = r.l; $('bar-n').textContent = r.t; }
+  }
+  function watchResult() {
+    if (!('IntersectionObserver' in window)) return;
+    if (io) io.disconnect();
+    io = new IntersectionObserver(([en]) => { resultVisible = en.isIntersecting; syncBar(); }, {rootMargin: '0px 0px -70px 0px'});
+    io.observe($('p-' + cur).querySelector('[data-out]'));
+  }
+  if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => { menuVisible = en.isIntersecting; syncBar(); }).observe($('menu'));
+  $('bar-res').addEventListener('click', () => { const r = $('p-' + cur).querySelector('[data-out]'); scrollTo({top: r.getBoundingClientRect().top + scrollY - 80, behavior: RM.matches ? 'auto' : 'smooth'}); });
+  $('bar-menu').addEventListener('click', () => { $('q3').value = ''; $('sheet-list').innerHTML = listHTML(''); mark(); $('sheet').showModal(); });
+  $('sheet-x').addEventListener('click', () => $('sheet').close());
+  $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) $('sheet').close(); });
+  addEventListener('scroll', () => $('top').classList.toggle('scrolled', scrollY > 8), {passive: true});
+  WIDE.addEventListener('change', () => { if (WIDE.matches && !cur) select(CALCS[0].id, {silent: true}); syncBar(); });
+
+  drawMenus(true);
   const start = location.hash.slice(1);
-  select(CALCS.some(c => c.id === start) ? start : 'c1', {silent: true});
-  if (CALCS.some(c => c.id === start)) setTimeout(() => select(start, {scroll: true}), 60);
+  if (byId(ALIAS[start] || start)) { select(start, {silent: true}); setTimeout(() => select(start, {scroll: true}), 80); }
+  else if (WIDE.matches) select(CALCS[0].id, {silent: true});
+  else { $('pick').hidden = false; CALCS.forEach(x => $('p-' + x.id).hidden = true); }
 })();
 </script>
 </body>
