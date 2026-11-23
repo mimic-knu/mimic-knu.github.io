@@ -487,7 +487,7 @@
       },
       notes: ['최근접 이웃법(SantaLucia 1998)에 Na⁺ 보정을 넣은 값이에요. 같은 조건에서 Primer3와 같은 값이 나와요.', '같은 서열도 계산 방식과 염, 프라이머 농도에 따라 Tm이 몇 °C씩 달라요. 어닐링 온도는 쓰는 중합효소 회사의 계산기로 정하세요.', 'Mg²⁺와 dNTP 보정은 넣지 않았어요.'],
       abbr: 'Tm(Melting temperature, 이중 가닥의 절반이 풀리는 온도), GC%(G와 C의 비율), nt(nucleotide)',
-      src: [['SantaLucia 1998', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC19045/'], ['Primer3 설명서', 'https://primer3.org/manual.html']]},
+      src: [['SantaLucia 1998', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC19045/'], ['Primer3 도움말', 'https://primer3.ut.ee/primer3web_help.htm']]},
 
     {id: 'mmix', cat: 'pcr', short: '마스터믹스', sub: 'n개 + 여유분', title: 'PCR 마스터믹스 만들기', icon: 'rack',
       kw: '마스터믹스 master mix PCR 반응 여러 개 reaction 여유분 extra 프라이머 2X Taq Q5 qPCR 세팅 RT 역전사 cDNA 제한효소 digest colony PCR 96',
