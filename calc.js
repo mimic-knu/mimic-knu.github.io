@@ -68,7 +68,8 @@
     {id: 'dil', name: '희석'},
     {id: 'dna', name: 'DNA·RNA'},
     {id: 'pcr', name: 'PCR·클로닝'},
-    {id: 'cult', name: '균 배양'},
+    {id: 'prot', name: '단백질'},
+    {id: 'cult', name: '균·세포'},
     {id: 'spin', name: '원심분리'}
   ];
 
@@ -159,6 +160,33 @@
       },
       notes: ['mg/mL와 g/L는 같은 값이고, μg/mL와 ng/μL도 같은 값이에요. ppm은 mg/L예요.', '같은 약도 염 형태(Na염, 황산염)나 수화물이면 분자량이 달라요. 라벨 값을 넣으세요.', '진한 산은 % (w/w)와 밀도로 계산해야 해요. 37% 염산은 약 12 M이에요.'],
       src: [LM, ['PubChem', 'https://pubchem.ncbi.nlm.nih.gov/'], PMC('PMC9421121')]},
+
+    {id: 'buf', cat: 'sol', short: '버퍼 pH', sub: '산형 · 염기형 비율', title: '완충액 pH 맞추기', icon: 'drop',
+      kw: '버퍼 buffer 완충액 pH pKa Henderson Hasselbalch 헨더슨 하셀바흐 인산 phosphate PB Tris 트리스 HEPES MOPS MES 산 염기 비율',
+      formula: 'pH = pKa + log(염기형 ÷ 산형)',
+      fields: [
+        {id: 'ph', label: '목표 pH', v: '7.4'},
+        {id: 'pka', label: 'pKa', small: '25°C', v: '6.8'},
+        {id: 'c', label: '만들 농도', small: '산형 + 염기형', v: '100', units: [['mM', 1e-3], ['M', 1]]},
+        {id: 'V', label: '만들 부피', v: '100', units: U.vol, uv: 1},
+        {id: 's', label: '스톡 농도', small: '산형, 염기형 같은 농도', v: '1', units: [['M', 1], ['mM', 1e-3]]}],
+      chips: [{label: 'pKa 넣기 (25°C)', items: [['인산 6.8', {pka: '6.8'}], ['Tris 8.06', {pka: '8.06'}], ['HEPES 7.48', {pka: '7.48'}], ['MOPS 7.20', {pka: '7.20'}], ['MES 6.10', {pka: '6.10'}]]}],
+      calc(v) {
+        if (!Number.isFinite(v.ph) || !Number.isFinite(v.pka) || !pos(v.c, v.V, v.s)) return E();
+        if (v.ph < 0 || v.ph > 14 || v.pka < 0 || v.pka > 14) return E('pH와 pKa는 0에서 14 사이로 넣어 주세요.');
+        const C = v.c * v.c_u, S = v.s * v.s_u, L = v.V * v.V_u;
+        if (C > S) return E('스톡이 만들 농도보다 묽어요. 더 진한 스톡이 필요해요.');
+        const ratio = 10 ** (v.ph - v.pka), fb = ratio / (1 + ratio), tot = C * L / S, b = tot * fb, a = tot - b, w = L - tot;
+        const [bn, bu] = vol(b), [an, au] = vol(a), [wn, wu] = vol(w), [cb, cbu] = molar(C * fb), [ca, cau] = molar(C * (1 - fb));
+        const far = Math.abs(v.ph - v.pka) > 1;
+        return {lbl: '넣을 염기형 스톡', n: bn, u: bu, also: `산형 스톡 <b>${fmt(an)}</b> ${au}, 물로 채워 총 ${fi(v.V)} ${v.V_n}`,
+          work: `10^(${fi(v.ph)} − ${fi(v.pka)}) = ${fmt(ratio, 4)} → 염기형 ${fmt(fb * 100, 3)}%, 산형 ${fmt((1 - fb) * 100, 3)}%`,
+          msg: far ? '목표 pH가 pKa에서 1 넘게 떨어져 있어요. 완충 능력이 약하니 pKa가 더 가까운 버퍼를 고르세요.' : (pip(b) || pip(a)),
+          table: {head: ['넣을 것', '양', '최종 농도'], rows: [['염기형 스톡', `${fmt(bn)} ${bu}`, `${fmt(cb)} ${cbu}`], ['산형 스톡', `${fmt(an)} ${au}`, `${fmt(ca)} ${cau}`], ['물', `${fmt(wn)} ${wu}`, '']]}};
+      },
+      notes: ['계산값은 출발점이에요. 섞은 뒤 pH 미터로 확인하고 맞추세요.', '염기형은 Na₂HPO₄나 Tris base, 산형은 NaH₂PO₄나 Tris-HCl 같은 쪽이에요.', '인산은 겉보기 pKa 6.8로 계산해요. 시그마의 0.1 M 인산 완충액 표(25°C, pH 5.8~8.0)와 염기형 비율이 2%p 안에서 맞아요.', 'Tris는 온도에 민감해요. pKa가 20°C 8.20, 25°C 8.06, 37°C 7.72라서 쓸 온도에서 맞춰야 해요.'],
+      abbr: 'pKa(산 해리 상수 Ka의 −log 값), Tris(Tris(hydroxymethyl)aminomethane), HEPES(4-(2-Hydroxyethyl)-1-piperazineethanesulfonic acid), MOPS(3-(N-Morpholino)propanesulfonic acid), MES(2-(N-Morpholino)ethanesulfonic acid)',
+      src: [['Sigma 버퍼 자료', 'https://www.sigmaaldrich.com/US/en/technical-documents/protocol/protein-biology/protein-concentration-and-buffer-exchange/buffer-reference-center']]},
 
     // ================= 희석
     {id: 'c1v1', cat: 'dil', short: 'C1V1 희석', sub: '농도 낮추기', title: '원액을 원하는 농도로 희석', icon: 'dilute',
@@ -378,6 +406,36 @@
       notes: ['기울기 −3.32가 효율 100%예요.', '표준곡선 범위 밖의 Cq는 추정값이라 믿기 어려워요.'],
       src: [PMC('PMC7310081')]},
 
+    {id: 'ddct', cat: 'dna', short: 'ΔΔCt', sub: '상대 발현량', title: 'ΔΔCt 상대 정량', icon: 'bars',
+      kw: 'ddCt ΔΔCt delta delta Ct Cq 2^-ΔΔCt Livak Pfaffl 상대 정량 relative quantification 발현 배수 fold change qPCR RT-qPCR 기준 유전자 reference housekeeping 16S GAPDH',
+      modes: [{id: 'livak', label: '2^−ΔΔCt', formula: '배수 = 2^−ΔΔCt, ΔΔCt = (타깃 − 기준)처리군 − (타깃 − 기준)대조군'},
+        {id: 'pfaffl', label: '효율 보정', formula: '배수 = E타깃^(대조군 Ct − 처리군 Ct) ÷ E기준^(대조군 Ct − 처리군 Ct)'}],
+      fields: [
+        {id: 'ct', label: '대조군 타깃 Ct', v: '25.0'},
+        {id: 'cr', label: '대조군 기준 유전자 Ct', v: '18.0'},
+        {id: 'tt', label: '처리군 타깃 Ct', v: '23.0'},
+        {id: 'tr', label: '처리군 기준 유전자 Ct', v: '18.1'},
+        {id: 'et', label: '타깃 증폭 효율', v: '95', unit: '%', modes: ['pfaffl']},
+        {id: 'er', label: '기준 유전자 증폭 효율', v: '102', unit: '%', modes: ['pfaffl']}],
+      calc(v, mode) {
+        if (!pos(v.ct, v.cr, v.tt, v.tr)) return E();
+        const dC = v.ct - v.cr, dT = v.tt - v.tr, dd = dT - dC;
+        const dir = x => x >= 1 ? '' : `, 대조군의 <b>1/${fmt(1 / x, 3)}</b>로 감소`;
+        if (mode === 'pfaffl') {
+          if (!pos(v.et, v.er)) return E();
+          const Et = 1 + v.et / 100, Er = 1 + v.er / 100, r = Et ** (v.ct - v.tt) / Er ** (v.cr - v.tr);
+          return {lbl: '발현 배수 (처리군 ÷ 대조군)', n: +r.toPrecision(4), u: '배', also: `효율이 둘 다 100%일 때는 <b>${fmt(2 ** -dd, 3)}</b>배${dir(r)}`,
+            work: `E타깃 = 1 + ${fi(v.et)}% = ${fmt(Et, 4)}, E기준 = ${fmt(Er, 4)}<br>${fmt(Et, 4)}^(${fi(v.ct)} − ${fi(v.tt)}) ÷ ${fmt(Er, 4)}^(${fi(v.cr)} − ${fi(v.tr)}) = ${fmt(r, 4)}`,
+            msg: [v.et, v.er].some(x => x < 90 || x > 110) ? '증폭 효율은 흔히 90~110%를 좋은 범위로 봐요. 표준곡선을 다시 확인해 보세요.' : ''};
+        }
+        const fold = 2 ** -dd;
+        return {lbl: '발현 배수 (처리군 ÷ 대조군)', n: +fold.toPrecision(4), u: '배', also: `ΔΔCt <b>${fmt(dd, 4)}</b>${dir(fold)}`,
+          work: `ΔCt 대조군 = ${fi(v.ct)} − ${fi(v.cr)} = ${fmt(dC, 4)}<br>ΔCt 처리군 = ${fi(v.tt)} − ${fi(v.tr)} = ${fmt(dT, 4)}<br>ΔΔCt = ${fmt(dT, 4)} − ${fmt(dC, 4)} = ${fmt(dd, 4)}, 2^−(${fmt(dd, 4)}) = ${fmt(fold, 4)}`};
+      },
+      notes: ['Ct는 반복 측정의 평균을 넣으세요.', '2^−ΔΔCt는 타깃과 기준 유전자의 증폭 효율이 둘 다 100%에 가깝고 서로 비슷할 때 쓰는 방법이에요. 다르면 효율 보정으로 계산하세요.', '효율은 표준곡선 기울기에서 구해요. qPCR 효율 계산기에서 나온 % 값을 그대로 넣으면 돼요.', '기준 유전자는 처리해도 발현이 변하지 않는 유전자여야 해요.'],
+      abbr: 'Ct(Cycle threshold), Cq(Quantification cycle)와 같은 값',
+      src: [['Livak·Schmittgen 2001', 'https://pubmed.ncbi.nlm.nih.gov/11846609/'], ['Pfaffl 2001', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC55695/']]},
+
     // ================= PCR·클로닝
     {id: 'primer', cat: 'pcr', short: '프라이머', sub: '100 μM 스톡', title: '프라이머 녹이기와 작업액', icon: 'tube',
       kw: '프라이머 primer oligo 올리고 nmol 100 μM uM 10 μM 녹이기 resuspend 스톡 작업액 IDT 마크로젠 바이오니아',
@@ -399,6 +457,37 @@
       },
       notes: ['녹이기 전에 튜브를 스핀다운하세요. 가루가 뚜껑에 붙어 있어요.', '라벨의 OD나 μg가 아니라 nmol 숫자를 넣으세요.', '스톡은 IDTE(TE)나 nuclease-free 물에 녹이고, 잘 안 녹으면 55°C에 잠깐 두세요.'],
       src: [['IDT 올리고 녹이기', 'https://www.idtdna.com/page/support-and-education/decoded-plus/tips-for-resuspending-and-diluting-your-oligonucleotides'], ['IDT FAQ', 'https://www.idtdna.com/pages/support/faqs/how-do-i-dilute-my-primers-'], PMC('PMC13073342')]},
+
+    {id: 'tm', cat: 'pcr', short: '프라이머 Tm', sub: 'GC% · 역상보', title: '프라이머 Tm과 GC%', icon: 'thermo',
+      kw: 'Tm melting temperature 녹는 온도 프라이머 primer GC GC% 길이 역상보 reverse complement 상보 서열 annealing 어닐링 nearest neighbor SantaLucia',
+      formula: 'Tm = ΔH ÷ (ΔS + R × ln(프라이머 농도 ÷ 4)) − 273.15',
+      fields: [
+        {id: 'seq', label: '프라이머 서열', small: '5′ → 3′, A C G T', v: 'AGAGTTTGATCCTGGCTCAG', wide: true, sci: true},
+        {id: 'pc', label: '프라이머 농도', small: '반응액에서', v: '500', unit: 'nM'},
+        {id: 'na', label: '1가 양이온', small: 'Na⁺, K⁺', v: '50', unit: 'mM'}],
+      calc(v) {
+        const seq = String(v.raw.seq || '').toUpperCase().replace(/[53]['′’]/g, '').replace(/[^A-Z]/g, '');
+        if (!seq) return E('서열을 넣어 주세요 (예: AGAGTTTGATCCTGGCTCAG).');
+        if (/[^ACGT]/.test(seq)) return E('A, C, G, T만 넣어 주세요. N, R, Y 같은 섞인 염기는 계산하지 못해요.');
+        if (seq.length < 8) return E('8 nt 이상인 서열을 넣어 주세요.');
+        if (!pos(v.pc, v.na)) return E();
+        const N = seq.length, gc = (seq.match(/[GC]/g) || []).length;
+        const rc = seq.split('').reverse().map(b => ({A: 'T', T: 'A', G: 'C', C: 'G'})[b]).join('');
+        const NN = {AA: [-7.9, -22.2], TT: [-7.9, -22.2], AT: [-7.2, -20.4], TA: [-7.2, -21.3], CA: [-8.5, -22.7], TG: [-8.5, -22.7], GT: [-8.4, -22.4], AC: [-8.4, -22.4],
+          CT: [-7.8, -21.0], AG: [-7.8, -21.0], GA: [-8.2, -22.2], TC: [-8.2, -22.2], CG: [-10.6, -27.2], GC: [-9.8, -24.4], GG: [-8.0, -19.9], CC: [-8.0, -19.9]};
+        let dH = 0, dS = 0;
+        for (const e of [seq[0], seq[N - 1]]) { const t = e === 'G' || e === 'C' ? [0.1, -2.8] : [2.3, 4.1]; dH += t[0]; dS += t[1]; }
+        for (let i = 0; i < N - 1; i++) { const t = NN[seq.slice(i, i + 2)]; dH += t[0]; dS += t[1]; }
+        const self = seq === rc; if (self) dS += -1.4;
+        dS += 0.368 * (N - 1) * Math.log(v.na / 1000);
+        const tm = dH * 1000 / (dS + 1.987 * Math.log(v.pc * 1e-9 / (self ? 1 : 4))) - 273.15;
+        return {lbl: 'Tm', n: Math.round(tm * 10) / 10, u: '°C', also: `길이 <b>${N}</b> nt, GC <b>${fmt(gc / N * 100, 3)}</b>% (G+C ${gc}개)`,
+          work: `ΔH = ${fmt(dH, 4)} kcal/mol, ΔS = ${fmt(dS, 4)} cal/(K·mol)<br>역상보 5′-${rc}-3′`,
+          msg: N > 60 ? '60 nt가 넘으면 이 방식의 오차가 커져요.' : (self ? '자기 자신과 상보적인 서열이에요. 프라이머끼리 붙을 수 있어요.' : '')};
+      },
+      notes: ['최근접 이웃법(SantaLucia 1998)에 Na⁺ 보정을 넣은 값이에요. 같은 조건에서 Primer3와 같은 값이 나와요.', '같은 서열도 계산 방식과 염, 프라이머 농도에 따라 Tm이 몇 °C씩 달라요. 어닐링 온도는 쓰는 중합효소 회사의 계산기로 정하세요.', 'Mg²⁺와 dNTP 보정은 넣지 않았어요.'],
+      abbr: 'Tm(Melting temperature, 이중 가닥의 절반이 풀리는 온도), GC%(G와 C의 비율), nt(nucleotide)',
+      src: [['SantaLucia 1998', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC19045/'], ['Primer3 설명서', 'https://primer3.org/manual.html']]},
 
     {id: 'mmix', cat: 'pcr', short: '마스터믹스', sub: 'n개 + 여유분', title: 'PCR 마스터믹스 만들기', icon: 'rack',
       kw: '마스터믹스 master mix PCR 반응 여러 개 reaction 여유분 extra 프라이머 2X Taq Q5 qPCR 세팅 RT 역전사 cDNA 제한효소 digest colony PCR 96',
@@ -470,6 +559,32 @@
       notes: ['예시 숫자는 NEB 예시예요(pUC19 100 pg, 세포+SOC 300 μL, 10 μL를 1 mL로 희석해 30 μL 도말).', '전체 부피는 SOC만이 아니라 세포 + SOC예요.', '라이게이션 산물은 온전한 플라스미드보다 콜로니가 10~100배 적게 나와요.'],
       src: [['NEB 효율 계산', 'https://www.neb.com/en-us/faqs/how-should-i-calculate-the-transformation-efficiency-c2992'], ['Thermo DH5α 설명서', 'https://documents.thermofisher.com/TFS-Assets/LSG/manuals/MAN0018520_DH5alpha_competent_cells_UG.pdf'], ['Promega TB095', 'https://www.promega.com/-/media/files/resources/protocols/technical-bulletins/0/e-coli-competent-cells-protocol.pdf'], PMC('PMC7349126')],
       abbr: 'SOC(Super Optimal broth with Catabolite repression)'},
+
+    // ================= 단백질
+    {id: 'page', cat: 'prot', short: 'SDS-PAGE 겔', sub: '겔 조성', title: 'SDS-PAGE 겔 만들기', icon: 'gel',
+      kw: 'SDS-PAGE SDS PAGE 겔 gel 아크릴아마이드 acrylamide 분리겔 resolving separating 농축겔 stacking 웨스턴 western 단백질 전기영동 APS TEMED Tris Laemmli',
+      modes: [{id: 'res', label: '분리겔', formula: '아크릴아마이드(mL) = 겔 % ÷ 스톡 % × 만들 부피'}, {id: 'stk', label: '농축겔', formula: '아크릴아마이드(mL) = 겔 % ÷ 스톡 % × 만들 부피'}],
+      fields: [
+        {id: 'p', label: '분리겔 농도', v: '12', unit: '%', modes: ['res']},
+        {id: 'ps', label: '농축겔 농도', v: '4', unit: '%', modes: ['stk']},
+        {id: 'V', label: '만들 부피', v: '10', unit: 'mL'},
+        {id: 'st', label: '아크릴아마이드 스톡', select: [['30% 아크릴아마이드/비스', 30], ['40% 아크릴아마이드/비스', 40]]},
+        {id: 'ts', label: '농축겔용 Tris 스톡', select: [['0.5 M Tris-HCl pH 6.8', 0.5], ['1.0 M Tris-HCl pH 6.8', 1]], modes: ['stk']}],
+      chips: [{label: '분리겔 농도', modes: ['res'], items: [['8%', {p: '8'}], ['10%', {p: '10'}], ['12%', {p: '12'}], ['15%', {p: '15'}]]}],
+      calc(v, mode) {
+        const stk = mode === 'stk', p = stk ? v.ps : v.p;
+        if (!pos(p, v.V)) return E();
+        const acr = p / v.st * v.V, tris = stk ? 0.125 * v.V / v.ts : v.V / 4, sds = v.V / 100, aps = v.V / 100, tem = v.V / 1000, w = v.V - acr - tris - sds - aps - tem;
+        if (w < -1e-9) return E('이 스톡으로는 그 농도를 만들 수 없어요. 겔 농도를 낮추거나 더 진한 스톡을 쓰세요.');
+        const q = mL => mL >= 1 ? `${fmt(mL, 3)} mL` : `${fmt(mL * 1000, 3)} μL`;
+        const trisName = stk ? `${v.ts === 1 ? '1.0' : '0.5'} M Tris-HCl pH 6.8` : '1.5 M Tris-HCl pH 8.8';
+        return {lbl: `넣을 ${v.st}% 아크릴아마이드`, n: +acr.toPrecision(3), u: 'mL', also: `${stk ? '농축겔' : '분리겔'} <b>${fi(p)}</b>%, 총 ${fi(v.V)} mL`,
+          work: `${fi(p)}% ÷ ${v.st}% × ${fi(v.V)} mL = ${fmt(acr, 3)} mL`,
+          table: {head: ['넣는 순서', '양'], rows: [['물', q(w)], [`${v.st}% 아크릴아마이드/비스`, q(acr)], [trisName, q(tris)], ['10% SDS', q(sds)], ['10% APS', q(aps)], ['TEMED', q(tem)], ['합계', q(v.V)]]}};
+      },
+      notes: ['APS와 TEMED는 맨 마지막에 넣으세요. 넣으면 바로 굳기 시작해요.', 'TEMED 양은 프로토콜마다 10 mL당 4~10 μL로 달라요. 여기서는 시그마 표를 따라 10 μL로 계산해요.', '분리겔은 최종 0.375 M Tris pH 8.8, 농축겔은 0.125 M Tris pH 6.8, SDS와 APS는 각각 0.1%가 되게 계산해요.', '굳기 전의 아크릴아마이드는 신경독성이 있어요. 장갑을 끼고 다루세요.'],
+      abbr: 'SDS-PAGE(Sodium Dodecyl Sulfate–Polyacrylamide Gel Electrophoresis), APS(Ammonium Persulfate), TEMED(N,N,N′,N′-Tetramethylethylenediamine)',
+      src: [['Sigma SDS-PAGE', 'https://www.sigmaaldrich.com/US/en/technical-documents/protocol/protein-biology/gel-electrophoresis/sds-page'], PMC('PMC4889332')]},
 
     // ================= 균 배양
     {id: 'cfu', cat: 'cult', short: 'CFU', sub: '균 수 세기', title: 'CFU 계산', icon: 'dish',
@@ -555,6 +670,65 @@
       },
       notes: ['대수 증식기(exponential phase)에 잰 두 값만 넣어야 맞아요. 지연기나 정지기가 섞이면 길게 나와요.', 'OD라면 두 값 모두 기기의 직선 범위 안에서 잰 값이어야 해요.'],
       src: [['OpenStax 미생물학 9.1', 'https://openstax.org/books/microbiology/pages/9-1-how-microbes-grow'], PMC('PMC3430339'), PMC('PMC10986536')]},
+
+    {id: 'hemo', cat: 'cult', short: '혈구계산판', sub: '세포 수 · 시딩', title: '혈구계산판 세포 수와 시딩', icon: 'grid',
+      kw: '혈구계산판 hemocytometer haemocytometer 헤모사이토미터 세포 수 cell count counting 트리판 블루 trypan blue 생존율 viability 시딩 seeding 웰 well plate 계대 passage Neubauer',
+      modes: [{id: 'count', label: '세포 농도', formula: 'cells/mL = 큰 칸 평균 × 희석 배수 × 10⁴'}, {id: 'seed', label: '시딩 부피', formula: '넣을 세포액 = 웰당 세포 수 × 웰 수 ÷ 세포 농도'}],
+      fields: [
+        {id: 'live', label: '살아 있는 세포 합계', small: '센 칸 전체', v: '187', unit: '개', modes: ['count']},
+        {id: 'dead', label: '죽은 세포 합계', small: '파랗게 염색, 있으면', v: '11', ph: '선택', unit: '개', opt: true, modes: ['count']},
+        {id: 'sq', label: '센 큰 칸 수', small: '1 mm × 1 mm 칸', v: '4', unit: '칸', modes: ['count']},
+        {id: 'df', label: '희석 배수', small: '트리판 블루 1:1이면 2', v: '2', unit: '배', modes: ['count']},
+        {id: 'conc', label: '세포 농도', v: '9.35e5', unit: 'cells/mL', sci: true, wide: true, modes: ['seed']},
+        {id: 'per', label: '웰당 세포 수', v: '2e5', unit: '개', sci: true, modes: ['seed']},
+        {id: 'wells', label: '웰 수', v: '6', unit: '개', modes: ['seed']},
+        {id: 'wv', label: '웰당 부피', v: '2', unit: 'mL', modes: ['seed']},
+        {id: 'ex', label: '여유분', v: '10', unit: '%', modes: ['seed']}],
+      calc(v, mode) {
+        if (mode === 'seed') {
+          if (!pos(v.conc, v.per, v.wells, v.wv) || !(v.ex >= 0)) return E();
+          const k = v.wells * (1 + v.ex / 100), cells = v.per * k, tot = v.wv * k, s = cells / v.conc, med = tot - s;
+          if (med < -1e-9) return E('세포 농도가 낮아서 이 부피 안에 다 못 넣어요. 원심분리해서 더 적은 부피에 풀어 주세요.');
+          const [n, u] = vol(s / 1000), [mn, mu] = vol(med / 1000);
+          return {lbl: '넣을 세포액', n, u, also: `배지 <b>${fmt(mn)}</b> ${mu}와 섞어 총 ${fmt(tot)} mL, 웰마다 ${fi(v.wv)} mL씩`,
+            work: `${fsci(v.per)}개 × ${fi(v.wells)}웰 × (1 + ${fi(v.ex)}%) = ${fsci(cells)}개<br>${fsci(cells)}개 ÷ ${fsci(v.conc)} cells/mL = ${fmt(s)} mL`, msg: pip(s / 1000)};
+        }
+        if (!(v.live >= 0) || !pos(v.sq, v.df)) return E();
+        if (v.raw.dead !== '' && !(v.dead >= 0)) return E('죽은 세포 수를 숫자로 넣거나 비워 주세요.');
+        const avg = v.live / v.sq, conc = avg * v.df * 1e4, hasDead = v.raw.dead !== '' && v.live + v.dead > 0;
+        return {lbl: '살아 있는 세포 농도', n: conc, f: 'sci', u: 'cells/mL', also: `큰 칸 평균 <b>${fmt(avg, 4)}</b>개${hasDead ? `, 생존율 <b>${fmt(v.live / (v.live + v.dead) * 100, 3)}</b>%` : ''}`,
+          work: `${fi(v.live)} ÷ ${fi(v.sq)}칸 × ${fi(v.df)} × 10⁴ = ${fsci(conc)} cells/mL`};
+      },
+      notes: ['큰 칸 하나는 1 mm × 1 mm에 깊이 0.1 mm라서 부피가 0.1 μL예요. 그래서 10⁴을 곱하면 mL당 개수가 돼요.', '네 모서리의 큰 칸(각각 작은 칸 16개)을 세는 게 기본이에요.', '트리판 블루에 파랗게 물든 세포가 죽은 세포예요. 살아 있는 세포만 세어 넣으세요.', '경계선에 걸친 세포는 위쪽과 왼쪽 선만 세는 식으로 규칙을 정해 두세요.'],
+      src: [['Abcam 혈구계산판', 'https://www.abcam.com/en-us/technical-resources/protocols/counting-cells-using-a-haemocytometer']]},
+
+    {id: 'moi', cat: 'cult', short: 'MOI', sub: '파지 넣을 양', title: 'MOI로 파지 넣을 양 계산', icon: 'phage',
+      kw: 'MOI multiplicity of infection 감염 다중도 파지 phage 박테리오파지 bacteriophage PFU plaque 플라크 역가 titer 푸아송 Poisson',
+      modes: [{id: 'vol', label: '넣을 파지 양', formula: '넣을 파지(mL) = MOI × 세균 수 ÷ 파지 역가(PFU/mL)'}, {id: 'titer', label: '플라크 → 역가', formula: 'PFU/mL = 플라크 수 × 10ⁿ ÷ 도말량(mL)'}],
+      fields: [
+        {id: 'moi', label: '목표 MOI', small: '파지 ÷ 세균', v: '0.1', modes: ['vol']},
+        {id: 'cells', label: '세균 농도', v: '1e8', unit: 'CFU/mL', sci: true, wide: true, modes: ['vol']},
+        {id: 'cv', label: '세균 배양액 부피', v: '10', units: U.vol, uv: 1, modes: ['vol']},
+        {id: 'titer', label: '파지 역가', v: '1e10', unit: 'PFU/mL', sci: true, wide: true, modes: ['vol']},
+        {id: 'pl', label: '센 플라크 수', v: '85', unit: '개', modes: ['titer']},
+        {id: 'd', label: '희석 단계 n', small: '10⁻ⁿ의 n, 10⁻⁷이면 7', v: '7', pre: '10⁻', modes: ['titer']},
+        {id: 'p', label: '도말한 파지 희석액', v: '100', units: [['μL', 1e-3], ['mL', 1]], modes: ['titer']}],
+      calc(v, mode) {
+        if (mode === 'titer') {
+          if (!(v.pl >= 0) || !Number.isFinite(v.d) || !pos(v.p)) return E();
+          if (!Number.isInteger(Math.abs(v.d))) return E('희석 단계는 정수로 넣어 주세요 (10⁻⁷이면 7).');
+          const dn = Math.abs(v.d), mL = v.p * v.p_u, t = v.pl * 10 ** dn / mL;
+          return {lbl: '파지 역가', n: t, f: 'sci', u: 'PFU/mL', work: `${fi(v.pl)} × 10${sup(dn)} ÷ ${fi(mL)} mL = ${fsci(t)} PFU/mL`};
+        }
+        if (!pos(v.moi, v.cells, v.cv, v.titer)) return E();
+        const bact = v.cells * v.cv * v.cv_u * 1000, pfu = v.moi * bact, L = pfu / v.titer / 1000, [n, u] = vol(L), p0 = Math.exp(-v.moi);
+        return {lbl: '넣을 파지 원액', n, u, also: `세균 ${fsci(bact)}개에 파지 <b>${fsci(pfu)}</b> PFU`,
+          work: `${fi(v.moi)} × ${fsci(v.cells)} CFU/mL × ${fmt(v.cv * v.cv_u * 1000)} mL ÷ ${fsci(v.titer)} PFU/mL = ${fmt(L * 1000)} mL<br>파지가 하나도 안 붙는 세균 e^−${fi(v.moi)} = ${fmt(p0 * 100, 3)}%`,
+          msg: pip(L)};
+      },
+      notes: ['여기서 MOI는 넣은 파지 수 ÷ 세균 수예요. 실제로 세균에 붙은 파지는 이보다 적을 수 있어요.', '파지가 고르게 다 붙는다고 보면, MOI가 m일 때 파지가 하나도 안 붙는 세균의 비율이 e^−m이에요(푸아송 분포).', '세균 농도는 OD가 아니라 CFU/mL로 넣으세요. OD와 CFU의 관계는 균주와 기기마다 달라요.', '역가 계산은 CFU 계산과 같은 식이에요. 플라크 수 × 희석 배수 ÷ 도말량.'],
+      abbr: 'MOI(Multiplicity of Infection, 감염 다중도), PFU(Plaque Forming Unit), CFU(Colony Forming Unit)',
+      src: [['Abedon 2016', 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5056779/']]},
 
     // ================= 원심분리
     {id: 'rcf', cat: 'spin', short: 'rpm ↔ ×g', sub: '원심분리', title: 'rpm과 ×g 바꾸기', icon: 'rotor',
